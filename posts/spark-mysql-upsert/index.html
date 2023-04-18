@@ -9,14 +9,14 @@
 <meta name="author-link" content="https://hpk.me">
 <meta name="description" content="实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。" /><meta name="keywords" content='spark, 大数据' /><meta itemprop="name" content="spark 实现 mysql upsert">
 <meta itemprop="description" content="实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。"><meta itemprop="datePublished" content="2023-04-18T14:23:06+08:00" />
-<meta itemprop="dateModified" content="2023-04-18T14:24:43+08:00" />
+<meta itemprop="dateModified" content="2023-04-18T14:52:13+08:00" />
 <meta itemprop="wordCount" content="1058"><meta itemprop="image" content="https://hpkaiq.github.io/images/ico.png"/>
 <meta itemprop="keywords" content="spark,大数据," /><meta property="og:title" content="spark 实现 mysql upsert" />
 <meta property="og:description" content="实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hpkaiq.github.io/posts/spark-mysql-upsert/" /><meta property="og:image" content="https://hpkaiq.github.io/images/ico.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-04-18T14:23:06+08:00" />
-<meta property="article:modified_time" content="2023-04-18T14:24:43+08:00" />
+<meta property="article:modified_time" content="2023-04-18T14:52:13+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://hpkaiq.github.io/images/ico.png"/>
 
@@ -33,7 +33,7 @@
       "@type": "WebPage",
       "@id": "https:\/\/hpkaiq.github.io\/posts\/spark-mysql-upsert\/"
     },"image": ["https:\/\/hpkaiq.github.io\/images\/ico.png"],"genre": "posts","keywords": "spark, 大数据","wordcount":  1058 ,
-    "url": "https:\/\/hpkaiq.github.io\/posts\/spark-mysql-upsert\/","datePublished": "2023-04-18T14:23:06+08:00","dateModified": "2023-04-18T14:24:43+08:00","publisher": {
+    "url": "https:\/\/hpkaiq.github.io\/posts\/spark-mysql-upsert\/","datePublished": "2023-04-18T14:23:06+08:00","dateModified": "2023-04-18T14:52:13+08:00","publisher": {
       "@type": "Organization",
       "name": "hpkaiq","logo": "https:\/\/hpkaiq.github.io\/images\/ico.png"},"author": {
         "@type": "Person",
@@ -155,7 +155,7 @@
       </h1></div><div class="post-meta">
       <div class="post-meta-line"><span class="post-author"><a href="https://hpk.me" title="作者"target="_blank" rel="external nofollow noopener noreferrer author" class="author"><img loading="lazy" src="https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp" srcset="https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp, https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp 1.5x, https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp 2x" sizes="auto" data-title="hpkaiq" data-alt="hpkaiq" class="avatar" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/>&nbsp;hpkaiq</a></span>
           <span class="post-category">收录于 <a href="/categories/%E7%BC%96%E7%A8%8B/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 编程</a></span></div>
-      <div class="post-meta-line"><span title="发布于 2023-04-18 14:23:06"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2023-04-18">2023-04-18</time></span>&nbsp;<span title="更新于 2023-04-18 14:24:43"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2023-04-18">2023-04-18</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1058 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 3 分钟</span>&nbsp;<span id="/posts/spark-mysql-upsert/" class="leancloud_visitors comment-visitors" data-flag-title="spark 实现 mysql upsert">
+      <div class="post-meta-line"><span title="发布于 2023-04-18 14:23:06"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2023-04-18">2023-04-18</time></span>&nbsp;<span title="更新于 2023-04-18 14:52:13"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2023-04-18">2023-04-18</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1058 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 3 分钟</span>&nbsp;<span id="/posts/spark-mysql-upsert/" class="leancloud_visitors comment-visitors" data-flag-title="spark 实现 mysql upsert">
               <i class="fa-regular fa-eye fa-fw me-1" aria-hidden="true"></i><span class="leancloud-visitors-count">-</span>&nbsp;次阅读
             </span>&nbsp;<span class="comment-count" data-flag-title="spark 实现 mysql upsert">
               <i class="fa-regular fa-comments fa-fw me-1" aria-hidden="true"></i><span data-xid="/posts/spark-mysql-upsert/" class="valine-comment-count">-</span>&nbsp;条评论
@@ -657,7 +657,7 @@
   <div class="post-info">
     <div class="post-info-line">
       <div class="post-info-mod">
-        <span title="更新于 2023-04-18 14:24:43">更新于 2023-04-18&nbsp;</span>
+        <span title="更新于 2023-04-18 14:52:13">更新于 2023-04-18&nbsp;</span>
       </div></div>
     <div class="post-info-line">
       <div class="post-info-md"><span><a href="/posts/spark-mysql-upsert/index.md" title="阅读原始文档" class="link-to-markdown">阅读原始文档</a></span></div>

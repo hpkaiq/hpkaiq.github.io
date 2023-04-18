@@ -1,6 +1,10 @@
 # presto 自定义函数简述
 
 
+presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。
+
+<!--more-->
+
 presto自带unbase64函数，用法如下。
 
 ```
@@ -12,12 +16,6 @@ FROM_UTF8(from_base64(nickname))
 ```
 Query failed (#20220720_091551_00087_mkhun): Illegal base64 character -1a
 ```
-
-所以想要自定义一个unbase64函数。
-
-<!--more-->
-
-
 
 ## idea新建maven项目
 pom文件如下：

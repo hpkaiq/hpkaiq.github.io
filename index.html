@@ -157,25 +157,7 @@
 </article>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
     <a href="/posts/presto-udf-simple/">presto 自定义函数简述</a>
-  </h1><div class="post-meta"><span class="post-author"><a href="https://hpk.me" title="作者"target="_blank" rel="external nofollow noopener noreferrer author" class="author"><img loading="lazy" src="https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp" srcset="https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp, https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp 1.5x, https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp 2x" sizes="auto" data-title="hpkaiq" data-alt="hpkaiq" class="avatar" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/>&nbsp;hpkaiq</a></span>&nbsp;<span class="post-publish" title='2023-04-18 14:16:42'>发布于 <time datetime="2023-04-18">2023-04-18</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%BC%96%E7%A8%8B/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 编程</a></span></div><div class="content"><p>presto自带unbase64函数，用法如下。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">FROM_UTF8(from_base64(nickname))
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>但是有些字符会报错。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Query failed (#20220720_091551_00087_mkhun): Illegal base64 character -1a
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>所以想要自定义一个unbase64函数。</p></div><div class="post-footer">
+  </h1><div class="post-meta"><span class="post-author"><a href="https://hpk.me" title="作者"target="_blank" rel="external nofollow noopener noreferrer author" class="author"><img loading="lazy" src="https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp" srcset="https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp, https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp 1.5x, https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp 2x" sizes="auto" data-title="hpkaiq" data-alt="hpkaiq" class="avatar" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/>&nbsp;hpkaiq</a></span>&nbsp;<span class="post-publish" title='2023-04-18 14:16:42'>发布于 <time datetime="2023-04-18">2023-04-18</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%BC%96%E7%A8%8B/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 编程</a></span></div><div class="content"><p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p></div><div class="post-footer">
     <a href="/posts/presto-udf-simple/">阅读全文</a><div class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/java/' class="post-tag">java</a><a href='/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/' class="post-tag">大数据</a></div></div>
 </article>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">

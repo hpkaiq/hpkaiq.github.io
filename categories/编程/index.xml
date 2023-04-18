@@ -709,7 +709,8 @@
   <pubDate>Tue, 18 Apr 2023 14:16:42 &#43;0800</pubDate>
   <author>hpkaiq</author>
   <guid>https://hpkaiq.github.io/posts/presto-udf-simple/</guid>
-  <description><![CDATA[<p>presto自带unbase64函数，用法如下。</p>
+  <description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
+<p>presto自带unbase64函数，用法如下。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -727,8 +728,7 @@
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Query failed (#20220720_091551_00087_mkhun): Illegal base64 character -1a
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>所以想要自定义一个unbase64函数。</p>
-<h2 id="idea新建maven项目">idea新建maven项目</h2>
+</div><h2 id="idea新建maven项目">idea新建maven项目</h2>
 <p>pom文件如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
