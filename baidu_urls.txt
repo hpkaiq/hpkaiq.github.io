@@ -1,4 +1,4 @@
-https://hpk.me/posts/test-1/
+https://hpk.me/posts/change-to-hugo/
 https://hpk.me/posts/spark-mysql-upsert/
 https://hpk.me/posts/java-rate-limit-google-guava/
 https://hpk.me/posts/python3-easyocr-simple/
