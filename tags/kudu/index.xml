@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>kudu - 标签 - PME-Blog</title>
+    <link>https://hpkaiq.github.io/tags/kudu/</link>
+    <description>kudu - 标签 - PME-Blog</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Mon, 17 Apr 2023 21:23:09 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/kudu/" rel="self" type="application/rss+xml" /><item>
+  <title>Apache Kudu 写入数据定期出问题</title>
+  <link>https://hpkaiq.github.io/posts/kudu-periodic-issues/</link>
+  <pubDate>Mon, 17 Apr 2023 21:23:09 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/kudu-periodic-issues/</guid>
+  <description><![CDATA[<p>线上项目出现一个很奇怪的问题，数据经过Spark程序消费Kafka写入Kudu，出现Kudu Master连接超时，这个问题开始排查不出原因，有点头大，只能采用下下策，重启Spark程序，出现过几次后， 我记录了出现的时间，发现每次出现时间有个固定周期，一周，有规律就是最大的好消息，感觉离发现真相不远了，果然网上有这方面的问题讨论，虽说以前也去网上搜索过相关问题，毕竟Kudu相比于Hive、HBase还是小众了一点。。。是Kudu Java Client的问题，使用1.5以上版本就没问题了。</p>
+<p>参考：<a href="https://blog.csdn.net/u011489205/article/details/79173537"target="_blank" rel="external nofollow noopener noreferrer">关于kudu使用的一些问题及解决办法<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
+</item>
+</channel>
+</rss>
