@@ -4,9 +4,1298 @@
     <link>https://hpkaiq.github.io/</link>
     <description>PME-Blog 难得自在</description>
     <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Mon, 17 Apr 2023 21:29:55 &#43;0800</lastBuildDate>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</lastBuildDate>
       <atom:link href="https://hpkaiq.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+  <title>spark 实现 mysql upsert</title>
+  <link>https://hpkaiq.github.io/posts/spark-mysql-upsert/</link>
+  <pubDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/spark-mysql-upsert/</guid>
+  <description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
+<p>基于 <strong>spark2.4.3 scala2.11.8</strong></p>
+<h2 id="工具类-dataframewriterenhance">工具类 DataFrameWriterEnhance</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.xxx.utils</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.catalyst.plans.logical.LogicalPlan</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.execution.SQLExecution</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.execution.datasources.DataSource</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.execution.datasources.jdbc.</span><span class="o">{</span><span class="n">JDBCOptions</span><span class="o">,</span> <span class="n">JdbcOptionsInWrite</span><span class="o">,</span> <span class="n">JdbcRelationProvider</span><span class="o">,</span> <span class="n">JdbcUtils</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.jdbc.</span><span class="o">{</span><span class="n">JdbcDialect</span><span class="o">,</span> <span class="n">JdbcDialects</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.sources.BaseRelation</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.types.StructType</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql._</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.sql.Connection</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">object</span> <span class="n">DataFrameWriterEnhance</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">implicit</span> <span class="kd">class</span> <span class="nf">DataFrameWriterMysqlUpdateEnhance</span><span class="o">(</span><span class="n">writer</span><span class="o">:</span> <span class="n">DataFrameWriter</span><span class="o">[</span><span class="n">Row</span><span class="o">])</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">def</span> <span class="nf">update</span><span class="o">():</span> <span class="n">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">extraOptionsField</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="na">getClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;org$apache$spark$sql$DataFrameWriter$$extraOptions&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">dfField</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="na">getClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;df&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">sourceField</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="na">getClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;source&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">partitioningColumnsField</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="na">getClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;partitioningColumns&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">extraOptionsField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">dfField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">sourceField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">partitioningColumnsField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">extraOptions</span> <span class="o">=</span> <span class="n">extraOptionsField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">writer</span><span class="o">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">scala</span><span class="o">.</span><span class="na">collection</span><span class="o">.</span><span class="na">Map</span><span class="o">[</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">]]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">df</span> <span class="o">=</span> <span class="n">dfField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">writer</span><span class="o">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">DataFrame</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">partitioningColumns</span> <span class="o">=</span> <span class="n">partitioningColumnsField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">writer</span><span class="o">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">Option</span><span class="o">[</span><span class="n">Seq</span><span class="o">[</span><span class="n">String</span><span class="o">]]]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">logicalPlanField</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="na">getClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;logicalPlan&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">logicalPlanField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">var</span> <span class="n">logicalPlan</span> <span class="o">=</span> <span class="n">logicalPlanField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">df</span><span class="o">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">LogicalPlan</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">session</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="na">sparkSession</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">dataSource</span> <span class="o">=</span> <span class="n">DataSource</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sparkSession</span> <span class="o">=</span> <span class="n">session</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">className</span> <span class="o">=</span> <span class="n">s</span><span class="s">&#34;${DataFrameWriterEnhance.getClass.getName}MysqlUpdateRelationProvider&#34;</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">partitionColumns</span> <span class="o">=</span> <span class="n">partitioningColumns</span><span class="o">.</span><span class="na">getOrElse</span><span class="o">(</span><span class="n">Nil</span><span class="o">),</span>
+</span></span><span class="line"><span class="cl">        <span class="n">options</span> <span class="o">=</span> <span class="n">extraOptions</span><span class="o">.</span><span class="na">toMap</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">logicalPlan</span> <span class="o">=</span> <span class="n">dataSource</span><span class="o">.</span><span class="na">planForWriting</span><span class="o">(</span><span class="n">SaveMode</span><span class="o">.</span><span class="na">Append</span><span class="o">,</span> <span class="n">logicalPlan</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">qe</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="na">sessionState</span><span class="o">.</span><span class="na">executePlan</span><span class="o">(</span><span class="n">logicalPlan</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">SQLExecution</span><span class="o">.</span><span class="na">withNewExecutionId</span><span class="o">(</span><span class="n">session</span><span class="o">,</span> <span class="n">qe</span><span class="o">)(</span><span class="n">qe</span><span class="o">.</span><span class="na">toRdd</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">class</span> <span class="nc">MysqlUpdateRelationProvider</span> <span class="kd">extends</span> <span class="n">JdbcRelationProvider</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">override</span> <span class="n">def</span> <span class="nf">createRelation</span><span class="o">(</span><span class="n">sqlContext</span><span class="o">:</span> <span class="n">SQLContext</span><span class="o">,</span> <span class="n">mode</span><span class="o">:</span> <span class="n">SaveMode</span><span class="o">,</span> <span class="n">parameters</span><span class="o">:</span> <span class="n">Map</span><span class="o">[</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">],</span> <span class="n">df</span><span class="o">:</span> <span class="n">DataFrame</span><span class="o">):</span> <span class="n">BaseRelation</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">options</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JdbcOptionsInWrite</span><span class="o">(</span><span class="n">parameters</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">isCaseSensitive</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="na">sparkSession</span><span class="o">.</span><span class="na">sessionState</span><span class="o">.</span><span class="na">conf</span><span class="o">.</span><span class="na">caseSensitiveAnalysis</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">conn</span> <span class="o">=</span> <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">createConnectionFactory</span><span class="o">(</span><span class="n">options</span><span class="o">)()</span>
+</span></span><span class="line"><span class="cl">      <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">val</span> <span class="n">tableExists</span> <span class="o">=</span> <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">tableExists</span><span class="o">(</span><span class="n">conn</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">tableExists</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">mode</span> <span class="n">match</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="n">SaveMode</span><span class="o">.</span><span class="na">Overwrite</span> <span class="o">=&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="k">if</span> <span class="o">(</span><span class="n">options</span><span class="o">.</span><span class="na">isTruncate</span> <span class="o">&amp;&amp;</span> <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">isCascadingTruncateTable</span><span class="o">(</span><span class="n">options</span><span class="o">.</span><span class="na">url</span><span class="o">).</span><span class="na">contains</span><span class="o">(</span><span class="kc">false</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// In this case, we should truncate table and then load.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">truncateTable</span><span class="o">(</span><span class="n">conn</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">val</span> <span class="n">tableSchema</span> <span class="o">=</span> <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">getSchemaOption</span><span class="o">(</span><span class="n">conn</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">updateTable</span><span class="o">(</span><span class="n">df</span><span class="o">,</span> <span class="n">tableSchema</span><span class="o">,</span> <span class="n">isCaseSensitive</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">              <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// Otherwise, do not truncate the table, instead drop and recreate it
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">dropTable</span><span class="o">(</span><span class="n">conn</span><span class="o">,</span> <span class="n">options</span><span class="o">.</span><span class="na">table</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">createTable</span><span class="o">(</span><span class="n">conn</span><span class="o">,</span> <span class="n">df</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">updateTable</span><span class="o">(</span><span class="n">df</span><span class="o">,</span> <span class="n">Some</span><span class="o">(</span><span class="n">df</span><span class="o">.</span><span class="na">schema</span><span class="o">),</span> <span class="n">isCaseSensitive</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">              <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="n">SaveMode</span><span class="o">.</span><span class="na">Append</span> <span class="o">=&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="n">val</span> <span class="n">tableSchema</span> <span class="o">=</span> <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">getSchemaOption</span><span class="o">(</span><span class="n">conn</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">              <span class="n">updateTable</span><span class="o">(</span><span class="n">df</span><span class="o">,</span> <span class="n">tableSchema</span><span class="o">,</span> <span class="n">isCaseSensitive</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="n">SaveMode</span><span class="o">.</span><span class="na">ErrorIfExists</span> <span class="o">=&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">                <span class="n">s</span><span class="s">&#34;Table or view &#39;${options.table}&#39; already exists. &#34;</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">s</span><span class="s">&#34;SaveMode: ErrorIfExists.&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="n">SaveMode</span><span class="o">.</span><span class="na">Ignore</span> <span class="o">=&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// With `SaveMode.Ignore` mode, if table already exists, the save operation is expected
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// to not save the contents of the DataFrame and to not change the existing data.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// Therefore, it is okay to do nothing here and then just return the relation below.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">createTable</span><span class="o">(</span><span class="n">conn</span><span class="o">,</span> <span class="n">df</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">          <span class="n">updateTable</span><span class="o">(</span><span class="n">df</span><span class="o">,</span> <span class="n">Some</span><span class="o">(</span><span class="n">df</span><span class="o">.</span><span class="na">schema</span><span class="o">),</span> <span class="n">isCaseSensitive</span><span class="o">,</span> <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conn</span><span class="o">.</span><span class="na">close</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">createRelation</span><span class="o">(</span><span class="n">sqlContext</span><span class="o">,</span> <span class="n">parameters</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">def</span> <span class="nf">updateTable</span><span class="o">(</span><span class="n">df</span><span class="o">:</span> <span class="n">DataFrame</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">tableSchema</span><span class="o">:</span> <span class="n">Option</span><span class="o">[</span><span class="n">StructType</span><span class="o">],</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">isCaseSensitive</span><span class="o">:</span> <span class="n">Boolean</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">options</span><span class="o">:</span> <span class="n">JdbcOptionsInWrite</span><span class="o">):</span> <span class="n">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">url</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">url</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">table</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">table</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">dialect</span> <span class="o">=</span> <span class="n">JdbcDialects</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">url</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">rddSchema</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="na">schema</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">getConnection</span><span class="o">:</span> <span class="o">()</span> <span class="o">=&gt;</span> <span class="n">Connection</span> <span class="o">=</span> <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">createConnectionFactory</span><span class="o">(</span><span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">batchSize</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">batchSize</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">isolationLevel</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">isolationLevel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">updateStmt</span> <span class="o">=</span> <span class="n">getUpdateStatement</span><span class="o">(</span><span class="n">table</span><span class="o">,</span> <span class="n">rddSchema</span><span class="o">,</span> <span class="n">tableSchema</span><span class="o">,</span> <span class="n">isCaseSensitive</span><span class="o">,</span> <span class="n">dialect</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">println</span><span class="o">(</span><span class="n">updateStmt</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">repartitionedDF</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="na">numPartitions</span> <span class="n">match</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="n">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">=&gt;</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">          <span class="n">s</span><span class="s">&#34;Invalid value `$n` for parameter `${JDBCOptions.JDBC_NUM_PARTITIONS}` in table writing &#34;</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">            <span class="s">&#34;via JDBC. The minimum value is 1.&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="n">Some</span><span class="o">(</span><span class="n">n</span><span class="o">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">df</span><span class="o">.</span><span class="na">rdd</span><span class="o">.</span><span class="na">partitions</span><span class="o">.</span><span class="na">length</span> <span class="o">=&gt;</span> <span class="n">df</span><span class="o">.</span><span class="na">coalesce</span><span class="o">(</span><span class="n">n</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="n">_</span> <span class="o">=&gt;</span> <span class="n">df</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="n">repartitionedDF</span><span class="o">.</span><span class="na">rdd</span><span class="o">.</span><span class="na">foreachPartition</span><span class="o">(</span><span class="n">iterator</span> <span class="o">=&gt;</span> <span class="n">JdbcUtils</span><span class="o">.</span><span class="na">savePartition</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">getConnection</span><span class="o">,</span> <span class="n">table</span><span class="o">,</span> <span class="n">iterator</span><span class="o">,</span> <span class="n">rddSchema</span><span class="o">,</span> <span class="n">updateStmt</span><span class="o">,</span> <span class="n">batchSize</span><span class="o">,</span> <span class="n">dialect</span><span class="o">,</span> <span class="n">isolationLevel</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">options</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">def</span> <span class="nf">getUpdateStatement</span><span class="o">(</span><span class="n">table</span><span class="o">:</span> <span class="n">String</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                           <span class="n">rddSchema</span><span class="o">:</span> <span class="n">StructType</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                           <span class="n">tableSchema</span><span class="o">:</span> <span class="n">Option</span><span class="o">[</span><span class="n">StructType</span><span class="o">],</span>
+</span></span><span class="line"><span class="cl">                           <span class="n">isCaseSensitive</span><span class="o">:</span> <span class="n">Boolean</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                           <span class="n">dialect</span><span class="o">:</span> <span class="n">JdbcDialect</span><span class="o">):</span> <span class="n">String</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">columns</span> <span class="o">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">tableSchema</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rddSchema</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">x</span> <span class="o">=&gt;</span> <span class="n">dialect</span><span class="o">.</span><span class="na">quoteIdentifier</span><span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">name</span><span class="o">)).</span><span class="na">mkString</span><span class="o">(</span><span class="s">&#34;,&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">val</span> <span class="n">columnNameEquality</span> <span class="o">=</span> <span class="k">if</span> <span class="o">(</span><span class="n">isCaseSensitive</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">spark</span><span class="o">.</span><span class="na">sql</span><span class="o">.</span><span class="na">catalyst</span><span class="o">.</span><span class="na">analysis</span><span class="o">.</span><span class="na">caseSensitiveResolution</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">spark</span><span class="o">.</span><span class="na">sql</span><span class="o">.</span><span class="na">catalyst</span><span class="o">.</span><span class="na">analysis</span><span class="o">.</span><span class="na">caseInsensitiveResolution</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// The generated insert statement needs to follow rddSchema&#39;s column sequence and
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">// tableSchema&#39;s column names. When appending data into some case-sensitive DBMSs like
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">// PostgreSQL/Oracle, we need to respect the existing case-sensitive column names instead of
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">// RDD column names for user convenience.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">val</span> <span class="n">tableColumnNames</span> <span class="o">=</span> <span class="n">tableSchema</span><span class="o">.</span><span class="na">get</span><span class="o">.</span><span class="na">fieldNames</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rddSchema</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">map</span> <span class="o">{</span> <span class="n">col</span> <span class="o">=&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">val</span> <span class="n">normalizedName</span> <span class="o">=</span> <span class="n">tableColumnNames</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">f</span> <span class="o">=&gt;</span> <span class="n">columnNameEquality</span><span class="o">(</span><span class="n">f</span><span class="o">,</span> <span class="n">col</span><span class="o">.</span><span class="na">name</span><span class="o">)).</span><span class="na">getOrElse</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="o">(</span><span class="n">s</span><span class="s">&#34;&#34;&#34;Column &#34;</span><span class="n">$</span><span class="o">{</span><span class="n">col</span><span class="o">.</span><span class="na">name</span><span class="o">}</span><span class="s">&#34; not found in schema $tableSchema&#34;&#34;&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">          <span class="o">}</span>
+</span></span><span class="line"><span class="cl">          <span class="n">dialect</span><span class="o">.</span><span class="na">quoteIdentifier</span><span class="o">(</span><span class="n">normalizedName</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}.</span><span class="na">mkString</span><span class="o">(</span><span class="s">&#34;,&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="n">val</span> <span class="n">placeholders</span> <span class="o">=</span> <span class="n">rddSchema</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">_</span> <span class="o">=&gt;</span> <span class="s">&#34;?&#34;</span><span class="o">).</span><span class="na">mkString</span><span class="o">(</span><span class="s">&#34;,&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">s</span><span class="s">&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders)
+</span></span></span><span class="line"><span class="cl"><span class="s">         |ON DUPLICATE KEY UPDATE
+</span></span></span><span class="line"><span class="cl"><span class="s">         |${columns.split(&#34;</span><span class="o">,</span><span class="s">&#34;).map(col =&gt; s&#34;</span><span class="n">$col</span><span class="o">=</span><span class="n">VALUES</span><span class="o">(</span><span class="n">$col</span><span class="o">)</span><span class="s">&#34;).mkString(&#34;</span><span class="o">,</span><span class="s">&#34;)}
+</span></span></span><span class="line"><span class="cl"><span class="s">         |&#34;&#34;&#34;</span><span class="o">.</span><span class="na">stripMargin</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="工具类-mysqlutils">工具类 MysqlUtils</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.xxx.utils</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.xxx.utils.DataFrameWriterEnhance.DataFrameWriterMysqlUpdateEnhance</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.functions.col</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.types.</span><span class="o">{</span><span class="n">NullType</span><span class="o">,</span> <span class="n">ShortType</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.spark.sql.</span><span class="o">{</span><span class="n">DataFrame</span><span class="o">,</span> <span class="n">SaveMode</span><span class="o">,</span> <span class="n">SparkSession</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">object</span> <span class="n">MysqlUtils</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">def</span> <span class="nf">upsert</span><span class="o">(</span><span class="n">rawDF</span><span class="o">:</span> <span class="n">DataFrame</span><span class="o">,</span> <span class="n">database</span><span class="o">:</span> <span class="n">String</span><span class="o">,</span> <span class="n">tableName</span><span class="o">:</span> <span class="n">String</span><span class="o">)(</span><span class="n">implicit</span> <span class="n">spark</span><span class="o">:</span> <span class="n">SparkSession</span><span class="o">):</span> <span class="n">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">var</span> <span class="n">df</span> <span class="o">=</span> <span class="n">rawDF</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">for</span> <span class="o">(</span><span class="n">elem</span> <span class="o">&lt;-</span> <span class="n">df</span><span class="o">.</span><span class="na">schema</span><span class="o">.</span><span class="na">fields</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(</span><span class="n">elem</span><span class="o">.</span><span class="na">dataType</span> <span class="o">==</span> <span class="n">NullType</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="na">withColumn</span><span class="o">(</span><span class="n">elem</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="n">col</span><span class="o">(</span><span class="n">elem</span><span class="o">.</span><span class="na">name</span><span class="o">).</span><span class="na">cast</span><span class="o">(</span><span class="n">ShortType</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">df</span><span class="o">.</span><span class="na">write</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;jdbc&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">mode</span><span class="o">(</span><span class="n">SaveMode</span><span class="o">.</span><span class="na">Append</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;driver&#34;</span><span class="o">,</span> <span class="s">&#34;com.mysql.jdbc.Driver&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;url&#34;</span><span class="o">,</span> <span class="n">spark</span><span class="o">.</span><span class="na">conf</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">s</span><span class="s">&#34;spark.job.mysql.${database}.url&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;user&#34;</span><span class="o">,</span> <span class="n">spark</span><span class="o">.</span><span class="na">conf</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">s</span><span class="s">&#34;spark.job.mysql.${database}.username&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;password&#34;</span><span class="o">,</span> <span class="n">spark</span><span class="o">.</span><span class="na">conf</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">s</span><span class="s">&#34;spark.job.mysql.${database}.password&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;dbtable&#34;</span><span class="o">,</span> <span class="n">tableName</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;useSSL&#34;</span><span class="o">,</span> <span class="s">&#34;false&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;showSql&#34;</span><span class="o">,</span> <span class="s">&#34;false&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">&#34;numPartitions&#34;</span><span class="o">,</span> <span class="s">&#34;1&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">update</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="使用">使用</h2>
+<p>spark启动脚本加入mysql配置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">spark-submit <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--master yarn <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--deploy-mode cluster <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-memory 3G <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--num-executors <span class="m">5</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-cores <span class="m">4</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--driver-memory 3G <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.job.mysql.test.url<span class="o">=</span><span class="si">${</span><span class="nv">jdbc_url</span><span class="si">}</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.job.mysql.test.username<span class="o">=</span><span class="si">${</span><span class="nv">jdbc_username</span><span class="si">}</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.job.mysql.test.password<span class="o">=</span><span class="si">${</span><span class="nv">jdbc_password</span><span class="si">}</span> <span class="se">\
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用范例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">utils.MysqlUtils</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">object</span> <span class="n">TestMysqlUpsert</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="o">:</span> <span class="n">Array</span><span class="o">[</span><span class="n">String</span><span class="o">]):</span> <span class="n">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">implicit</span> <span class="n">val</span> <span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">enableHiveSupport</span><span class="o">().</span><span class="na">getOrCreate</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">import</span> <span class="nn">spark.implicits._</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">val</span> <span class="n">database</span> <span class="o">=</span> <span class="s">&#34;test&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">val</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">Array</span><span class="o">((</span><span class="mi">1</span><span class="o">,</span><span class="mi">11</span><span class="o">,</span><span class="s">&#34;name1&#34;</span><span class="o">,</span><span class="mi">11111</span><span class="o">),(</span><span class="mi">2</span><span class="o">,</span><span class="mi">22</span><span class="o">,</span><span class="s">&#34;name2&#34;</span><span class="o">,</span><span class="mi">22222</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">val</span> <span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="na">sparkContext</span><span class="o">.</span><span class="na">parallelize</span><span class="o">(</span><span class="n">arr</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">.</span><span class="na">toDF</span><span class="o">(</span><span class="s">&#34;key_one&#34;</span><span class="o">,</span> <span class="s">&#34;key_two&#34;</span><span class="o">,</span> <span class="s">&#34;val_one&#34;</span><span class="o">,</span> <span class="s">&#34;val_two&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">MysqlUtils</span><span class="o">.</span><span class="na">upsert</span><span class="o">(</span><span class="n">df</span><span class="o">,</span> <span class="n">database</span><span class="o">,</span> <span class="s">&#34;test_unique_key&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">spark</span><span class="o">.</span><span class="na">close</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>test_unique_key表结构</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">test_unique_key</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">key_one</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">key_two</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">val_one</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">val_two</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">UNIQUE</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="o">`</span><span class="n">uk</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">key_one</span><span class="o">`</span><span class="p">,</span><span class="o">`</span><span class="n">key_two</span><span class="o">`</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="w"> </span><span class="k">COMMENT</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="参考">参考</h2>
+<p><a href="https://blog.csdn.net/qq_18453581/article/details/125907861" title="csdn_Spark Upsert写入Mysql(scala增强) 无需依赖"target="_blank" rel="external nofollow noopener noreferrer">csdn_Spark Upsert写入Mysql(scala增强) 无需依赖<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
+</item>
+<item>
+  <title>java 频次控制</title>
+  <link>https://hpkaiq.github.io/posts/java-rate-limit-google-guava/</link>
+  <pubDate>Tue, 18 Apr 2023 14:21:15 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/java-rate-limit-google-guava/</guid>
+  <description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
+<h2 id="1-maven">1. Maven</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>com.google.guava<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>guava<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>31.1-jre<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>cn.hutool<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>hutool-all<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>5.8.4<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="2-测试代码">2. 测试代码</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">cn.hutool.http.HttpRequest</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.google.common.util.concurrent.RateLimiter</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RateLimiterTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">RateLimiter</span> <span class="n">rateLimiter</span> <span class="o">=</span> <span class="n">RateLimiter</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mi">20</span><span class="o">,</span><span class="mi">1000</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="nf">RateLimiterTest</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">InstanceHolder</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">static</span> <span class="kd">final</span> <span class="n">RateLimiterTest</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RateLimiterTest</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="n">RateLimiterTest</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">InstanceHolder</span><span class="o">.</span><span class="na">instance</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">runHttpGet</span><span class="o">(</span><span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">header</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rateLimiter</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">HttpRequest</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">url</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">header</span><span class="o">(</span><span class="n">header</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">execute</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">body</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.concurrent.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestRate</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">,</span> <span class="n">ExecutionException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;https://xxxxx&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">header</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">header</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;Content-type&#34;</span><span class="o">,</span> <span class="n">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="s">&#34;application/json&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">header</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;Access-Token&#34;</span><span class="o">,</span> <span class="n">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="s">&#34;xxxxx&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">List</span><span class="o">&lt;</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">tasks</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">callable</span> <span class="o">=</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">RateLimiterTest</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">RateLimiterTest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="na">runHttpGet</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">header</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">tasks</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">callable</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">ExecutorService</span> <span class="n">exec</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="mi">60</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">List</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">futures</span> <span class="o">=</span> <span class="n">exec</span><span class="o">.</span><span class="na">invokeAll</span><span class="o">(</span><span class="n">tasks</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">:</span> <span class="n">futures</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exec</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description>
+</item>
+<item>
+  <title>python3 easyocr 简单使用识别参数</title>
+  <link>https://hpkaiq.github.io/posts/python3-easyocr-simple/</link>
+  <pubDate>Tue, 18 Apr 2023 14:18:37 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/python3-easyocr-simple/</guid>
+  <description><![CDATA[<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">easyocr</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">torch</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gpu_is_available</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">reader</span> <span class="o">=</span> <span class="n">easyocr</span><span class="o">.</span><span class="n">Reader</span><span class="p">([</span><span class="s1">&#39;ch_sim&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">],</span> <span class="n">gpu</span><span class="o">=</span><span class="n">gpu_is_available</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ocr_data</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readtext</span><span class="p">(</span><span class="s1">&#39;/image/path&#39;</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">text_threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">low_text</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">width_ths</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>detail = 0 仅输出识别到的文字</li>
+<li>text_threshold=0.7 文本置信阈值，值越小，文本块内被识别为文字的可能性越高</li>
+<li>low_text=0.1 值越小，图片内容被识别为文本块的可能性就更高</li>
+<li>width_ths=0.3 控制横向图片内容是否会被识别为一个或多个文本块，值越小被识别成多个文本块的可能性就更高</li>
+<li>待续&hellip;</li>
+</ol>
+<p>参考：</p>
+<ol>
+<li><a href="https://www.jaided.ai/easyocr/documentation/" title="官方文档"target="_blank" rel="external nofollow noopener noreferrer">官方文档<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
+<li><a href="https://cloud.tencent.com/developer/article/2016127" title="Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践"target="_blank" rel="external nofollow noopener noreferrer">Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
+</ol>]]></description>
+</item>
+<item>
+  <title>presto 自定义函数简述</title>
+  <link>https://hpkaiq.github.io/posts/presto-udf-simple/</link>
+  <pubDate>Tue, 18 Apr 2023 14:16:42 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/presto-udf-simple/</guid>
+  <description><![CDATA[<p>presto自带unbase64函数，用法如下。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">FROM_UTF8(from_base64(nickname))
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>但是有些字符会报错。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Query failed (#20220720_091551_00087_mkhun): Illegal base64 character -1a
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>所以想要自定义一个unbase64函数。</p>
+<h2 id="idea新建maven项目">idea新建maven项目</h2>
+<p>pom文件如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">    <span class="nt">&lt;dependencies&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>com.facebook.presto<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>presto-spi<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>0.272<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>com.google.guava<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>guava<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>18.0<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/dependencies&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>maven-jar-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;classesDirectory&gt;</span>target/classes/<span class="nt">&lt;/classesDirectory&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;archive&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;manifest&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;mainClass&gt;</span>com.alibaba.dubbo.container.Main<span class="nt">&lt;/mainClass&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="c">&lt;!-- 打包时 MANIFEST.MF文件不记录的时间戳版本 --&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;useUniqueVersions&gt;</span>false<span class="nt">&lt;/useUniqueVersions&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;addClasspath&gt;</span>true<span class="nt">&lt;/addClasspath&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;classpathPrefix&gt;</span>lib/<span class="nt">&lt;/classpathPrefix&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/manifest&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;manifestEntries&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;Class-Path&gt;</span>.<span class="nt">&lt;/Class-Path&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/manifestEntries&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/archive&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>maven-dependency-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;executions&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;execution&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;id&gt;</span>copy-dependencies<span class="nt">&lt;/id&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;goals&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;goal&gt;</span>copy-dependencies<span class="nt">&lt;/goal&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/goals&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;type&gt;</span>jar<span class="nt">&lt;/type&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;includeTypes&gt;</span>jar<span class="nt">&lt;/includeTypes&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;outputDirectory&gt;</span>
+</span></span><span class="line"><span class="cl">                                ${project.build.directory}/lib
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;/outputDirectory&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/execution&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/executions&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>com.facebook.presto<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>presto-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;version&gt;</span>0.3<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;extensions&gt;</span>true<span class="nt">&lt;/extensions&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/build&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="function开发">function开发</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">base64</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.common.type.StandardTypes</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.function.Description</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.function.ScalarFunction</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.function.SqlType</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">io.airlift.slice.Slice</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">io.airlift.slice.Slices</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnBase64Function</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@ScalarFunction</span><span class="o">(</span><span class="s">&#34;unBase64&#34;</span><span class="o">)</span> <span class="c1">// 固定参数，表示函数名的意思，也就我们在使用Presto的时候用的函数名
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Description</span><span class="o">(</span><span class="s">&#34;base64解密&#34;</span><span class="o">)</span> <span class="c1">// 函数的注释
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@SqlType</span><span class="o">(</span><span class="n">StandardTypes</span><span class="o">.</span><span class="na">VARCHAR</span><span class="o">)</span> <span class="c1">// 表示数据类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Slice</span> <span class="nf">unBase64</span><span class="o">(</span><span class="nd">@SqlType</span><span class="o">(</span><span class="n">StandardTypes</span><span class="o">.</span><span class="na">VARCHAR</span><span class="o">)</span> <span class="n">Slice</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 解码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">String</span> <span class="n">res</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">byte</span><span class="o">[]</span> <span class="n">decodeBytes</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Base64</span><span class="o">.</span><span class="na">getDecoder</span><span class="o">().</span><span class="na">decode</span><span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">toStringUtf8</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">            <span class="n">res</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">decodeBytes</span><span class="o">,</span> <span class="s">&#34;utf-8&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Slices</span><span class="o">.</span><span class="na">utf8Slice</span><span class="o">(</span><span class="n">res</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="plugin开发">plugin开发</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64.Base64Function</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64.UnBase64Function</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.Plugin</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableSet</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrestoUdfPlugin</span> <span class="kd">implements</span> <span class="n">Plugin</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">getFunctions</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ImmutableSet</span><span class="o">.&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span><span class="n">builder</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 添加插件class
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">UnBase64Function</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="加载plugin">加载plugin</h2>
+<p>在src/main/resources下创建目录META-INF，再在META-INF目录下创建services目录，注意下图项目结构中META-INF是父目录 services是子目录，只是idea合并显示了，不是说文件夹名里面有点 “.” 。然后创建文件com.facebook.presto.spi.Plugin，文件内容为plugin的全类名。
+例如本例：<code>PrestoUdfPlugin</code></p>
+<h2 id="上线">上线</h2>
+<ol>
+<li>maven打包。</li>
+<li>在所有presto节点服务器的presto安装目录${PRESTO_HOME}/plugin下新建一个my_plugin目录。</li>
+<li>上传jar包，及相关依赖包（在lib目录下）到所有服务器新建的my_plugin目录下。</li>
+<li>重启presto： ${PRESTO_HOME}/bin/launcher restart。</li>
+</ol>
+<h1 id="项目结构">项目结构</h1>
+<p><figure><a class="lightgallery" href="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-thumbnail="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-sub-html="<h2>结构</h2><p>结构</p>"></a><figcaption class="image-caption">结构</figcaption>
+  </figure></p>
+<p>参考：<a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
+</item>
+<item>
+  <title>python3 pandas 实现mysql upsert操作（唯一键更新）</title>
+  <link>https://hpkaiq.github.io/posts/python3-pandas-mysql-upsert/</link>
+  <pubDate>Tue, 18 Apr 2023 14:15:04 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/python3-pandas-mysql-upsert/</guid>
+  <description><![CDATA[<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">parse</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">db_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="n">parse</span><span class="o">.</span><span class="n">quote_plus</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="s1">&#39;xxxxxx.mysql.rds.aliyuncs.com&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="mi">3306</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span>
+</span></span><span class="line"><span class="cl">           <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;mysql+pymysql://</span><span class="si">%(user)s</span><span class="s1">:</span><span class="si">%(password)s</span><span class="s1">@</span><span class="si">%(host)s</span><span class="s1">:</span><span class="si">%(port)d</span><span class="s1">/</span><span class="si">%(database)s</span><span class="s1">?charset=utf8&#39;</span> <span class="o">%</span> <span class="n">db_info</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">mysql_replace_into</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">data_iter</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">from</span> <span class="nn">sqlalchemy.dialects.mysql</span> <span class="kn">import</span> <span class="n">insert</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data_iter</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stmt</span> <span class="o">=</span> <span class="n">insert</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">update_stmt</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">on_duplicate_key_update</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">stmt</span><span class="o">.</span><span class="n">inserted</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">stmt</span><span class="o">.</span><span class="n">inserted</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">update_stmt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">write_database</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">mysql_replace_into</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="s2">&#34;app_id&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&#34;app_secret&#34;</span><span class="p">:</span> <span class="s2">&#34;11111122&#34;</span><span class="p">,</span> <span class="s2">&#34;game_id&#34;</span><span class="p">:</span> <span class="mi">11</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="s2">&#34;app_id&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&#34;app_secret&#34;</span><span class="p">:</span> <span class="s2">&#34;22222233&#34;</span><span class="p">,</span> <span class="s2">&#34;game_id&#34;</span><span class="p">:</span> <span class="mi">22</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="s2">&#34;app_id&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&#34;app_secret&#34;</span><span class="p">:</span> <span class="s2">&#34;33333344&#34;</span><span class="p">,</span> <span class="s2">&#34;game_id&#34;</span><span class="p">:</span> <span class="mi">33</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">detailDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">write_database</span><span class="p">(</span><span class="n">detailDF</span><span class="p">,</span> <span class="s2">&#34;ad_app_ext&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description>
+</item>
+<item>
+  <title>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</title>
+  <link>https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/</link>
+  <pubDate>Tue, 18 Apr 2023 14:11:19 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/</guid>
+  <description><![CDATA[<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sqoop <span class="nb">export</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--update-key unique_index_columns <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--update-mode allowinsert
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>问题描述：
+用上述模式 sqoop 导入数据更新 mysql 数据，无论导入的数据与mysql里数据相比有没有更新，mysql表的 AUTO_INCREMENT 的PRIMARY KEY 例如 （<code>id</code> int(11) NOT NULL AUTO_INCREMENT COMMENT &lsquo;自增主键&rsquo;） 实际都是增加了的，当有新唯一主键数据插入时，id会是累加后的开始，会变的很大。</p>
+<p>解决：
+sqoop源码层级暂时没看原因。。。
+可以从业务流程上解决下这个问题，保证导入的数据都是新增或者更新的，不会有与mysql一样的数据，可以一定程度上减少 id 的增长。</p>]]></description>
+</item>
+<item>
+  <title>脚本执行spark-shell scala文件退出</title>
+  <link>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</link>
+  <pubDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</guid>
+  <description><![CDATA[<p>脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#! /bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">source</span> /etc/profile
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> +o posix  <span class="c1"># to enable process substitution when not running on bash </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">scala_file</span><span class="o">=</span><span class="nv">$1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">shift</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">arguments</span><span class="o">=</span><span class="nv">$@</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="c1">##### scala 文件后加  sys.exit</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">spark-shell --master yarn <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-cores <span class="m">5</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--num-executors <span class="m">4</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-memory 8g <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--driver-memory 3g <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.serializer<span class="o">=</span>org.apache.spark.serializer.KryoSerializer <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.default.parallelism<span class="o">=</span><span class="m">400</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.sql.shuffle.partitions<span class="o">=</span><span class="m">400</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.shuffle.io.maxRetries<span class="o">=</span><span class="m">10</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.shuffle.io.retryWait<span class="o">=</span>20s <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.yarn.executor.memoryOverhead<span class="o">=</span><span class="m">4096</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.network.timeout<span class="o">=</span>300s <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--name sparkshell_scala <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-i &lt;<span class="o">(</span><span class="nb">echo</span> <span class="s1">&#39;val args = &#34;&#39;</span><span class="nv">$arguments</span><span class="s1">&#39;&#34;.split(&#34;\\s+&#34;)&#39;</span> <span class="p">;</span> cat <span class="nv">$scala_file</span><span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>简单scala文件示例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">val</span> <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">spark</span><span class="o">.</span><span class="na">read</span><span class="o">.</span><span class="na">parquet</span><span class="o">(</span><span class="n">path</span><span class="o">).</span><span class="na">where</span><span class="o">(</span><span class="s">&#34;app_id = 77701&#34;</span><span class="o">).</span><span class="na">repartition</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">write</span><span class="o">.</span><span class="na">parquet</span><span class="o">(</span><span class="n">s</span><span class="s">&#34;${path}_new&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="na">exit</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果不需要传参，可简单使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">spark-shell &lt; test.scala
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description>
+</item>
+<item>
+  <title>kudu-spark KuduContext  java.io.InvalidClassException 解决</title>
+  <link>https://hpkaiq.github.io/posts/kudu-spark-invalid-class-exception/</link>
+  <pubDate>Tue, 18 Apr 2023 13:56:34 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/kudu-spark-invalid-class-exception/</guid>
+  <description><![CDATA[<p>背景：
+线上kudu 集群版本为1.11.0版本, spark 使用 kudu-spark2_2.11-1.7.0.jar，
+为了使用新版本中的
+<code>val wo = new KuduWriteOptions(ignoreNull = true)</code>
+特性，升级至 kudu-spark2_2.11-1.11.0.jar 版本，但是报错。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">InvalidClassException</span><span class="o">:</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">kudu</span><span class="o">.</span><span class="na">spark</span><span class="o">.</span><span class="na">kudu</span><span class="o">.</span><span class="na">KuduContext</span><span class="o">;</span> <span class="n">local</span> <span class="kd">class</span> <span class="nc">incompatible</span><span class="o">:</span> <span class="n">stream</span> <span class="n">classdesc</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="n">xxxxxxxx</span><span class="o">,</span> <span class="n">local</span> <span class="kd">class</span> <span class="nc">serialVersionUID</span> <span class="o">=</span> <span class="n">xxxxxxx111</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在https://issues.apache.org/jira/browse/KUDU-2898 中说这个已经修复，但是修复的版本是kudu 1.12.0，升级线上kudu版本这个暂时不考虑，只好自己修改源码，重新编译 kudu-spark2_2.11-1.11.0.jar</p>
+<ul>
+<li>
+<p>1.解压 kudu-spark2_2.11-1.11.0.jar ，将解压出的所有文件夹移动至一个空文件夹，例如tmp</p>
+</li>
+<li>
+<p>2.在idea中新建maven项目，配置好 scala 等环境</p>
+</li>
+<li>
+<p>3.解压 kudu-spark2_2.11-1.11.0-sources.jar，将 其中 org 文件夹 复制 至 maven中刚刚建好的项目中（org/apache/kudu/spark/kudu）</p>
+</li>
+<li>
+<p>4.修改文件 KuduContext.scala 、 KuduRDD.scala， 增加或修改 @SerialVersionUID(xxxxxxxxxxL) ，xxxxxxxxxx改为报错信息中的local class serialVersionUID<br></p>
+</li>
+<li>
+<p><br></p>
+</li>
+<li>
+<p><br></p>
+</li>
+<li>
+<p><br></p>
+</li>
+<li>
+<p>5：OperationType.scala文件也需修改，和 上面的serialVersionUID不同，走完整个流程运行会报这个文件的serialVersionUID错误，改成错误信息中的local class serialVersionUID</p>
+</li>
+<li>
+<p>6.将 kudu-spark2_2.11-1.11.0.pom 中的 dependencies 粘贴至 maven 中项目的pom文件中，还需额外增加以下依赖：</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.apache.kudu<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>kudu-client<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>1.11.0<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.apache.yetus<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>audience-annotations<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>0.13.0<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.hdrhistogram<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>HdrHistogram<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>2.1.12<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>7.idea中将maven项目打包</p>
+</li>
+<li>
+<p>8.将idea中打好的包解压，将其中 org/apache/kudu/spark/kudu  下的文件覆盖至 tmp 中 org/apache/kudu/spark/kudu</p>
+</li>
+<li>
+<p>9.将 tmp 文件夹下的所有目录打包成新的jar包</p>
+</li>
+</ul>
+<p>参考链接：</p>
+<ol>
+<li><a href="https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885"target="_blank" rel="external nofollow noopener noreferrer">https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
+<li><a href="https://issues.apache.org/jira/browse/KUDU-2898"target="_blank" rel="external nofollow noopener noreferrer">https://issues.apache.org/jira/browse/KUDU-2898<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
+</ol>]]></description>
+</item>
+<item>
+  <title>phoenix-client-4.14.1-HBase-1.4.jar jar包冲突解决</title>
+  <link>https://hpkaiq.github.io/posts/phoenix-client-hbase-jar/</link>
+  <pubDate>Tue, 18 Apr 2023 13:49:28 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/phoenix-client-hbase-jar/</guid>
+  <description><![CDATA[<p>项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。</p>
+<p>先jar命令解压jar包，然后删除以下内容。然后在jar命令打成jar包。</p>
+<ol>
+<li>rm -r javax/</li>
+<li>rm -r com/jayway/</li>
+<li>rm -r org/apache/phoenix/shaded/org/apache/thrift</li>
+<li>rm -r com/sun/jersey/</li>
+</ol>]]></description>
+</item>
+<item>
   <title>spark 读取 hive date 分区表 奇怪的报错</title>
   <link>https://hpkaiq.github.io/posts/spark-hive-partition-issue/</link>
   <pubDate>Mon, 17 Apr 2023 21:29:55 &#43;0800</pubDate>

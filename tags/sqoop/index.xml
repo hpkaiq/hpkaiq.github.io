@@ -1,0 +1,32 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>sqoop - 标签 - PME-Blog</title>
+    <link>https://hpkaiq.github.io/tags/sqoop/</link>
+    <description>sqoop - 标签 - PME-Blog</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:11:19 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/sqoop/" rel="self" type="application/rss+xml" /><item>
+  <title>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</title>
+  <link>https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/</link>
+  <pubDate>Tue, 18 Apr 2023 14:11:19 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/</guid>
+  <description><![CDATA[<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sqoop <span class="nb">export</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--update-key unique_index_columns <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--update-mode allowinsert
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>问题描述：
+用上述模式 sqoop 导入数据更新 mysql 数据，无论导入的数据与mysql里数据相比有没有更新，mysql表的 AUTO_INCREMENT 的PRIMARY KEY 例如 （<code>id</code> int(11) NOT NULL AUTO_INCREMENT COMMENT &lsquo;自增主键&rsquo;） 实际都是增加了的，当有新唯一主键数据插入时，id会是累加后的开始，会变的很大。</p>
+<p>解决：
+sqoop源码层级暂时没看原因。。。
+可以从业务流程上解决下这个问题，保证导入的数据都是新增或者更新的，不会有与mysql一样的数据，可以一定程度上减少 id 的增长。</p>]]></description>
+</item>
+</channel>
+</rss>

@@ -1,0 +1,135 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>python - 标签 - PME-Blog</title>
+    <link>https://hpkaiq.github.io/tags/python/</link>
+    <description>python - 标签 - PME-Blog</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:18:37 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/python/" rel="self" type="application/rss+xml" /><item>
+  <title>python3 easyocr 简单使用识别参数</title>
+  <link>https://hpkaiq.github.io/posts/python3-easyocr-simple/</link>
+  <pubDate>Tue, 18 Apr 2023 14:18:37 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/python3-easyocr-simple/</guid>
+  <description><![CDATA[<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">easyocr</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">torch</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gpu_is_available</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">reader</span> <span class="o">=</span> <span class="n">easyocr</span><span class="o">.</span><span class="n">Reader</span><span class="p">([</span><span class="s1">&#39;ch_sim&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">],</span> <span class="n">gpu</span><span class="o">=</span><span class="n">gpu_is_available</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ocr_data</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readtext</span><span class="p">(</span><span class="s1">&#39;/image/path&#39;</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">text_threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">low_text</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">width_ths</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>detail = 0 仅输出识别到的文字</li>
+<li>text_threshold=0.7 文本置信阈值，值越小，文本块内被识别为文字的可能性越高</li>
+<li>low_text=0.1 值越小，图片内容被识别为文本块的可能性就更高</li>
+<li>width_ths=0.3 控制横向图片内容是否会被识别为一个或多个文本块，值越小被识别成多个文本块的可能性就更高</li>
+<li>待续&hellip;</li>
+</ol>
+<p>参考：</p>
+<ol>
+<li><a href="https://www.jaided.ai/easyocr/documentation/" title="官方文档"target="_blank" rel="external nofollow noopener noreferrer">官方文档<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
+<li><a href="https://cloud.tencent.com/developer/article/2016127" title="Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践"target="_blank" rel="external nofollow noopener noreferrer">Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
+</ol>]]></description>
+</item>
+<item>
+  <title>python3 pandas 实现mysql upsert操作（唯一键更新）</title>
+  <link>https://hpkaiq.github.io/posts/python3-pandas-mysql-upsert/</link>
+  <pubDate>Tue, 18 Apr 2023 14:15:04 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/python3-pandas-mysql-upsert/</guid>
+  <description><![CDATA[<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">parse</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">db_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="n">parse</span><span class="o">.</span><span class="n">quote_plus</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="s1">&#39;xxxxxx.mysql.rds.aliyuncs.com&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="mi">3306</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span>
+</span></span><span class="line"><span class="cl">           <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;mysql+pymysql://</span><span class="si">%(user)s</span><span class="s1">:</span><span class="si">%(password)s</span><span class="s1">@</span><span class="si">%(host)s</span><span class="s1">:</span><span class="si">%(port)d</span><span class="s1">/</span><span class="si">%(database)s</span><span class="s1">?charset=utf8&#39;</span> <span class="o">%</span> <span class="n">db_info</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">mysql_replace_into</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">data_iter</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">from</span> <span class="nn">sqlalchemy.dialects.mysql</span> <span class="kn">import</span> <span class="n">insert</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data_iter</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stmt</span> <span class="o">=</span> <span class="n">insert</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">update_stmt</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">on_duplicate_key_update</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">stmt</span><span class="o">.</span><span class="n">inserted</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">stmt</span><span class="o">.</span><span class="n">inserted</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">update_stmt</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">write_database</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">mysql_replace_into</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="s2">&#34;app_id&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&#34;app_secret&#34;</span><span class="p">:</span> <span class="s2">&#34;11111122&#34;</span><span class="p">,</span> <span class="s2">&#34;game_id&#34;</span><span class="p">:</span> <span class="mi">11</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="s2">&#34;app_id&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&#34;app_secret&#34;</span><span class="p">:</span> <span class="s2">&#34;22222233&#34;</span><span class="p">,</span> <span class="s2">&#34;game_id&#34;</span><span class="p">:</span> <span class="mi">22</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="s2">&#34;app_id&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&#34;app_secret&#34;</span><span class="p">:</span> <span class="s2">&#34;33333344&#34;</span><span class="p">,</span> <span class="s2">&#34;game_id&#34;</span><span class="p">:</span> <span class="mi">33</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">detailDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">write_database</span><span class="p">(</span><span class="n">detailDF</span><span class="p">,</span> <span class="s2">&#34;ad_app_ext&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description>
+</item>
+</channel>
+</rss>

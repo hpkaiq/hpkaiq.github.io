@@ -1,3 +1,12 @@
+https://hpkaiq.github.io/posts/spark-mysql-upsert/
+https://hpkaiq.github.io/posts/java-rate-limit-google-guava/
+https://hpkaiq.github.io/posts/python3-easyocr-simple/
+https://hpkaiq.github.io/posts/presto-udf-simple/
+https://hpkaiq.github.io/posts/python3-pandas-mysql-upsert/
+https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/
+https://hpkaiq.github.io/posts/bash-spark-shell-scala/
+https://hpkaiq.github.io/posts/kudu-spark-invalid-class-exception/
+https://hpkaiq.github.io/posts/phoenix-client-hbase-jar/
 https://hpkaiq.github.io/guestbook/
 https://hpkaiq.github.io/about/
 https://hpkaiq.github.io/posts/spark-hive-partition-issue/

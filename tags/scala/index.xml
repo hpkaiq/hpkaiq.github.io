@@ -1,0 +1,99 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>scala - 标签 - PME-Blog</title>
+    <link>https://hpkaiq.github.io/tags/scala/</link>
+    <description>scala - 标签 - PME-Blog</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/scala/" rel="self" type="application/rss+xml" /><item>
+  <title>脚本执行spark-shell scala文件退出</title>
+  <link>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</link>
+  <pubDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</pubDate>
+  <author>hpkaiq</author>
+  <guid>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</guid>
+  <description><![CDATA[<p>脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#! /bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">source</span> /etc/profile
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> +o posix  <span class="c1"># to enable process substitution when not running on bash </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">scala_file</span><span class="o">=</span><span class="nv">$1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">shift</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">arguments</span><span class="o">=</span><span class="nv">$@</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="c1">##### scala 文件后加  sys.exit</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">spark-shell --master yarn <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-cores <span class="m">5</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--num-executors <span class="m">4</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-memory 8g <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--driver-memory 3g <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.serializer<span class="o">=</span>org.apache.spark.serializer.KryoSerializer <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.default.parallelism<span class="o">=</span><span class="m">400</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.sql.shuffle.partitions<span class="o">=</span><span class="m">400</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.shuffle.io.maxRetries<span class="o">=</span><span class="m">10</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.shuffle.io.retryWait<span class="o">=</span>20s <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.yarn.executor.memoryOverhead<span class="o">=</span><span class="m">4096</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.network.timeout<span class="o">=</span>300s <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--name sparkshell_scala <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-i &lt;<span class="o">(</span><span class="nb">echo</span> <span class="s1">&#39;val args = &#34;&#39;</span><span class="nv">$arguments</span><span class="s1">&#39;&#34;.split(&#34;\\s+&#34;)&#39;</span> <span class="p">;</span> cat <span class="nv">$scala_file</span><span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>简单scala文件示例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">val</span> <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">spark</span><span class="o">.</span><span class="na">read</span><span class="o">.</span><span class="na">parquet</span><span class="o">(</span><span class="n">path</span><span class="o">).</span><span class="na">where</span><span class="o">(</span><span class="s">&#34;app_id = 77701&#34;</span><span class="o">).</span><span class="na">repartition</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">write</span><span class="o">.</span><span class="na">parquet</span><span class="o">(</span><span class="n">s</span><span class="s">&#34;${path}_new&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="na">exit</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果不需要传参，可简单使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">spark-shell &lt; test.scala
+</span></span></code></pre></td></tr></table>
+</div>
+</div>]]></description>
+</item>
+</channel>
+</rss>
