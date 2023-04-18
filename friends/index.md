@@ -30,5 +30,5 @@
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/friends/  
+> URL: https://hpk.me/friends/  
 

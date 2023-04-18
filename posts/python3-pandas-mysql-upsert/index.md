@@ -47,5 +47,5 @@ if __name__ == '__main__':
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/posts/python3-pandas-mysql-upsert/  
+> URL: https://hpk.me/posts/python3-pandas-mysql-upsert/  
 

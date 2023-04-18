@@ -29,5 +29,5 @@ targetday 为 string 类型不会有此错误。
 ---
 
 > 作者: <no value>  
-> URL: https://hpkaiq.github.io/posts/spark-hive-partition-issue/  
+> URL: https://hpk.me/posts/spark-hive-partition-issue/  
 

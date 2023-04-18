@@ -19,5 +19,5 @@
 ---
 
 > 作者: <no value>  
-> URL: https://hpkaiq.github.io/posts/spark-yarn-cluster-log4j/  
+> URL: https://hpk.me/posts/spark-yarn-cluster-log4j/  
 

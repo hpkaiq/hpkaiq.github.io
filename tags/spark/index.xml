@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>spark - 标签 - PME-Blog</title>
-    <link>https://hpkaiq.github.io/tags/spark/</link>
+    <link>https://hpk.me/tags/spark/</link>
     <description>spark - 标签 - PME-Blog</description>
     <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/spark/" rel="self" type="application/rss+xml" /><item>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</lastBuildDate><atom:link href="https://hpk.me/tags/spark/" rel="self" type="application/rss+xml" /><item>
   <title>spark 实现 mysql upsert</title>
-  <link>https://hpkaiq.github.io/posts/spark-mysql-upsert/</link>
+  <link>https://hpk.me/posts/spark-mysql-upsert/</link>
   <pubDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/spark-mysql-upsert/</guid>
+  <guid>https://hpk.me/posts/spark-mysql-upsert/</guid>
   <description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
 <p>基于 <strong>spark2.4.3 scala2.11.8</strong></p>
 <h2 id="工具类-dataframewriterenhance">工具类 DataFrameWriterEnhance</h2>
@@ -487,10 +487,10 @@
 </item>
 <item>
   <title>脚本执行spark-shell scala文件退出</title>
-  <link>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</link>
+  <link>https://hpk.me/posts/bash-spark-shell-scala/</link>
   <pubDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</guid>
+  <guid>https://hpk.me/posts/bash-spark-shell-scala/</guid>
   <description><![CDATA[<p>脚本</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -578,10 +578,10 @@
 </item>
 <item>
   <title>spark 读取 hive date 分区表 奇怪的报错</title>
-  <link>https://hpkaiq.github.io/posts/spark-hive-partition-issue/</link>
+  <link>https://hpk.me/posts/spark-hive-partition-issue/</link>
   <pubDate>Mon, 17 Apr 2023 21:29:55 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/spark-hive-partition-issue/</guid>
+  <guid>https://hpk.me/posts/spark-hive-partition-issue/</guid>
   <description><![CDATA[<p>当 hive 表的分区字段 是 date 类型时，用如下方式读取会发生报错。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -625,10 +625,10 @@ targetday 为 string 类型不会有此错误。</p>]]></description>
 </item>
 <item>
   <title>spark yarn cluster模式下log4j日志的配置</title>
-  <link>https://hpkaiq.github.io/posts/spark-yarn-cluster-log4j/</link>
+  <link>https://hpk.me/posts/spark-yarn-cluster-log4j/</link>
   <pubDate>Mon, 17 Apr 2023 21:19:43 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/spark-yarn-cluster-log4j/</guid>
+  <guid>https://hpk.me/posts/spark-yarn-cluster-log4j/</guid>
   <description><![CDATA[<p>最近线上的spark项目日志文件急剧增加，磁盘顶不住了啊，解决日志文件问题，参考下面三篇文章，基本就可以搞明白了。</p>
 <ol>
 <li><a href="https://www.jianshu.com/p/0fe51185eeba"target="_blank" rel="external nofollow noopener noreferrer">Spark日志过大导致磁盘溢出问题解决方案<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>

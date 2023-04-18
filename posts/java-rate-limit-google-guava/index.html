@@ -10,20 +10,20 @@
 <meta name="description" content="访问某接口拉取数据，接口需要频次控制，经调研，com.google.common.util.concurrent.RateLimiter可轻易实现。" /><meta name="keywords" content='java' /><meta itemprop="name" content="java 频次控制">
 <meta itemprop="description" content="访问某接口拉取数据，接口需要频次控制，经调研，com.google.common.util.concurrent.RateLimiter可轻易实现。"><meta itemprop="datePublished" content="2023-04-18T14:21:15+08:00" />
 <meta itemprop="dateModified" content="2023-04-18T14:52:13+08:00" />
-<meta itemprop="wordCount" content="314"><meta itemprop="image" content="https://hpkaiq.github.io/images/ico.png"/>
+<meta itemprop="wordCount" content="314"><meta itemprop="image" content="https://hpk.me/images/ico.png"/>
 <meta itemprop="keywords" content="java," /><meta property="og:title" content="java 频次控制" />
 <meta property="og:description" content="访问某接口拉取数据，接口需要频次控制，经调研，com.google.common.util.concurrent.RateLimiter可轻易实现。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hpkaiq.github.io/posts/java-rate-limit-google-guava/" /><meta property="og:image" content="https://hpkaiq.github.io/images/ico.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://hpk.me/posts/java-rate-limit-google-guava/" /><meta property="og:image" content="https://hpk.me/images/ico.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-04-18T14:21:15+08:00" />
 <meta property="article:modified_time" content="2023-04-18T14:52:13+08:00" />
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://hpkaiq.github.io/images/ico.png"/>
+<meta name="twitter:image" content="https://hpk.me/images/ico.png"/>
 
 <meta name="twitter:title" content="java 频次控制"/>
 <meta name="twitter:description" content="访问某接口拉取数据，接口需要频次控制，经调研，com.google.common.util.concurrent.RateLimiter可轻易实现。"/>
 <meta name="application-name" content="PME-Blog">
-<meta name="apple-mobile-web-app-title" content="PME-Blog"><meta name="theme-color" data-light="#ffffff" data-dark="#252627" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/ico.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://hpkaiq.github.io/posts/java-rate-limit-google-guava/" /><link rel="prev" href="https://hpkaiq.github.io/posts/python3-easyocr-simple/" /><link rel="next" href="https://hpkaiq.github.io/posts/spark-mysql-upsert/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+<meta name="apple-mobile-web-app-title" content="PME-Blog"><meta name="theme-color" data-light="#ffffff" data-dark="#252627" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/ico.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://hpk.me/posts/java-rate-limit-google-guava/" /><link rel="prev" href="https://hpk.me/posts/python3-easyocr-simple/" /><link rel="next" href="https://hpk.me/posts/spark-mysql-upsert/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
   {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
@@ -31,11 +31,11 @@
     "inLanguage": "zh-CN",
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https:\/\/hpkaiq.github.io\/posts\/java-rate-limit-google-guava\/"
-    },"image": ["https:\/\/hpkaiq.github.io\/images\/ico.png"],"genre": "posts","keywords": "java","wordcount":  314 ,
-    "url": "https:\/\/hpkaiq.github.io\/posts\/java-rate-limit-google-guava\/","datePublished": "2023-04-18T14:21:15+08:00","dateModified": "2023-04-18T14:52:13+08:00","publisher": {
+      "@id": "https:\/\/hpk.me\/posts\/java-rate-limit-google-guava\/"
+    },"image": ["https:\/\/hpk.me\/images\/ico.png"],"genre": "posts","keywords": "java","wordcount":  314 ,
+    "url": "https:\/\/hpk.me\/posts\/java-rate-limit-google-guava\/","datePublished": "2023-04-18T14:21:15+08:00","dateModified": "2023-04-18T14:52:13+08:00","publisher": {
       "@type": "Organization",
-      "name": "hpkaiq","logo": "https:\/\/hpkaiq.github.io\/images\/ico.png"},"author": {
+      "name": "hpkaiq","logo": "https:\/\/hpk.me\/images\/ico.png"},"author": {
         "@type": "Person",
         "name": "hpkaiq"
       },"description": ""
@@ -356,8 +356,8 @@
     <div class="post-info-line">
       <div class="post-info-md"><span><a href="/posts/java-rate-limit-google-guava/index.md" title="阅读原始文档" class="link-to-markdown">阅读原始文档</a></span></div>
       <div class="post-info-share">
-        <span><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://hpkaiq.github.io/posts/java-rate-limit-google-guava/" data-title="java 频次控制"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
-  <a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://hpkaiq.github.io/posts/java-rate-limit-google-guava/" data-title="java 频次控制"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg" aria-hidden="true"></i></a>
+        <span><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://hpk.me/posts/java-rate-limit-google-guava/" data-title="java 频次控制"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 百度" data-sharer="baidu" data-url="https://hpk.me/posts/java-rate-limit-google-guava/" data-title="java 频次控制"><i data-svg-src="/lib/simple-icons/icons/baidu.min.svg" aria-hidden="true"></i></a>
   </span>
       </div>
     </div>

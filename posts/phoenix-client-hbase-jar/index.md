@@ -18,5 +18,5 @@
 ---
 
 > 作者: <no value>  
-> URL: https://hpkaiq.github.io/posts/phoenix-client-hbase-jar/  
+> URL: https://hpk.me/posts/phoenix-client-hbase-jar/  
 

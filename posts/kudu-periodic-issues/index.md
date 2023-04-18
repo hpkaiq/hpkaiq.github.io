@@ -14,5 +14,5 @@
 ---
 
 > 作者: <no value>  
-> URL: https://hpkaiq.github.io/posts/kudu-periodic-issues/  
+> URL: https://hpk.me/posts/kudu-periodic-issues/  
 

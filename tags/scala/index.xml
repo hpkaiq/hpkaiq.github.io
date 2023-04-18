@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>scala - 标签 - PME-Blog</title>
-    <link>https://hpkaiq.github.io/tags/scala/</link>
+    <link>https://hpk.me/tags/scala/</link>
     <description>scala - 标签 - PME-Blog</description>
     <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/scala/" rel="self" type="application/rss+xml" /><item>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</lastBuildDate><atom:link href="https://hpk.me/tags/scala/" rel="self" type="application/rss+xml" /><item>
   <title>脚本执行spark-shell scala文件退出</title>
-  <link>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</link>
+  <link>https://hpk.me/posts/bash-spark-shell-scala/</link>
   <pubDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</guid>
+  <guid>https://hpk.me/posts/bash-spark-shell-scala/</guid>
   <description><![CDATA[<p>脚本</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">

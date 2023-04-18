@@ -19,5 +19,5 @@ sqoop源码层级暂时没看原因。。。
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/  
+> URL: https://hpk.me/posts/sqoop-mysql-update-auto-increment/  
 

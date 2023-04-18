@@ -73,5 +73,5 @@ java.io.InvalidClassException: org.apache.kudu.spark.kudu.KuduContext; local cla
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/posts/kudu-spark-invalid-class-exception/  
+> URL: https://hpk.me/posts/kudu-spark-invalid-class-exception/  
 

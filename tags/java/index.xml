@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>java - 标签 - PME-Blog</title>
-    <link>https://hpkaiq.github.io/tags/java/</link>
+    <link>https://hpk.me/tags/java/</link>
     <description>java - 标签 - PME-Blog</description>
     <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:21:15 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/java/" rel="self" type="application/rss+xml" /><item>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:21:15 &#43;0800</lastBuildDate><atom:link href="https://hpk.me/tags/java/" rel="self" type="application/rss+xml" /><item>
   <title>java 频次控制</title>
-  <link>https://hpkaiq.github.io/posts/java-rate-limit-google-guava/</link>
+  <link>https://hpk.me/posts/java-rate-limit-google-guava/</link>
   <pubDate>Tue, 18 Apr 2023 14:21:15 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/java-rate-limit-google-guava/</guid>
+  <guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid>
   <description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
 <h2 id="1-maven">1. Maven</h2>
 <div class="highlight"><div class="chroma">
@@ -183,10 +183,10 @@
 </item>
 <item>
   <title>presto 自定义函数简述</title>
-  <link>https://hpkaiq.github.io/posts/presto-udf-simple/</link>
+  <link>https://hpk.me/posts/presto-udf-simple/</link>
   <pubDate>Tue, 18 Apr 2023 14:16:42 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/presto-udf-simple/</guid>
+  <guid>https://hpk.me/posts/presto-udf-simple/</guid>
   <description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
 <p>presto自带unbase64函数，用法如下。</p>
 <div class="highlight"><div class="chroma">
@@ -453,10 +453,10 @@
 </item>
 <item>
   <title>阿里Druid连接池连接不释放、连接泄漏排查</title>
-  <link>https://hpkaiq.github.io/posts/druid-connect-not-free/</link>
+  <link>https://hpk.me/posts/druid-connect-not-free/</link>
   <pubDate>Mon, 17 Apr 2023 21:12:25 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/druid-connect-not-free/</guid>
+  <guid>https://hpk.me/posts/druid-connect-not-free/</guid>
   <description><![CDATA[<p>配置好下面三个属性。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -505,10 +505,10 @@
 </item>
 <item>
   <title>spring cloud java反向代理访问阿里云OSS私有资源</title>
-  <link>https://hpkaiq.github.io/posts/spring-proxy-oss/</link>
+  <link>https://hpk.me/posts/spring-proxy-oss/</link>
   <pubDate>Mon, 17 Apr 2023 20:43:10 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/spring-proxy-oss/</guid>
+  <guid>https://hpk.me/posts/spring-proxy-oss/</guid>
   <description><![CDATA[<p>最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。</p>
 <p>（一）
 首先要解决反向代理的问题，搜到<code>org.mitre.dsmiley.httpproxy.ProxyServlet</code>可解决。</p>

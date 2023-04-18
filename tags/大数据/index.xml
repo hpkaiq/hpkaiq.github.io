@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>大数据 - 标签 - PME-Blog</title>
-    <link>https://hpkaiq.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/</link>
+    <link>https://hpk.me/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/</link>
     <description>大数据 - 标签 - PME-Blog</description>
     <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</lastBuildDate><atom:link href="https://hpkaiq.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="self" type="application/rss+xml" /><item>
+      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</lastBuildDate><atom:link href="https://hpk.me/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="self" type="application/rss+xml" /><item>
   <title>spark 实现 mysql upsert</title>
-  <link>https://hpkaiq.github.io/posts/spark-mysql-upsert/</link>
+  <link>https://hpk.me/posts/spark-mysql-upsert/</link>
   <pubDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/spark-mysql-upsert/</guid>
+  <guid>https://hpk.me/posts/spark-mysql-upsert/</guid>
   <description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
 <p>基于 <strong>spark2.4.3 scala2.11.8</strong></p>
 <h2 id="工具类-dataframewriterenhance">工具类 DataFrameWriterEnhance</h2>
@@ -487,10 +487,10 @@
 </item>
 <item>
   <title>presto 自定义函数简述</title>
-  <link>https://hpkaiq.github.io/posts/presto-udf-simple/</link>
+  <link>https://hpk.me/posts/presto-udf-simple/</link>
   <pubDate>Tue, 18 Apr 2023 14:16:42 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/presto-udf-simple/</guid>
+  <guid>https://hpk.me/posts/presto-udf-simple/</guid>
   <description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
 <p>presto自带unbase64函数，用法如下。</p>
 <div class="highlight"><div class="chroma">
@@ -757,10 +757,10 @@
 </item>
 <item>
   <title>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</title>
-  <link>https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/</link>
+  <link>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</link>
   <pubDate>Tue, 18 Apr 2023 14:11:19 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/sqoop-mysql-update-auto-increment/</guid>
+  <guid>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</guid>
   <description><![CDATA[<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -781,10 +781,10 @@ sqoop源码层级暂时没看原因。。。
 </item>
 <item>
   <title>脚本执行spark-shell scala文件退出</title>
-  <link>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</link>
+  <link>https://hpk.me/posts/bash-spark-shell-scala/</link>
   <pubDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/bash-spark-shell-scala/</guid>
+  <guid>https://hpk.me/posts/bash-spark-shell-scala/</guid>
   <description><![CDATA[<p>脚本</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -872,10 +872,10 @@ sqoop源码层级暂时没看原因。。。
 </item>
 <item>
   <title>kudu-spark KuduContext  java.io.InvalidClassException 解决</title>
-  <link>https://hpkaiq.github.io/posts/kudu-spark-invalid-class-exception/</link>
+  <link>https://hpk.me/posts/kudu-spark-invalid-class-exception/</link>
   <pubDate>Tue, 18 Apr 2023 13:56:34 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/kudu-spark-invalid-class-exception/</guid>
+  <guid>https://hpk.me/posts/kudu-spark-invalid-class-exception/</guid>
   <description><![CDATA[<p>背景：
 线上kudu 集群版本为1.11.0版本, spark 使用 kudu-spark2_2.11-1.7.0.jar，
 为了使用新版本中的
@@ -976,10 +976,10 @@ sqoop源码层级暂时没看原因。。。
 </item>
 <item>
   <title>phoenix-client-4.14.1-HBase-1.4.jar jar包冲突解决</title>
-  <link>https://hpkaiq.github.io/posts/phoenix-client-hbase-jar/</link>
+  <link>https://hpk.me/posts/phoenix-client-hbase-jar/</link>
   <pubDate>Tue, 18 Apr 2023 13:49:28 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/phoenix-client-hbase-jar/</guid>
+  <guid>https://hpk.me/posts/phoenix-client-hbase-jar/</guid>
   <description><![CDATA[<p>项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。</p>
 <p>先jar命令解压jar包，然后删除以下内容。然后在jar命令打成jar包。</p>
 <ol>
@@ -991,10 +991,10 @@ sqoop源码层级暂时没看原因。。。
 </item>
 <item>
   <title>spark 读取 hive date 分区表 奇怪的报错</title>
-  <link>https://hpkaiq.github.io/posts/spark-hive-partition-issue/</link>
+  <link>https://hpk.me/posts/spark-hive-partition-issue/</link>
   <pubDate>Mon, 17 Apr 2023 21:29:55 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/spark-hive-partition-issue/</guid>
+  <guid>https://hpk.me/posts/spark-hive-partition-issue/</guid>
   <description><![CDATA[<p>当 hive 表的分区字段 是 date 类型时，用如下方式读取会发生报错。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1038,19 +1038,19 @@ targetday 为 string 类型不会有此错误。</p>]]></description>
 </item>
 <item>
   <title>Apache Kudu 写入数据定期出问题</title>
-  <link>https://hpkaiq.github.io/posts/kudu-periodic-issues/</link>
+  <link>https://hpk.me/posts/kudu-periodic-issues/</link>
   <pubDate>Mon, 17 Apr 2023 21:23:09 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/kudu-periodic-issues/</guid>
+  <guid>https://hpk.me/posts/kudu-periodic-issues/</guid>
   <description><![CDATA[<p>线上项目出现一个很奇怪的问题，数据经过Spark程序消费Kafka写入Kudu，出现Kudu Master连接超时，这个问题开始排查不出原因，有点头大，只能采用下下策，重启Spark程序，出现过几次后， 我记录了出现的时间，发现每次出现时间有个固定周期，一周，有规律就是最大的好消息，感觉离发现真相不远了，果然网上有这方面的问题讨论，虽说以前也去网上搜索过相关问题，毕竟Kudu相比于Hive、HBase还是小众了一点。。。是Kudu Java Client的问题，使用1.5以上版本就没问题了。</p>
 <p>参考：<a href="https://blog.csdn.net/u011489205/article/details/79173537"target="_blank" rel="external nofollow noopener noreferrer">关于kudu使用的一些问题及解决办法<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
 </item>
 <item>
   <title>spark yarn cluster模式下log4j日志的配置</title>
-  <link>https://hpkaiq.github.io/posts/spark-yarn-cluster-log4j/</link>
+  <link>https://hpk.me/posts/spark-yarn-cluster-log4j/</link>
   <pubDate>Mon, 17 Apr 2023 21:19:43 &#43;0800</pubDate>
   <author>hpkaiq</author>
-  <guid>https://hpkaiq.github.io/posts/spark-yarn-cluster-log4j/</guid>
+  <guid>https://hpk.me/posts/spark-yarn-cluster-log4j/</guid>
   <description><![CDATA[<p>最近线上的spark项目日志文件急剧增加，磁盘顶不住了啊，解决日志文件问题，参考下面三篇文章，基本就可以搞明白了。</p>
 <ol>
 <li><a href="https://www.jianshu.com/p/0fe51185eeba"target="_blank" rel="external nofollow noopener noreferrer">Spark日志过大导致磁盘溢出问题解决方案<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>

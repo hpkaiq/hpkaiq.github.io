@@ -65,4 +65,4 @@ Disallow: /
 User-agent: ZoominfoBot
 Disallow: /
 
-Sitemap: https://hpkaiq.github.io/sitemap.xml
+Sitemap: https://hpk.me/sitemap.xml

@@ -28,5 +28,5 @@ ocr_data = reader.readtext('/image/path', detail=0, text_threshold=0.7, low_text
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/posts/python3-easyocr-simple/  
+> URL: https://hpk.me/posts/python3-easyocr-simple/  
 

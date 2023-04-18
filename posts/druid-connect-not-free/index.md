@@ -30,5 +30,5 @@
 ---
 
 > 作者: <no value>  
-> URL: https://hpkaiq.github.io/posts/druid-connect-not-free/  
+> URL: https://hpk.me/posts/druid-connect-not-free/  
 

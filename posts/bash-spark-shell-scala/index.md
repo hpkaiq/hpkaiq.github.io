@@ -50,5 +50,5 @@ spark-shell < test.scala
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/posts/bash-spark-shell-scala/  
+> URL: https://hpk.me/posts/bash-spark-shell-scala/  
 

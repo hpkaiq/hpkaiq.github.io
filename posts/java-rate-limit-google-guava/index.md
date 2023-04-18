@@ -98,5 +98,5 @@ public class TestRate {
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/posts/java-rate-limit-google-guava/  
+> URL: https://hpk.me/posts/java-rate-limit-google-guava/  
 

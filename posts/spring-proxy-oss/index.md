@@ -154,5 +154,5 @@ http://127.0.0.1:8081/api/es/static/bucket_name/object_name
 ---
 
 > 作者: <no value>  
-> URL: https://hpkaiq.github.io/posts/spring-proxy-oss/  
+> URL: https://hpk.me/posts/spring-proxy-oss/  
 

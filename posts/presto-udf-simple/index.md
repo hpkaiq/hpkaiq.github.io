@@ -152,5 +152,5 @@ public class PrestoUdfPlugin implements Plugin {
 ---
 
 > 作者: [hpkaiq](https://hpk.me)  
-> URL: https://hpkaiq.github.io/posts/presto-udf-simple/  
+> URL: https://hpk.me/posts/presto-udf-simple/  
 
