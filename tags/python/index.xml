@@ -1,16 +1,4 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-  <channel>
-    <title>python - 标签 - PME-Blog</title>
-    <link>https://hpk.me/tags/python/</link>
-    <description>python - 标签 - PME-Blog</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:18:37 &#43;0800</lastBuildDate><atom:link href="https://hpk.me/tags/python/" rel="self" type="application/rss+xml" /><item>
-  <title>python3 easyocr 简单使用识别参数</title>
-  <link>https://hpk.me/posts/python3-easyocr-simple/</link>
-  <pubDate>Tue, 18 Apr 2023 14:18:37 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/python3-easyocr-simple/</guid>
-  <description><![CDATA[<div class="highlight"><div class="chroma">
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>python - 标签 - PME-Blog</title><link>https://hpk.me/tags/python/</link><description>python - 标签 - PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:18:37 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/python/" rel="self" type="application/rss+xml"/><item><title>python3 easyocr 简单使用识别参数</title><link>https://hpk.me/posts/python3-easyocr-simple/</link><pubDate>Tue, 18 Apr 2023 14:18:37 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/python3-easyocr-simple/</guid><description><![CDATA[<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
@@ -43,15 +31,7 @@
 <ol>
 <li><a href="https://www.jaided.ai/easyocr/documentation/" title="官方文档"target="_blank" rel="external nofollow noopener noreferrer">官方文档<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
 <li><a href="https://cloud.tencent.com/developer/article/2016127" title="Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践"target="_blank" rel="external nofollow noopener noreferrer">Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
-</ol>]]></description>
-</item>
-<item>
-  <title>python3 pandas 实现mysql upsert操作（唯一键更新）</title>
-  <link>https://hpk.me/posts/python3-pandas-mysql-upsert/</link>
-  <pubDate>Tue, 18 Apr 2023 14:15:04 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/python3-pandas-mysql-upsert/</guid>
-  <description><![CDATA[<div class="highlight"><div class="chroma">
+</ol>]]></description></item><item><title>python3 pandas 实现mysql upsert操作（唯一键更新）</title><link>https://hpk.me/posts/python3-pandas-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:15:04 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/python3-pandas-mysql-upsert/</guid><description><![CDATA[<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -129,7 +109,4 @@
 </span></span><span class="line"><span class="cl">    <span class="n">write_database</span><span class="p">(</span><span class="n">detailDF</span><span class="p">,</span> <span class="s2">&#34;ad_app_ext&#34;</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description>
-</item>
-</channel>
-</rss>
+</div>]]></description></item></channel></rss>

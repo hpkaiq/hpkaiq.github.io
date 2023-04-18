@@ -1,16 +1,4 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-  <channel>
-    <title>java - 标签 - PME-Blog</title>
-    <link>https://hpk.me/tags/java/</link>
-    <description>java - 标签 - PME-Blog</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:21:15 &#43;0800</lastBuildDate><atom:link href="https://hpk.me/tags/java/" rel="self" type="application/rss+xml" /><item>
-  <title>java 频次控制</title>
-  <link>https://hpk.me/posts/java-rate-limit-google-guava/</link>
-  <pubDate>Tue, 18 Apr 2023 14:21:15 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid>
-  <description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>java - 标签 - PME-Blog</title><link>https://hpk.me/tags/java/</link><description>java - 标签 - PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:21:15 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/java/" rel="self" type="application/rss+xml"/><item><title>java 频次控制</title><link>https://hpk.me/posts/java-rate-limit-google-guava/</link><pubDate>Tue, 18 Apr 2023 14:21:15 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid><description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
 <h2 id="1-maven">1. Maven</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -179,15 +167,7 @@
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description>
-</item>
-<item>
-  <title>presto 自定义函数简述</title>
-  <link>https://hpk.me/posts/presto-udf-simple/</link>
-  <pubDate>Tue, 18 Apr 2023 14:16:42 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/presto-udf-simple/</guid>
-  <description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
+</div>]]></description></item><item><title>presto 自定义函数简述</title><link>https://hpk.me/posts/presto-udf-simple/</link><pubDate>Tue, 18 Apr 2023 14:16:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/presto-udf-simple/</guid><description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
 <p>presto自带unbase64函数，用法如下。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -449,15 +429,7 @@
 <h1 id="项目结构">项目结构</h1>
 <p><figure><a class="lightgallery" href="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-thumbnail="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-sub-html="<h2>结构</h2><p>结构</p>"></a><figcaption class="image-caption">结构</figcaption>
   </figure></p>
-<p>参考：<a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
-</item>
-<item>
-  <title>阿里Druid连接池连接不释放、连接泄漏排查</title>
-  <link>https://hpk.me/posts/druid-connect-not-free/</link>
-  <pubDate>Mon, 17 Apr 2023 21:12:25 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/druid-connect-not-free/</guid>
-  <description><![CDATA[<p>配置好下面三个属性。</p>
+<p>参考：<a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>阿里Druid连接池连接不释放、连接泄漏排查</title><link>https://hpk.me/posts/druid-connect-not-free/</link><pubDate>Mon, 17 Apr 2023 21:12:25 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/druid-connect-not-free/</guid><description><![CDATA[<p>配置好下面三个属性。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -501,15 +473,7 @@
 </span></span><span class="line"><span class="cl">	at com.xxxx.xx.xxxxx.controller.DashboardController.getBossData(DashboardController.java:43)
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>日志里查找<code>removeAbandoned</code>关键字，找到自己哪个方法获取连接后没有关闭资源，排查原因。</p>]]></description>
-</item>
-<item>
-  <title>spring cloud java反向代理访问阿里云OSS私有资源</title>
-  <link>https://hpk.me/posts/spring-proxy-oss/</link>
-  <pubDate>Mon, 17 Apr 2023 20:43:10 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/spring-proxy-oss/</guid>
-  <description><![CDATA[<p>最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。</p>
+</div><p>日志里查找<code>removeAbandoned</code>关键字，找到自己哪个方法获取连接后没有关闭资源，排查原因。</p>]]></description></item><item><title>spring cloud java反向代理访问阿里云OSS私有资源</title><link>https://hpk.me/posts/spring-proxy-oss/</link><pubDate>Mon, 17 Apr 2023 20:43:10 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spring-proxy-oss/</guid><description><![CDATA[<p>最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。</p>
 <p>（一）
 首先要解决反向代理的问题，搜到<code>org.mitre.dsmiley.httpproxy.ProxyServlet</code>可解决。</p>
 <div class="highlight"><div class="chroma">
@@ -792,7 +756,4 @@ Controller配置如下，转发到自己配置的反向代理</p>
 </div>
 </div><p>最后访问的地址例如：
 http://127.0.0.1:8081/api/es/static/bucket_name/object_name
-可以加个拦截器做个登陆验证。</p>]]></description>
-</item>
-</channel>
-</rss>
+可以加个拦截器做个登陆验证。</p>]]></description></item></channel></rss>

@@ -1,16 +1,4 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-  <channel>
-    <title>编程 - 分类 - PME-Blog</title>
-    <link>https://hpk.me/categories/%E7%BC%96%E7%A8%8B/</link>
-    <description>编程 - 分类 - PME-Blog</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor>
-      <webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</lastBuildDate><atom:link href="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/" rel="self" type="application/rss+xml" /><item>
-  <title>spark 实现 mysql upsert</title>
-  <link>https://hpk.me/posts/spark-mysql-upsert/</link>
-  <pubDate>Tue, 18 Apr 2023 14:23:06 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/spark-mysql-upsert/</guid>
-  <description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>编程 - 分类 - PME-Blog</title><link>https://hpk.me/categories/%E7%BC%96%E7%A8%8B/</link><description>编程 - 分类 - PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 +0800</lastBuildDate><atom:link href="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/" rel="self" type="application/rss+xml"/><item><title>spark 实现 mysql upsert</title><link>https://hpk.me/posts/spark-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:23:06 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spark-mysql-upsert/</guid><description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
 <p>基于 <strong>spark2.4.3 scala2.11.8</strong></p>
 <h2 id="工具类-dataframewriterenhance">工具类 DataFrameWriterEnhance</h2>
 <div class="highlight"><div class="chroma">
@@ -483,15 +471,7 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="参考">参考</h2>
-<p><a href="https://blog.csdn.net/qq_18453581/article/details/125907861" title="csdn_Spark Upsert写入Mysql(scala增强) 无需依赖"target="_blank" rel="external nofollow noopener noreferrer">csdn_Spark Upsert写入Mysql(scala增强) 无需依赖<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
-</item>
-<item>
-  <title>java 频次控制</title>
-  <link>https://hpk.me/posts/java-rate-limit-google-guava/</link>
-  <pubDate>Tue, 18 Apr 2023 14:21:15 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid>
-  <description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
+<p><a href="https://blog.csdn.net/qq_18453581/article/details/125907861" title="csdn_Spark Upsert写入Mysql(scala增强) 无需依赖"target="_blank" rel="external nofollow noopener noreferrer">csdn_Spark Upsert写入Mysql(scala增强) 无需依赖<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>java 频次控制</title><link>https://hpk.me/posts/java-rate-limit-google-guava/</link><pubDate>Tue, 18 Apr 2023 14:21:15 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid><description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
 <h2 id="1-maven">1. Maven</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -660,15 +640,7 @@
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description>
-</item>
-<item>
-  <title>python3 easyocr 简单使用识别参数</title>
-  <link>https://hpk.me/posts/python3-easyocr-simple/</link>
-  <pubDate>Tue, 18 Apr 2023 14:18:37 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/python3-easyocr-simple/</guid>
-  <description><![CDATA[<div class="highlight"><div class="chroma">
+</div>]]></description></item><item><title>python3 easyocr 简单使用识别参数</title><link>https://hpk.me/posts/python3-easyocr-simple/</link><pubDate>Tue, 18 Apr 2023 14:18:37 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/python3-easyocr-simple/</guid><description><![CDATA[<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
@@ -701,15 +673,7 @@
 <ol>
 <li><a href="https://www.jaided.ai/easyocr/documentation/" title="官方文档"target="_blank" rel="external nofollow noopener noreferrer">官方文档<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
 <li><a href="https://cloud.tencent.com/developer/article/2016127" title="Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践"target="_blank" rel="external nofollow noopener noreferrer">Python使用EasyOCR库对行程码图片进行OCR文字识别介绍与实践<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
-</ol>]]></description>
-</item>
-<item>
-  <title>presto 自定义函数简述</title>
-  <link>https://hpk.me/posts/presto-udf-simple/</link>
-  <pubDate>Tue, 18 Apr 2023 14:16:42 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/presto-udf-simple/</guid>
-  <description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
+</ol>]]></description></item><item><title>presto 自定义函数简述</title><link>https://hpk.me/posts/presto-udf-simple/</link><pubDate>Tue, 18 Apr 2023 14:16:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/presto-udf-simple/</guid><description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
 <p>presto自带unbase64函数，用法如下。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -971,15 +935,7 @@
 <h1 id="项目结构">项目结构</h1>
 <p><figure><a class="lightgallery" href="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-thumbnail="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-sub-html="<h2>结构</h2><p>结构</p>"></a><figcaption class="image-caption">结构</figcaption>
   </figure></p>
-<p>参考：<a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
-</item>
-<item>
-  <title>python3 pandas 实现mysql upsert操作（唯一键更新）</title>
-  <link>https://hpk.me/posts/python3-pandas-mysql-upsert/</link>
-  <pubDate>Tue, 18 Apr 2023 14:15:04 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/python3-pandas-mysql-upsert/</guid>
-  <description><![CDATA[<div class="highlight"><div class="chroma">
+<p>参考：<a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>python3 pandas 实现mysql upsert操作（唯一键更新）</title><link>https://hpk.me/posts/python3-pandas-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:15:04 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/python3-pandas-mysql-upsert/</guid><description><![CDATA[<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -1057,15 +1013,7 @@
 </span></span><span class="line"><span class="cl">    <span class="n">write_database</span><span class="p">(</span><span class="n">detailDF</span><span class="p">,</span> <span class="s2">&#34;ad_app_ext&#34;</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description>
-</item>
-<item>
-  <title>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</title>
-  <link>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</link>
-  <pubDate>Tue, 18 Apr 2023 14:11:19 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</guid>
-  <description><![CDATA[<div class="highlight"><div class="chroma">
+</div>]]></description></item><item><title>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</title><link>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</link><pubDate>Tue, 18 Apr 2023 14:11:19 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</guid><description><![CDATA[<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
@@ -1081,15 +1029,7 @@
 用上述模式 sqoop 导入数据更新 mysql 数据，无论导入的数据与mysql里数据相比有没有更新，mysql表的 AUTO_INCREMENT 的PRIMARY KEY 例如 （<code>id</code> int(11) NOT NULL AUTO_INCREMENT COMMENT &lsquo;自增主键&rsquo;） 实际都是增加了的，当有新唯一主键数据插入时，id会是累加后的开始，会变的很大。</p>
 <p>解决：
 sqoop源码层级暂时没看原因。。。
-可以从业务流程上解决下这个问题，保证导入的数据都是新增或者更新的，不会有与mysql一样的数据，可以一定程度上减少 id 的增长。</p>]]></description>
-</item>
-<item>
-  <title>脚本执行spark-shell scala文件退出</title>
-  <link>https://hpk.me/posts/bash-spark-shell-scala/</link>
-  <pubDate>Tue, 18 Apr 2023 14:09:10 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/bash-spark-shell-scala/</guid>
-  <description><![CDATA[<p>脚本</p>
+可以从业务流程上解决下这个问题，保证导入的数据都是新增或者更新的，不会有与mysql一样的数据，可以一定程度上减少 id 的增长。</p>]]></description></item><item><title>脚本执行spark-shell scala文件退出</title><link>https://hpk.me/posts/bash-spark-shell-scala/</link><pubDate>Tue, 18 Apr 2023 14:09:10 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/bash-spark-shell-scala/</guid><description><![CDATA[<p>脚本</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -1172,15 +1112,7 @@ sqoop源码层级暂时没看原因。。。
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">spark-shell &lt; test.scala
 </span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description>
-</item>
-<item>
-  <title>kudu-spark KuduContext  java.io.InvalidClassException 解决</title>
-  <link>https://hpk.me/posts/kudu-spark-invalid-class-exception/</link>
-  <pubDate>Tue, 18 Apr 2023 13:56:34 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/kudu-spark-invalid-class-exception/</guid>
-  <description><![CDATA[<p>背景：
+</div>]]></description></item><item><title>kudu-spark KuduContext java.io.InvalidClassException 解决</title><link>https://hpk.me/posts/kudu-spark-invalid-class-exception/</link><pubDate>Tue, 18 Apr 2023 13:56:34 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/kudu-spark-invalid-class-exception/</guid><description><![CDATA[<p>背景：
 线上kudu 集群版本为1.11.0版本, spark 使用 kudu-spark2_2.11-1.7.0.jar，
 为了使用新版本中的
 <code>val wo = new KuduWriteOptions(ignoreNull = true)</code>
@@ -1276,30 +1208,14 @@ sqoop源码层级暂时没看原因。。。
 <ol>
 <li><a href="https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885"target="_blank" rel="external nofollow noopener noreferrer">https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
 <li><a href="https://issues.apache.org/jira/browse/KUDU-2898"target="_blank" rel="external nofollow noopener noreferrer">https://issues.apache.org/jira/browse/KUDU-2898<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
-</ol>]]></description>
-</item>
-<item>
-  <title>phoenix-client-4.14.1-HBase-1.4.jar jar包冲突解决</title>
-  <link>https://hpk.me/posts/phoenix-client-hbase-jar/</link>
-  <pubDate>Tue, 18 Apr 2023 13:49:28 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/phoenix-client-hbase-jar/</guid>
-  <description><![CDATA[<p>项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。</p>
+</ol>]]></description></item><item><title>phoenix-client-4.14.1-HBase-1.4.jar jar包冲突解决</title><link>https://hpk.me/posts/phoenix-client-hbase-jar/</link><pubDate>Tue, 18 Apr 2023 13:49:28 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/phoenix-client-hbase-jar/</guid><description><![CDATA[<p>项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。</p>
 <p>先jar命令解压jar包，然后删除以下内容。然后在jar命令打成jar包。</p>
 <ol>
 <li>rm -r javax/</li>
 <li>rm -r com/jayway/</li>
 <li>rm -r org/apache/phoenix/shaded/org/apache/thrift</li>
 <li>rm -r com/sun/jersey/</li>
-</ol>]]></description>
-</item>
-<item>
-  <title>spark 读取 hive date 分区表 奇怪的报错</title>
-  <link>https://hpk.me/posts/spark-hive-partition-issue/</link>
-  <pubDate>Mon, 17 Apr 2023 21:29:55 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/spark-hive-partition-issue/</guid>
-  <description><![CDATA[<p>当 hive 表的分区字段 是 date 类型时，用如下方式读取会发生报错。</p>
+</ol>]]></description></item><item><title>spark 读取 hive date 分区表 奇怪的报错</title><link>https://hpk.me/posts/spark-hive-partition-issue/</link><pubDate>Mon, 17 Apr 2023 21:29:55 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spark-hive-partition-issue/</guid><description><![CDATA[<p>当 hive 表的分区字段 是 date 类型时，用如下方式读取会发生报错。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -1338,38 +1254,14 @@ sqoop源码层级暂时没看原因。。。
 </div>
 </div><p>targetday 为 表的分区字段，date类型。
 当 in 后面 的日期个数大于 10 时就会报错，小于等于 10 时都不会报错。奇怪的现象。。。
-targetday 为 string 类型不会有此错误。</p>]]></description>
-</item>
-<item>
-  <title>Apache Kudu 写入数据定期出问题</title>
-  <link>https://hpk.me/posts/kudu-periodic-issues/</link>
-  <pubDate>Mon, 17 Apr 2023 21:23:09 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/kudu-periodic-issues/</guid>
-  <description><![CDATA[<p>线上项目出现一个很奇怪的问题，数据经过Spark程序消费Kafka写入Kudu，出现Kudu Master连接超时，这个问题开始排查不出原因，有点头大，只能采用下下策，重启Spark程序，出现过几次后， 我记录了出现的时间，发现每次出现时间有个固定周期，一周，有规律就是最大的好消息，感觉离发现真相不远了，果然网上有这方面的问题讨论，虽说以前也去网上搜索过相关问题，毕竟Kudu相比于Hive、HBase还是小众了一点。。。是Kudu Java Client的问题，使用1.5以上版本就没问题了。</p>
-<p>参考：<a href="https://blog.csdn.net/u011489205/article/details/79173537"target="_blank" rel="external nofollow noopener noreferrer">关于kudu使用的一些问题及解决办法<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description>
-</item>
-<item>
-  <title>spark yarn cluster模式下log4j日志的配置</title>
-  <link>https://hpk.me/posts/spark-yarn-cluster-log4j/</link>
-  <pubDate>Mon, 17 Apr 2023 21:19:43 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/spark-yarn-cluster-log4j/</guid>
-  <description><![CDATA[<p>最近线上的spark项目日志文件急剧增加，磁盘顶不住了啊，解决日志文件问题，参考下面三篇文章，基本就可以搞明白了。</p>
+targetday 为 string 类型不会有此错误。</p>]]></description></item><item><title>Apache Kudu 写入数据定期出问题</title><link>https://hpk.me/posts/kudu-periodic-issues/</link><pubDate>Mon, 17 Apr 2023 21:23:09 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/kudu-periodic-issues/</guid><description><![CDATA[<p>线上项目出现一个很奇怪的问题，数据经过Spark程序消费Kafka写入Kudu，出现Kudu Master连接超时，这个问题开始排查不出原因，有点头大，只能采用下下策，重启Spark程序，出现过几次后， 我记录了出现的时间，发现每次出现时间有个固定周期，一周，有规律就是最大的好消息，感觉离发现真相不远了，果然网上有这方面的问题讨论，虽说以前也去网上搜索过相关问题，毕竟Kudu相比于Hive、HBase还是小众了一点。。。是Kudu Java Client的问题，使用1.5以上版本就没问题了。</p>
+<p>参考：<a href="https://blog.csdn.net/u011489205/article/details/79173537"target="_blank" rel="external nofollow noopener noreferrer">关于kudu使用的一些问题及解决办法<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>spark yarn cluster模式下log4j日志的配置</title><link>https://hpk.me/posts/spark-yarn-cluster-log4j/</link><pubDate>Mon, 17 Apr 2023 21:19:43 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spark-yarn-cluster-log4j/</guid><description><![CDATA[<p>最近线上的spark项目日志文件急剧增加，磁盘顶不住了啊，解决日志文件问题，参考下面三篇文章，基本就可以搞明白了。</p>
 <ol>
 <li><a href="https://www.jianshu.com/p/0fe51185eeba"target="_blank" rel="external nofollow noopener noreferrer">Spark日志过大导致磁盘溢出问题解决方案<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
 <li><a href="http://www.cnblogs.com/163yun/p/9882530.html"target="_blank" rel="external nofollow noopener noreferrer">Spark日志配置及问题排查方式。<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
 <li><a href="https://blog.csdn.net/ZMC921/article/details/80238392"target="_blank" rel="external nofollow noopener noreferrer">Spark log4j 日志配置详解<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
 </ol>
-<p>以上内容转载自网络，如有侵权，请联系删除。</p>]]></description>
-</item>
-<item>
-  <title>阿里Druid连接池连接不释放、连接泄漏排查</title>
-  <link>https://hpk.me/posts/druid-connect-not-free/</link>
-  <pubDate>Mon, 17 Apr 2023 21:12:25 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/druid-connect-not-free/</guid>
-  <description><![CDATA[<p>配置好下面三个属性。</p>
+<p>以上内容转载自网络，如有侵权，请联系删除。</p>]]></description></item><item><title>阿里Druid连接池连接不释放、连接泄漏排查</title><link>https://hpk.me/posts/druid-connect-not-free/</link><pubDate>Mon, 17 Apr 2023 21:12:25 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/druid-connect-not-free/</guid><description><![CDATA[<p>配置好下面三个属性。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -1413,15 +1305,7 @@ targetday 为 string 类型不会有此错误。</p>]]></description>
 </span></span><span class="line"><span class="cl">	at com.xxxx.xx.xxxxx.controller.DashboardController.getBossData(DashboardController.java:43)
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>日志里查找<code>removeAbandoned</code>关键字，找到自己哪个方法获取连接后没有关闭资源，排查原因。</p>]]></description>
-</item>
-<item>
-  <title>spring cloud java反向代理访问阿里云OSS私有资源</title>
-  <link>https://hpk.me/posts/spring-proxy-oss/</link>
-  <pubDate>Mon, 17 Apr 2023 20:43:10 &#43;0800</pubDate>
-  <author>hpkaiq</author>
-  <guid>https://hpk.me/posts/spring-proxy-oss/</guid>
-  <description><![CDATA[<p>最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。</p>
+</div><p>日志里查找<code>removeAbandoned</code>关键字，找到自己哪个方法获取连接后没有关闭资源，排查原因。</p>]]></description></item><item><title>spring cloud java反向代理访问阿里云OSS私有资源</title><link>https://hpk.me/posts/spring-proxy-oss/</link><pubDate>Mon, 17 Apr 2023 20:43:10 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spring-proxy-oss/</guid><description><![CDATA[<p>最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。</p>
 <p>（一）
 首先要解决反向代理的问题，搜到<code>org.mitre.dsmiley.httpproxy.ProxyServlet</code>可解决。</p>
 <div class="highlight"><div class="chroma">
@@ -1704,7 +1588,4 @@ Controller配置如下，转发到自己配置的反向代理</p>
 </div>
 </div><p>最后访问的地址例如：
 http://127.0.0.1:8081/api/es/static/bucket_name/object_name
-可以加个拦截器做个登陆验证。</p>]]></description>
-</item>
-</channel>
-</rss>
+可以加个拦截器做个登陆验证。</p>]]></description></item></channel></rss>
