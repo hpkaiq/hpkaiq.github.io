@@ -79,7 +79,18 @@
                 href="/about/"
                 
                 
-              ><i class="fa-solid fa-user-tie fa-fw fa-sm" aria-hidden="true"></i> 关于</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+              ><i class="fa-solid fa-user-tie fa-fw fa-sm" aria-hidden="true"></i> 关于</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容……" id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
           <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
         </li></ul>
     </nav>
@@ -94,7 +105,23 @@
       </div>
     </div>
     <nav>
-      <ul class="menu" id="menu-mobile"><li
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容……" id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
               class="menu-item"
             ><a
                   class="menu-link"
@@ -141,7 +168,12 @@
       </ul>
     </nav>
   </div>
-</header><main class="container"><aside class="toc" id="toc-auto"></aside>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container"><aside class="toc" id="toc-auto"></aside>
 
   <aside class="aside-custom">
     </aside>
@@ -261,5 +293,5 @@
         </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;--bg-progress: #000;--bg-progress-dark: #fff;"></div><noscript>
     <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
   </noscript>
-</div><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><link rel="stylesheet" href="/lib/pace/themes/blue/pace-theme-minimal.css"><script src="/lib/instant-page/instantpage.min.js" async defer type="module"></script><script src="/lib/twemoji/twemoji.min.js" defer></script><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script src="/lib/pangu/pangu.min.js" defer></script><script src="/lib/cell-watermark/watermark.min.js" defer></script><script src="/lib/pace/pace.min.js" async defer></script><script>window.config={"autoBookmark":true,"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":50},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark_dimmed","lightTheme":"light"}},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"enablePWA":true,"pangu":{"enable":true,"selector":"article"},"siteTime":"2016-10-24T10:24:24+08:00","twemoji":true,"watermark":{"appendto":".wrapper\u003emain","colspacing":30,"content":"\u003cimg style=\"height: 0.85rem;\" src=\"/images/ico.png\" alt=\"logo\" /\u003e hpkaiq","enable":true,"fontfamily":"MMT_LRH,沐目体","fontsize":1.1,"height":20,"opacity":0.0125,"rotate":15,"rowspacing":60,"width":150}};</script><script src="/js/theme.min.js" defer></script></body>
+</div><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><link rel="stylesheet" href="/lib/pace/themes/blue/pace-theme-minimal.css"><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/algoliasearch/algoliasearch-lite.umd.min.js" defer></script><script src="/lib/instant-page/instantpage.min.js" async defer type="module"></script><script src="/lib/twemoji/twemoji.min.js" defer></script><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script src="/lib/pangu/pangu.min.js" defer></script><script src="/lib/cell-watermark/watermark.min.js" defer></script><script src="/lib/pace/pace.min.js" async defer></script><script>window.config={"autoBookmark":true,"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":50},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark_dimmed","lightTheme":"light"}},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"enablePWA":true,"pangu":{"enable":true,"selector":"article"},"search":{"algoliaAppID":"5U8ZYL7U7R","algoliaIndex":"hugo-index","algoliaSearchKey":"c6c22ef4d08f6a06e97fedfbad3e965b","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"siteTime":"2016-10-24T10:24:24+08:00","twemoji":true,"watermark":{"appendto":".wrapper\u003emain","colspacing":30,"content":"\u003cimg style=\"height: 0.85rem;\" src=\"/images/ico.png\" alt=\"logo\" /\u003e hpkaiq","enable":true,"fontfamily":"MMT_LRH,沐目体","fontsize":1.1,"height":20,"opacity":0.0125,"rotate":15,"rowspacing":60,"width":150}};</script><script src="/js/theme.min.js" defer></script></body>
 </html>
