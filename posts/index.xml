@@ -1,8 +1,4 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>所有文章 - PME-Blog</title><link>https://hpk.me/posts/</link><description>所有文章 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 18:16:58 +0800</lastBuildDate><atom:link href="https://hpk.me/posts/" rel="self" type="application/rss+xml"/><item><title>博客迁移至hugo</title><link>https://hpk.me/posts/change-to-hugo/</link><pubDate>Tue, 18 Apr 2023 18:16:58 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/change-to-hugo/</guid><description><![CDATA[<p>博客迁移至hugo。</p>
-<p>记录下迁移至hugo的折腾路。</p>
-<h2 id="安装hugo">安装hugo</h2>
-<p>我是windows系统，以下皆为windows下操作，仅供参考。</p>
-<p>待续。。。。</p>]]></description></item><item><title>presto 自定义函数简述</title><link>https://hpk.me/posts/presto-udf-simple/</link><pubDate>Tue, 18 Apr 2023 14:16:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/presto-udf-simple/</guid><description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>所有文章 - PME-Blog</title><link>https://hpk.me/posts/</link><description>所有文章 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:23:06 +0800</lastBuildDate><atom:link href="https://hpk.me/posts/" rel="self" type="application/rss+xml"/><item><title>presto 自定义函数简述</title><link>https://hpk.me/posts/presto-udf-simple/</link><pubDate>Tue, 18 Apr 2023 14:16:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/presto-udf-simple/</guid><description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
 <p>presto自带unbase64函数，用法如下。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1744,11 +1740,7 @@ http://127.0.0.1:8081/api/es/static/bucket_name/object_name
 </div>
 </div><p>targetday 为 表的分区字段，date类型。
 当 in 后面 的日期个数大于 10 时就会报错，小于等于 10 时都不会报错。奇怪的现象。。。
-targetday 为 string 类型不会有此错误。</p>]]></description></item><item><title>博客迁移至hugo</title><link>https://hpk.me/posts/change-to-hugo/</link><pubDate>Tue, 18 Apr 2023 18:16:58 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/change-to-hugo/</guid><description><![CDATA[<p>博客迁移至hugo。</p>
-<p>记录下迁移至hugo的折腾路。</p>
-<h2 id="安装hugo">安装hugo</h2>
-<p>我是windows系统，以下皆为windows下操作，仅供参考。</p>
-<p>待续。。。。</p>]]></description></item><item><title>spark 实现 mysql upsert</title><link>https://hpk.me/posts/spark-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:23:06 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spark-mysql-upsert/</guid><description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
+targetday 为 string 类型不会有此错误。</p>]]></description></item><item><title>spark 实现 mysql upsert</title><link>https://hpk.me/posts/spark-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:23:06 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spark-mysql-upsert/</guid><description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
 <p>基于 <strong>spark2.4.3 scala2.11.8</strong></p>
 <h2 id="工具类-dataframewriterenhance">工具类 DataFrameWriterEnhance</h2>
 <div class="highlight"><div class="chroma">
