@@ -16,3 +16,4 @@ https://hpk.me/posts/book-search-website/
 https://hpk.me/posts/druid-connect-not-free/
 https://hpk.me/posts/spring-proxy-oss/
 https://hpk.me/friends/
+https://hpk.me/offline/
