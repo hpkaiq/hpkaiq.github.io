@@ -1,10 +1,92 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>PME-Blog</title><link>https://hpk.me/</link><description>PME-Blog 难得自在</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Mon, 29 May 2023 10:45:18 +0800</lastBuildDate><atom:link href="https://hpk.me/index.xml" rel="self" type="application/rss+xml"/><item><title>Cloudflare优选ip并使用dnspodcn api设置解析</title><link>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</link><pubDate>Mon, 29 May 2023 10:45:18 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</guid><description><![CDATA[<p>Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。</p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>PME-Blog</title><link>https://hpk.me/</link><description>PME-Blog 难得自在</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Mon, 29 May 2023 11:19:42 +0800</lastBuildDate><atom:link href="https://hpk.me/index.xml" rel="self" type="application/rss+xml"/><item><title>m3u8格式直播地址文件使用php在线转换成txt格式</title><link>https://hpk.me/posts/m3u8-convert-to-txt/</link><pubDate>Mon, 29 May 2023 11:19:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/m3u8-convert-to-txt/</guid><description><![CDATA[<p>一些m3u或者m3u8格式的直播地址文件在一些软件中并不支持，在chatgpt的帮助下，使用php实现了在线转换成txt格式，需要能运行php的服务器。</p>
+<p>代码如下，命名为 <code>m3u-txt.php</code> ，将其放在能运行php的服务器上，访问  <a href="http://xxxxxx.com/m3u-txt.php?url=https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u"target="_blank" rel="external nofollow noopener noreferrer">http://xxxxxx.com/m3u-txt.php?url=https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a> 可直接转换。</p>
+<p>需要注意的是可能一些m3u文件格式不完全一样导致转换不成功，请参考<code>preg_match_all('/#EXTINF:-1.*?group-title=&quot;(.*?)&quot;.*?,(.*?)\n(.*?)\n/s', $file, $matches, PREG_SET_ORDER)</code>修改。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$file</span> <span class="o">=</span> <span class="nx">file_get_contents</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 用正则表达式提取group_title和m3u8链接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">preg_match_all</span><span class="p">(</span><span class="s1">&#39;/#EXTINF:-1.*?group-title=&#34;(.*?)&#34;.*?,(.*?)\n(.*?)\n/s&#39;</span><span class="p">,</span> <span class="nv">$file</span><span class="p">,</span> <span class="nv">$matches</span><span class="p">,</span> <span class="nx">PREG_SET_ORDER</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$result</span> <span class="o">=</span> <span class="k">array</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">foreach</span> <span class="p">(</span><span class="nv">$matches</span> <span class="k">as</span> <span class="nv">$match</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$group_title</span> <span class="o">=</span> <span class="nv">$match</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$url</span> <span class="o">=</span> <span class="nv">$match</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$channel_name</span> <span class="o">=</span> <span class="nv">$match</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$result</span><span class="p">[</span><span class="nv">$group_title</span><span class="p">][]</span> <span class="o">=</span> <span class="nv">$channel_name</span> <span class="o">.</span> <span class="s1">&#39;,&#39;</span> <span class="o">.</span> <span class="nv">$url</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$line_f</span> <span class="o">=</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出处理后的结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">&#34;HTTP_USER_AGENT&#34;</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nx">strpos</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">&#34;HTTP_USER_AGENT&#34;</span><span class="p">],</span> <span class="s2">&#34;Mozilla&#34;</span><span class="p">)</span> <span class="o">!==</span> <span class="k">false</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果是浏览器访问，将 &#34;\n&#34; 替换为 &#34;&lt;br&gt;&#34; 输出
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nv">$line_f</span> <span class="o">=</span> <span class="s2">&#34;&lt;br&gt;&#34;</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">foreach</span> <span class="p">(</span><span class="nv">$result</span> <span class="k">as</span> <span class="nv">$group_title</span> <span class="o">=&gt;</span> <span class="nv">$channels</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">echo</span> <span class="nv">$group_title</span> <span class="o">.</span> <span class="s1">&#39;,#genre#&#39;</span> <span class="o">.</span> <span class="nv">$line_f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">foreach</span> <span class="p">(</span><span class="nv">$channels</span> <span class="k">as</span> <span class="nv">$channel</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$channel</span> <span class="o">.</span> <span class="nv">$line_f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">echo</span> <span class="nv">$line_f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>效果如下。</p>
+<p><a href="https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u"target="_blank" rel="external nofollow noopener noreferrer">https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a>  原格式：</p>
+<p></p>
+<p>转换后格式：</p>
+<p></p>]]></description></item><item><title>Cloudflare优选ip并使用dnspodcn api设置解析</title><link>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</link><pubDate>Mon, 29 May 2023 10:45:18 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</guid><description><![CDATA[<p>Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。</p>
 <h2 id="优选ip">优选ip</h2>
 <p>请参考github项目 <a href="https://github.com/XIU2/CloudflareSpeedTest"target="_blank" rel="external nofollow noopener noreferrer">XIU2/CloudflareSpeedTest: 🌩「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4 / IPv6)！另外也支持其他 CDN / 网站 IP ~ (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
 <p>我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录下运行。</p>
 <h2 id="dnspodcn-api-设置解析">dnspodcn api 设置解析</h2>
 <p>参考<a href="https://github.com/rehiy/dnspod-shell"target="_blank" rel="external nofollow noopener noreferrer">rehiy/dnspod-shell: 基于DNSPod用户API实现的纯Shell动态域名客户端 (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a> ，加入线路逻辑修改而来。</p>
-<p>进入 /opt/cloudflareST 目录，新建以下脚本。需要修改arToken=&ldquo;12345,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&rdquo; 为你自己的dnspodcn的token，修改arDdnsCheck &ldquo;xx.yy&rdquo; &ldquo;sub1&rdquo; &ldquo;$yys_line&rdquo; 为你自己的域名。</p>
+<p>进入 /opt/cloudflareST 目录，新建以下脚本。需要修改：</p>
+<ul>
+<li>修改arToken=&ldquo;12345,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&rdquo; 为你自己的dnspodcn的token</li>
+<li>修改arDdnsCheck &ldquo;xx.yy&rdquo; &ldquo;sub1&rdquo;  为你自己的域名。</li>
+<li><code>hostIp=$(awk -F ',' 'NR==2 {print $1}' /opt/cloudflareST/result.csv)</code> 注意此处优选ip结果文件位置，结合你的运行目录修改。</li>
+</ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">  1
@@ -269,7 +351,6 @@
 </span><span class="lnt">260
 </span><span class="lnt">261
 </span><span class="lnt">262
-</span><span class="lnt">263
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/sh
@@ -533,7 +614,6 @@
 </span></span><span class="line"><span class="cl"><span class="k">for</span> yys_line in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">yys_lines</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="k">do</span>
 </span></span><span class="line"><span class="cl">    arDdnsCheck <span class="s2">&#34;xx.yy&#34;</span> <span class="s2">&#34;sub1&#34;</span> <span class="s2">&#34;</span><span class="nv">$yys_line</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">    arDdnsCheck <span class="s2">&#34;xx.yy&#34;</span> <span class="s2">&#34;sub2&#34;</span> <span class="s2">&#34;</span><span class="nv">$yys_line</span><span class="s2">&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="k">done</span>
 </span></span></code></pre></td></tr></table>
 </div>

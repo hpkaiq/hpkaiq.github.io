@@ -4,7 +4,12 @@
 <p>我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录下运行。</p>
 <h2 id="dnspodcn-api-设置解析">dnspodcn api 设置解析</h2>
 <p>参考<a href="https://github.com/rehiy/dnspod-shell"target="_blank" rel="external nofollow noopener noreferrer">rehiy/dnspod-shell: 基于DNSPod用户API实现的纯Shell动态域名客户端 (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a> ，加入线路逻辑修改而来。</p>
-<p>进入 /opt/cloudflareST 目录，新建以下脚本。需要修改arToken=&ldquo;12345,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&rdquo; 为你自己的dnspodcn的token，修改arDdnsCheck &ldquo;xx.yy&rdquo; &ldquo;sub1&rdquo; &ldquo;$yys_line&rdquo; 为你自己的域名。</p>
+<p>进入 /opt/cloudflareST 目录，新建以下脚本。需要修改：</p>
+<ul>
+<li>修改arToken=&ldquo;12345,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&rdquo; 为你自己的dnspodcn的token</li>
+<li>修改arDdnsCheck &ldquo;xx.yy&rdquo; &ldquo;sub1&rdquo;  为你自己的域名。</li>
+<li><code>hostIp=$(awk -F ',' 'NR==2 {print $1}' /opt/cloudflareST/result.csv)</code> 注意此处优选ip结果文件位置，结合你的运行目录修改。</li>
+</ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">  1
@@ -269,7 +274,6 @@
 </span><span class="lnt">260
 </span><span class="lnt">261
 </span><span class="lnt">262
-</span><span class="lnt">263
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/sh
@@ -533,7 +537,6 @@
 </span></span><span class="line"><span class="cl"><span class="k">for</span> yys_line in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">yys_lines</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="k">do</span>
 </span></span><span class="line"><span class="cl">    arDdnsCheck <span class="s2">&#34;xx.yy&#34;</span> <span class="s2">&#34;sub1&#34;</span> <span class="s2">&#34;</span><span class="nv">$yys_line</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">    arDdnsCheck <span class="s2">&#34;xx.yy&#34;</span> <span class="s2">&#34;sub2&#34;</span> <span class="s2">&#34;</span><span class="nv">$yys_line</span><span class="s2">&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="k">done</span>
 </span></span></code></pre></td></tr></table>
 </div>

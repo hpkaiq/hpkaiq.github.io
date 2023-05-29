@@ -15,7 +15,11 @@ Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环�
 
 参考[rehiy/dnspod-shell: 基于DNSPod用户API实现的纯Shell动态域名客户端 (github.com)](https://github.com/rehiy/dnspod-shell) ，加入线路逻辑修改而来。
 
-进入 /opt/cloudflareST 目录，新建以下脚本。需要修改arToken="12345,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 为你自己的dnspodcn的token，修改arDdnsCheck "xx.yy" "sub1" "$yys_line" 为你自己的域名。
+进入 /opt/cloudflareST 目录，新建以下脚本。需要修改：
+
+- 修改arToken="12345,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 为你自己的dnspodcn的token
+- 修改arDdnsCheck "xx.yy" "sub1"  为你自己的域名。
+- `hostIp=$(awk -F ',' 'NR==2 {print $1}' /opt/cloudflareST/result.csv)` 注意此处优选ip结果文件位置，结合你的运行目录修改。
 
 ```bash
 #!/bin/sh
@@ -279,7 +283,6 @@ yys_lines=("%E8%81%94%E9%80%9A" "%E7%A7%BB%E5%8A%A8" "%E7%94%B5%E4%BF%A1")
 for yys_line in "${yys_lines[@]}"
 do
     arDdnsCheck "xx.yy" "sub1" "$yys_line"
-    arDdnsCheck "xx.yy" "sub2" "$yys_line"
 done
 
 ```
