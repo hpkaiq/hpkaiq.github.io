@@ -9,7 +9,7 @@ Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环�
 
 请参考github项目 [XIU2/CloudflareSpeedTest: 🌩「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4 / IPv6)！另外也支持其他 CDN / 网站 IP ~ (github.com)](https://github.com/XIU2/CloudflareSpeedTest)
 
-我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录下运行。
+我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录。
 
 ## dnspodcn api 设置解析
 

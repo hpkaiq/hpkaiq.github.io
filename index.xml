@@ -78,7 +78,7 @@
 <p></p>]]></description></item><item><title>Cloudflare优选ip并使用dnspodcn api设置解析</title><link>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</link><pubDate>Mon, 29 May 2023 10:45:18 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</guid><description><![CDATA[<p>Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。</p>
 <h2 id="优选ip">优选ip</h2>
 <p>请参考github项目 <a href="https://github.com/XIU2/CloudflareSpeedTest"target="_blank" rel="external nofollow noopener noreferrer">XIU2/CloudflareSpeedTest: 🌩「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4 / IPv6)！另外也支持其他 CDN / 网站 IP ~ (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
-<p>我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录下运行。</p>
+<p>我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录。</p>
 <h2 id="dnspodcn-api-设置解析">dnspodcn api 设置解析</h2>
 <p>参考<a href="https://github.com/rehiy/dnspod-shell"target="_blank" rel="external nofollow noopener noreferrer">rehiy/dnspod-shell: 基于DNSPod用户API实现的纯Shell动态域名客户端 (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a> ，加入线路逻辑修改而来。</p>
 <p>进入 /opt/cloudflareST 目录，新建以下脚本。需要修改：</p>
