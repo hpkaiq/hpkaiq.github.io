@@ -71,7 +71,7 @@
 </span></span><span class="line"><span class="cl">reneg-sec <span class="m">36000</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">route-nopull
-</span></span><span class="line"><span class="cl">pull-filter ignore <span class="s2">&#34;dhcp-option DNS &#34;</span>
+</span></span><span class="line"><span class="cl">pull-filter ignore <span class="s2">&#34;dhcp-option DNS&#34;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">route 10.87.1.0 255.255.255.0 vpn_gateway
 </span></span><span class="line"><span class="cl">route 10.88.1.0 255.255.255.0 vpn_gateway

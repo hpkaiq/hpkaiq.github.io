@@ -60,7 +60,7 @@ auth-nocache
 reneg-sec 36000
 
 route-nopull
-pull-filter ignore "dhcp-option DNS "
+pull-filter ignore "dhcp-option DNS"
 
 route 10.87.1.0 255.255.255.0 vpn_gateway
 route 10.88.1.0 255.255.255.0 vpn_gateway
