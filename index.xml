@@ -1,4 +1,148 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>PME-Blog</title><link>https://hpk.me/</link><description>PME-Blog 难得自在</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Mon, 29 May 2023 11:19:42 +0800</lastBuildDate><atom:link href="https://hpk.me/index.xml" rel="self" type="application/rss+xml"/><item><title>m3u8格式直播地址文件使用php在线转换成txt格式</title><link>https://hpk.me/posts/m3u8-convert-to-txt/</link><pubDate>Mon, 29 May 2023 11:19:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/m3u8-convert-to-txt/</guid><description><![CDATA[<p>一些m3u或者m3u8格式的直播地址文件在一些软件中并不支持，在chatgpt的帮助下，使用php实现了在线转换成txt格式，需要能运行php的服务器。</p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>PME-Blog</title><link>https://hpk.me/</link><description>PME-Blog 难得自在</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Thu, 20 Jul 2023 12:24:22 +0800</lastBuildDate><atom:link href="https://hpk.me/index.xml" rel="self" type="application/rss+xml"/><item><title>Openwrt下使用TOTP动态验证码连接Openvpn</title><link>https://hpk.me/posts/openwrt-openvpn/</link><pubDate>Thu, 20 Jul 2023 12:24:22 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/openwrt-openvpn/</guid><description><![CDATA[<h1 id="背景">背景</h1>
+<p>在家办公需要使用 openvpn 连接公司内网，而且密码使用  固定密码 +TOTP 验证码 的形式，每次都需要打开电脑的openvpn客户端，打开验证码客户端复制验证码，连接，只能说繁琐。希望通过家里的软路由openwrt的openvpn客户端来实现上述操作的一键连接，实现家里每个终端设备都能连接公司内网。</p>
+<h1 id="实操">实操</h1>
+<p>确保你的openwrt服务列表里已经安装openwrt，如没有请自行安装，在openwrt下新建 /root/openvpn 目录，一切操作均在这个目录下进行。</p>
+<h2 id="1openwrt安装oathtool">（1）openwrt安装oathtool</h2>
+<p>下载连接： <a href="https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk"target="_blank" rel="external nofollow noopener noreferrer">https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
+<p>下载上传至openwrt，安装 <code>opkg install  /tmp/upload/oath-toolkit_2.6.5-1_x86_64.ipk</code></p>
+<p>验证： <code>oathtool -b --totp '你的密钥'</code>  和谷歌身份验证器里的验证码此时是否一致。</p>
+<h2 id="2生成账户密码">（2）生成账户密码</h2>
+<p>在/root/openvpn下新建<code>generate-password.sh</code> 脚本，内容如下，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">yzm</span><span class="o">=</span><span class="k">$(</span>/usr/bin/oathtool -b --totp <span class="s1">&#39;你的密钥&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> -e <span class="s2">&#34;公司openvpn账号\n公司openvpn固定密码</span><span class="si">${</span><span class="nv">yzm</span><span class="si">}</span><span class="s2">&#34;</span> &gt; /root/openvpn/userpass.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3openvpn配置文件">（3）openvpn配置文件</h2>
+<p>上传<code>xxx.crt</code>、<code>xxx.key</code>、<code>xxx.ovpn</code>等文件到openwrt，并移动到/root/openvpn 目录下，修改ovpn文件。</p>
+<p>auth-user-pass此项修改位为 <code>auth-user-pass userpass.txt</code>，从文件中读取用户名密码。</p>
+<p>为了使指定的ip段使用openvpn，而其他的网络走路由默认线路，在ovpn文件下追加<code>route-nopull</code>及其下面的内容。</p>
+<p>其中 10.87.1.0、10.88.1.0 修改为需要走openvpn的ip段，这样 10.87.1.1~10.87.1.254 、10.88.1.1~10.88.1.254 就会走openvpn，根据自己需要修改。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">client
+</span></span><span class="line"><span class="cl">dev tun
+</span></span><span class="line"><span class="cl">link-mtu <span class="m">1500</span>
+</span></span><span class="line"><span class="cl">proto tcp
+</span></span><span class="line"><span class="cl">remote xxx.com <span class="m">8888</span>
+</span></span><span class="line"><span class="cl">resolv-retry infinite
+</span></span><span class="line"><span class="cl">nobind
+</span></span><span class="line"><span class="cl">persist-key
+</span></span><span class="line"><span class="cl">persist-tun
+</span></span><span class="line"><span class="cl">ca xxx.crt
+</span></span><span class="line"><span class="cl">remote-cert-tls server
+</span></span><span class="line"><span class="cl">tls-auth xxx.key <span class="m">1</span>
+</span></span><span class="line"><span class="cl">cipher AES-256-CBC
+</span></span><span class="line"><span class="cl">auth-user-pass userpass.txt
+</span></span><span class="line"><span class="cl">verb <span class="m">3</span>
+</span></span><span class="line"><span class="cl">auth-nocache
+</span></span><span class="line"><span class="cl">reneg-sec <span class="m">36000</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">route-nopull
+</span></span><span class="line"><span class="cl">pull-filter ignore <span class="s2">&#34;dhcp-option DNS &#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">route 10.87.1.0 255.255.255.0 vpn_gateway
+</span></span><span class="line"><span class="cl">route 10.88.1.0 255.255.255.0 vpn_gateway
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="4openwrt配置修改">（4）openwrt配置修改</h2>
+<ol>
+<li>
+<p>修改 /etc/config/openvpn ，在其下追加自己的openvpn配置，如下所示，名字根据需要修改。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">config openvpn &#39;公司vpn&#39;
+</span></span><span class="line"><span class="cl">        option config &#39;/root/openvpn/xxx.ovpn&#39;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>为了在启动时先生成密码文件userpass.txt，修改 /etc/init.d/openvpn 脚本，在 <code>openvpn_add_instance()</code> 函数下第一行加上</p>
+<p><code>sh /root/openvpn/generate-password.sh</code>，如下所示。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">openvpn_add_instance<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        sh /root/openvpn/generate-password.sh
+</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">dir</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$2</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">conf</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$3</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">security</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$4</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">up</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$5</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">down</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$6</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">		...
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>此时openwrt网页openvpn下就有了刚刚加的配置了，勾选启用，点击保存应用。</p>
+</li>
+</ol>
+<p></p>
+<h2 id="5修改openwrt防火墙">（5）修改openwrt防火墙</h2>
+<p>上面的操作完成后，你会发现在openwrt里能ping通需要通过openvpn连接的ip段，但是连接路由的设备并不能连通，需要修改防火墙，在防火墙自定义规则里添加如下内容，其中<code>192.168.8.0/24</code>修改为你的路由网段，<code>10.87.1.0/24,10.88.1.0/24</code>修改为你需要通过openvpn连接的公司ip网段<code>10.87.1.*,10.88.1.*</code>,如果想要达到连接 <code>10.87.*.*</code>的效果，可以改成 <code>10.87.0.0/16</code> ，这方面的网络知识，请自行查阅相关资料。</p>
+<p>注：我使用了openwrt的mosdns功能，公司的内网域名放到了mosdns自定义hosts里了。没使用这个功能可以通过网络-DHCP/DNS里额外的HOSTS文件来实现自定义域名。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">iptables -I FORWARD -o tun0 -j ACCEPT
+</span></span><span class="line"><span class="cl">iptables -t nat -I POSTROUTING -s 192.168.8.0/24 -d 10.87.1.0/24,10.88.1.0/24 -o tun0 -j MASQUERADE
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="参考">参考</h1>
+<p><a href="http://www.phperz.com/article/15/1226/177358.html"target="_blank" rel="external nofollow noopener noreferrer">openwrt下的openvpn client实现 - PHPERZ中文资讯站<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
+<p><a href="https://m.zohead.com/archives/openwrt-openvpn-ipset/?wpmp_switcher=true"target="_blank" rel="external nofollow noopener noreferrer">Soul Of Free Loop » 博客存档 » OpenWRT实现OpenVPN按ipset自动分流 (zohead.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>m3u8格式直播地址文件使用php在线转换成txt格式</title><link>https://hpk.me/posts/m3u8-convert-to-txt/</link><pubDate>Mon, 29 May 2023 11:19:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/m3u8-convert-to-txt/</guid><description><![CDATA[<p>一些m3u或者m3u8格式的直播地址文件在一些软件中并不支持，在chatgpt的帮助下，使用php实现了在线转换成txt格式，需要能运行php的服务器。</p>
 <p>代码如下，命名为 <code>m3u-txt.php</code> ，将其放在能运行php的服务器上，访问  <a href="http://xxxxxx.com/m3u-txt.php?url=https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u"target="_blank" rel="external nofollow noopener noreferrer">http://xxxxxx.com/m3u-txt.php?url=https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a> 可直接转换。</p>
 <p>需要注意的是可能一些m3u文件格式不完全一样导致转换不成功，请参考<code>preg_match_all('/#EXTINF:-1.*?group-title=&quot;(.*?)&quot;.*?,(.*?)\n(.*?)\n/s', $file, $matches, PREG_SET_ORDER)</code>修改。</p>
 <div class="highlight"><div class="chroma">
