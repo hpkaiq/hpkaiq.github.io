@@ -61,11 +61,11 @@
 </span></span><span class="line"><span class="cl">nobind
 </span></span><span class="line"><span class="cl">persist-key
 </span></span><span class="line"><span class="cl">persist-tun
-</span></span><span class="line"><span class="cl">ca xxx.crt
+</span></span><span class="line"><span class="cl">ca /root/openvpn/xxx.crt
 </span></span><span class="line"><span class="cl">remote-cert-tls server
-</span></span><span class="line"><span class="cl">tls-auth xxx.key <span class="m">1</span>
+</span></span><span class="line"><span class="cl">tls-auth /root/openvpn/xxx.key <span class="m">1</span>
 </span></span><span class="line"><span class="cl">cipher AES-256-CBC
-</span></span><span class="line"><span class="cl">auth-user-pass userpass.txt
+</span></span><span class="line"><span class="cl">auth-user-pass /root/openvpn/userpass.txt
 </span></span><span class="line"><span class="cl">verb <span class="m">3</span>
 </span></span><span class="line"><span class="cl">auth-nocache
 </span></span><span class="line"><span class="cl">reneg-sec <span class="m">36000</span>
@@ -85,10 +85,12 @@
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
+</span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">config openvpn &#39;公司vpn&#39;
 </span></span><span class="line"><span class="cl">        option config &#39;/root/openvpn/xxx.ovpn&#39;
+</span></span><span class="line"><span class="cl">        option auth_nocache &#39;1&#39;
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>

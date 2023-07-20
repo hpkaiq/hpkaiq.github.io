@@ -50,11 +50,11 @@ resolv-retry infinite
 nobind
 persist-key
 persist-tun
-ca xxx.crt
+ca /root/openvpn/xxx.crt
 remote-cert-tls server
-tls-auth xxx.key 1
+tls-auth /root/openvpn/xxx.key 1
 cipher AES-256-CBC
-auth-user-pass userpass.txt
+auth-user-pass /root/openvpn/userpass.txt
 verb 3
 auth-nocache
 reneg-sec 36000
@@ -73,6 +73,7 @@ route 10.88.1.0 255.255.255.0 vpn_gateway
    ```
    config openvpn '公司vpn'
            option config '/root/openvpn/xxx.ovpn'
+           option auth_nocache '1'
    ```
 
 2. 为了在启动时先生成密码文件userpass.txt，修改 /etc/init.d/openvpn 脚本，在 `openvpn_add_instance()` 函数下第一行加上
