@@ -1,7 +1,7 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>openwrt - 标签 - PME-Blog</title><link>https://hpk.me/tags/openwrt/</link><description>openwrt - 标签 - PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Thu, 20 Jul 2023 12:24:22 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/openwrt/" rel="self" type="application/rss+xml"/><item><title>Openwrt下使用TOTP动态验证码连接Openvpn</title><link>https://hpk.me/posts/openwrt-openvpn/</link><pubDate>Thu, 20 Jul 2023 12:24:22 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/openwrt-openvpn/</guid><description><![CDATA[<h1 id="背景">背景</h1>
 <p>在家办公需要使用 openvpn 连接公司内网，而且密码使用  固定密码 +TOTP 验证码 的形式，每次都需要打开电脑的openvpn客户端，打开验证码客户端复制验证码，连接，只能说繁琐。希望通过家里的软路由openwrt的openvpn客户端来实现上述操作的一键连接，实现家里每个终端设备都能连接公司内网。</p>
 <h1 id="实操">实操</h1>
-<p>确保你的openwrt服务列表里已经安装openwrt，如没有请自行安装，在openwrt下新建 /root/openvpn 目录，一切操作均在这个目录下进行。</p>
+<p>确保你的openwrt服务列表里已经安装openvpn，如没有请自行安装，在openwrt下新建 /root/openvpn 目录，一切操作均在这个目录下进行。</p>
 <h2 id="1openwrt安装oathtool">（1）openwrt安装oathtool</h2>
 <p>下载连接： <a href="https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk"target="_blank" rel="external nofollow noopener noreferrer">https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
 <p>下载上传至openwrt，安装 <code>opkg install  /tmp/upload/oath-toolkit_2.6.5-1_x86_64.ipk</code></p>

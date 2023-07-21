@@ -9,7 +9,7 @@
 
 # 实操
 
-确保你的openwrt服务列表里已经安装openwrt，如没有请自行安装，在openwrt下新建 /root/openvpn 目录，一切操作均在这个目录下进行。
+确保你的openwrt服务列表里已经安装openvpn，如没有请自行安装，在openwrt下新建 /root/openvpn 目录，一切操作均在这个目录下进行。
 
 ## （1）openwrt安装oathtool 
 
