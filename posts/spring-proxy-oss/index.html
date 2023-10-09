@@ -58,17 +58,17 @@ Controller配置如下，转发到自己配置的反向代理</p><div class=high
 </span><span class=lnt> 9
 </span><span class=lnt>10
 </span><span class=lnt>11
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>@RestController
-</span></span><span class=line><span class=cl>@RefreshScope
-</span></span><span class=line><span class=cl>@RequestMapping(&#34;/api/es&#34;)
-</span></span><span class=line><span class=cl>public class TestController {
-</span></span><span class=line><span class=cl>     @RequestMapping(&#34;/static/**&#34;)
-</span></span><span class=line><span class=cl>    public void testVideoOne(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, URISyntaxException {
-</span></span><span class=line><span class=cl>        String resourcePath = request.getRequestURI().replace(&#34;/api/es/static&#34;,&#34;&#34;);
-</span></span><span class=line><span class=cl>        HeaderUtil.setHeaderOwn(request,resourcePath);
-</span></span><span class=line><span class=cl>        request.getRequestDispatcher(&#34;/ali&#34; + resourcePath).forward(request, response);
-</span></span><span class=line><span class=cl>    }
-</span></span><span class=line><span class=cl>}
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript data-lang=gdscript><span class=line><span class=cl><span class=err>@</span><span class=n>RestController</span>
+</span></span><span class=line><span class=cl><span class=err>@</span><span class=n>RefreshScope</span>
+</span></span><span class=line><span class=cl><span class=err>@</span><span class=nf>RequestMapping</span><span class=p>(</span><span class=s2>&#34;/api/es&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>public</span> <span class=kd>class</span> <span class=nc>TestController</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>     <span class=err>@</span><span class=nf>RequestMapping</span><span class=p>(</span><span class=s2>&#34;/static/**&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>public</span> <span class=kt>void</span> <span class=nf>testVideoOne</span><span class=p>(</span><span class=n>HttpServletRequest</span> <span class=n>request</span><span class=p>,</span> <span class=n>HttpServletResponse</span> <span class=n>response</span><span class=p>)</span> <span class=n>throws</span> <span class=n>ServletException</span><span class=p>,</span> <span class=n>IOException</span><span class=p>,</span> <span class=n>URISyntaxException</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nc>String</span> <span class=n>resourcePath</span> <span class=o>=</span> <span class=n>request</span><span class=o>.</span><span class=nf>getRequestURI</span><span class=p>()</span><span class=o>.</span><span class=nf>replace</span><span class=p>(</span><span class=s2>&#34;/api/es/static&#34;</span><span class=p>,</span><span class=s2>&#34;&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>HeaderUtil</span><span class=o>.</span><span class=nf>setHeaderOwn</span><span class=p>(</span><span class=n>request</span><span class=p>,</span><span class=n>resourcePath</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>request</span><span class=o>.</span><span class=nf>getRequestDispatcher</span><span class=p>(</span><span class=s2>&#34;/ali&#34;</span> <span class=o>+</span> <span class=n>resourcePath</span><span class=p>)</span><span class=o>.</span><span class=nf>forward</span><span class=p>(</span><span class=n>request</span><span class=p>,</span> <span class=n>response</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></td></tr></table></div></div><p>（三）
 其中为request设置Header以认证OSS访问的HeaderUtil如下，其中有OSS Authorization计算的java实现，用java的反射在request中添加Header信息。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
