@@ -11,6 +11,7 @@ https://hpk.me/posts/bash-spark-shell-scala/
 https://hpk.me/posts/kudu-spark-invalid-class-exception/
 https://hpk.me/posts/phoenix-client-hbase-jar/
 https://hpk.me/guestbook/
+https://hpk.me/memos/
 https://hpk.me/about/
 https://hpk.me/posts/spark-hive-partition-issue/
 https://hpk.me/posts/kudu-periodic-issues/
