@@ -1,7 +1,7 @@
 # sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题
 
 
-<!--more-->
+&lt;!--more--&gt;
 
 ```bash
 sqoop export \
@@ -9,7 +9,7 @@ sqoop export \
 --update-mode allowinsert
 ```
 问题描述：
-用上述模式 sqoop 导入数据更新 mysql 数据，无论导入的数据与mysql里数据相比有没有更新，mysql表的 AUTO_INCREMENT 的PRIMARY KEY 例如 （`id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增主键'） 实际都是增加了的，当有新唯一主键数据插入时，id会是累加后的开始，会变的很大。
+用上述模式 sqoop 导入数据更新 mysql 数据，无论导入的数据与mysql里数据相比有没有更新，mysql表的 AUTO_INCREMENT 的PRIMARY KEY 例如 （`id` int(11) NOT NULL AUTO_INCREMENT COMMENT &#39;自增主键&#39;） 实际都是增加了的，当有新唯一主键数据插入时，id会是累加后的开始，会变的很大。
 
 解决：
 sqoop源码层级暂时没看原因。。。
@@ -18,6 +18,6 @@ sqoop源码层级暂时没看原因。。。
 
 ---
 
-> 作者: [hpkaiq](https://hpk.me)  
+> 作者: hpkaiq  
 > URL: https://hpk.me/posts/sqoop-mysql-update-auto-increment/  
 

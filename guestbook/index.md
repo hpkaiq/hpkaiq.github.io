@@ -5,6 +5,6 @@
 
 ---
 
-> 作者: [hpkaiq](https://hpk.me)  
+> 作者:   
 > URL: https://hpk.me/guestbook/  
 

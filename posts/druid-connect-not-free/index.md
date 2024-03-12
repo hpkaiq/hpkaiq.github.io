@@ -1,16 +1,16 @@
 # 阿里Druid连接池连接不释放、连接泄漏排查
 
 
-<!--more-->
+&lt;!--more--&gt;
 
 配置好下面三个属性。
 ```xml
-<!-- 超过时间限制是否回收 -->  
-<property name="removeAbandoned" value="true" />  
-<!-- 超时时间；单位为秒。180秒=3分钟   -->
-<property name="removeAbandonedTimeout" value="180" />  
-<!-- 关闭abanded连接时输出错误日志   -->
-<property name="logAbandoned" value="true" />
+&lt;!-- 超过时间限制是否回收 --&gt;  
+&lt;property name=&#34;removeAbandoned&#34; value=&#34;true&#34; /&gt;  
+&lt;!-- 超时时间；单位为秒。180秒=3分钟   --&gt;
+&lt;property name=&#34;removeAbandonedTimeout&#34; value=&#34;180&#34; /&gt;  
+&lt;!-- 关闭abanded连接时输出错误日志   --&gt;
+&lt;property name=&#34;logAbandoned&#34; value=&#34;true&#34; /&gt;
 ```
 查看日志文件。
 ```xml
@@ -29,6 +29,6 @@
 
 ---
 
-> 作者: <no value>  
+> 作者:   
 > URL: https://hpk.me/posts/druid-connect-not-free/  
 

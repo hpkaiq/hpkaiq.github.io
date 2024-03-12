@@ -7,7 +7,7 @@
 `val wo = new KuduWriteOptions(ignoreNull = true)`
 特性，升级至 kudu-spark2_2.11-1.11.0.jar 版本，但是报错。
 
-<!--more-->
+&lt;!--more--&gt;
 
 
 
@@ -23,31 +23,31 @@ java.io.InvalidClassException: org.apache.kudu.spark.kudu.KuduContext; local cla
 
 - 3.解压 kudu-spark2_2.11-1.11.0-sources.jar，将 其中 org 文件夹 复制 至 maven中刚刚建好的项目中（org/apache/kudu/spark/kudu）
 
-- 4.修改文件 KuduContext.scala 、 KuduRDD.scala， 增加或修改 @SerialVersionUID(xxxxxxxxxxL) ，xxxxxxxxxx改为报错信息中的local class serialVersionUID<br>
-- ![请输入图片描述][1]<br>
-- ![请输入图片描述][2]<br>
-- ![请输入图片描述][3]<br>
+- 4.修改文件 KuduContext.scala 、 KuduRDD.scala， 增加或修改 @SerialVersionUID(xxxxxxxxxxL) ，xxxxxxxxxx改为报错信息中的local class serialVersionUID&lt;br&gt;
+- ![请输入图片描述][1]&lt;br&gt;
+- ![请输入图片描述][2]&lt;br&gt;
+- ![请输入图片描述][3]&lt;br&gt;
 -    5：OperationType.scala文件也需修改，和 上面的serialVersionUID不同，走完整个流程运行会报这个文件的serialVersionUID错误，改成错误信息中的local class serialVersionUID
 
 - 6.将 kudu-spark2_2.11-1.11.0.pom 中的 dependencies 粘贴至 maven 中项目的pom文件中，还需额外增加以下依赖：
 
 ```xml
-        <dependency>
-            <groupId>org.apache.kudu</groupId>
-            <artifactId>kudu-client</artifactId>
-            <version>1.11.0</version>
-        </dependency>
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.kudu&lt;/groupId&gt;
+            &lt;artifactId&gt;kudu-client&lt;/artifactId&gt;
+            &lt;version&gt;1.11.0&lt;/version&gt;
+        &lt;/dependency&gt;
 
-        <dependency>
-            <groupId>org.apache.yetus</groupId>
-            <artifactId>audience-annotations</artifactId>
-            <version>0.13.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hdrhistogram</groupId>
-            <artifactId>HdrHistogram</artifactId>
-            <version>2.1.12</version>
-        </dependency>
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.yetus&lt;/groupId&gt;
+            &lt;artifactId&gt;audience-annotations&lt;/artifactId&gt;
+            &lt;version&gt;0.13.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.hdrhistogram&lt;/groupId&gt;
+            &lt;artifactId&gt;HdrHistogram&lt;/artifactId&gt;
+            &lt;version&gt;2.1.12&lt;/version&gt;
+        &lt;/dependency&gt;
 ```
 - 7.idea中将maven项目打包
 
@@ -72,6 +72,6 @@ java.io.InvalidClassException: org.apache.kudu.spark.kudu.KuduContext; local cla
 
 ---
 
-> 作者: [hpkaiq](https://hpk.me)  
+> 作者: hpkaiq  
 > URL: https://hpk.me/posts/kudu-spark-invalid-class-exception/  
 

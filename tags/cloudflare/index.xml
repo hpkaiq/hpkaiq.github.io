@@ -1,16 +1,16 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>cloudflare - 标签 - PME-Blog</title><link>https://hpk.me/tags/cloudflare/</link><description>cloudflare - 标签 - PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Mon, 29 May 2023 10:45:18 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/cloudflare/" rel="self" type="application/rss+xml"/><item><title>Cloudflare优选ip并使用dnspodcn api设置解析</title><link>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</link><pubDate>Mon, 29 May 2023 10:45:18 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</guid><description><![CDATA[<p>Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。</p>
-<h2 id="优选ip">优选ip</h2>
-<p>请参考github项目 <a href="https://github.com/XIU2/CloudflareSpeedTest"target="_blank" rel="external nofollow noopener noreferrer">XIU2/CloudflareSpeedTest: 🌩「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4 / IPv6)！另外也支持其他 CDN / 网站 IP ~ (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Cloudflare - 标签 - PME-Blog</title><link>https://hpk.me/tags/cloudflare/</link><description>Cloudflare - 标签 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 29 May 2023 10:45:18 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/cloudflare/" rel="self" type="application/rss+xml"/><item><title>Cloudflare优选ip并使用dnspodcn api设置解析</title><link>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</link><pubDate>Mon, 29 May 2023 10:45:18 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</guid><description><![CDATA[<p>Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。</p>
+<h2 id="优选ip" class="heading-element">
+  <a href="#%e4%bc%98%e9%80%89ip" class="heading-mark"></a>优选ip</h2><p>请参考github项目 <a href="https://github.com/XIU2/CloudflareSpeedTest"target="_blank" rel="external nofollow noopener noreferrer">XIU2/CloudflareSpeedTest: 🌩「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4 / IPv6)！另外也支持其他 CDN / 网站 IP ~ (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
 <p>我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录。</p>
-<h2 id="dnspodcn-api-设置解析">dnspodcn api 设置解析</h2>
-<p>参考<a href="https://github.com/rehiy/dnspod-shell"target="_blank" rel="external nofollow noopener noreferrer">rehiy/dnspod-shell: 基于DNSPod用户API实现的纯Shell动态域名客户端 (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a> ，加入线路逻辑修改而来。</p>
+<h2 id="dnspodcn-api-设置解析" class="heading-element">
+  <a href="#dnspodcn-api-%e8%ae%be%e7%bd%ae%e8%a7%a3%e6%9e%90" class="heading-mark"></a>dnspodcn api 设置解析</h2><p>参考<a href="https://github.com/rehiy/dnspod-shell"target="_blank" rel="external nofollow noopener noreferrer">rehiy/dnspod-shell: 基于DNSPod用户API实现的纯Shell动态域名客户端 (github.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a> ，加入线路逻辑修改而来。</p>
 <p>进入 /opt/cloudflareST 目录，新建以下脚本。需要修改：</p>
 <ul>
 <li>修改arToken=&ldquo;12345,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&rdquo; 为你自己的dnspodcn的token</li>
 <li>修改arDdnsCheck &ldquo;xx.yy&rdquo; &ldquo;sub1&rdquo;  为你自己的域名。</li>
 <li><code>hostIp=$(awk -F ',' 'NR==2 {print $1}' /opt/cloudflareST/result.csv)</code> 注意此处优选ip结果文件位置，结合你的运行目录修改。</li>
 </ul>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-1"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
@@ -537,17 +537,15 @@
 </span></span><span class="line"><span class="cl"><span class="k">for</span> yys_line in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">yys_lines</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="k">do</span>
 </span></span><span class="line"><span class="cl">    arDdnsCheck <span class="s2">&#34;xx.yy&#34;</span> <span class="s2">&#34;sub1&#34;</span> <span class="s2">&#34;</span><span class="nv">$yys_line</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="k">done</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl"><span class="k">done</span></span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="定时运行">定时运行</h2>
-<p>我使用crontab，8小时运行一次，请根据需要自行修改。</p>
-<div class="highlight"><div class="chroma">
+</div><h2 id="定时运行" class="heading-element">
+  <a href="#%e5%ae%9a%e6%97%b6%e8%bf%90%e8%a1%8c" class="heading-mark"></a>定时运行</h2><p>我使用crontab，8小时运行一次，请根据需要自行修改。</p>
+<div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">0</span> */8 * * * /opt/cloudflareST/dnspodcn.sh &gt;&gt; /opt/cloudflareST/log.txt
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">0</span> */8 * * * /opt/cloudflareST/dnspodcn.sh &gt;&gt; /opt/cloudflareST/log.txt</span></span></code></pre></td></tr></table>
 </div>
 </div>]]></description></item></channel></rss>

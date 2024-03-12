@@ -3,24 +3,24 @@
 
 访问某接口拉取数据，接口需要频次控制，经调研，`com.google.common.util.concurrent.RateLimiter`可轻易实现。
 
-<!--more-->
+&lt;!--more--&gt;
 
 
 
 
 ## 1. Maven
 ```xml
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
-        </dependency>
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.google.guava&lt;/groupId&gt;
+            &lt;artifactId&gt;guava&lt;/artifactId&gt;
+            &lt;version&gt;31.1-jre&lt;/version&gt;
+        &lt;/dependency&gt;
 
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.8.4</version>
-        </dependency>
+        &lt;dependency&gt;
+            &lt;groupId&gt;cn.hutool&lt;/groupId&gt;
+            &lt;artifactId&gt;hutool-all&lt;/artifactId&gt;
+            &lt;version&gt;5.8.4&lt;/version&gt;
+        &lt;/dependency&gt;
 ```
 ## 2. 测试代码
 ```java
@@ -45,7 +45,7 @@ public class RateLimiterTest {
         return InstanceHolder.instance;
     }
 
-    public String runHttpGet(String url, Map<String, List<String>> header) {
+    public String runHttpGet(String url, Map&lt;String, List&lt;String&gt;&gt; header) {
         rateLimiter.acquire(1);
         return HttpRequest
                 .get(url)
@@ -63,16 +63,16 @@ import java.util.concurrent.*;
 
 public class TestRate {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        String url = "https://xxxxx";
-        Map<String, List<String>> header = new HashMap<>();
-        header.put("Content-type", Collections.singletonList("application/json"));
-        header.put("Access-Token", Collections.singletonList("xxxxx"));
+        String url = &#34;https://xxxxx&#34;;
+        Map&lt;String, List&lt;String&gt;&gt; header = new HashMap&lt;&gt;();
+        header.put(&#34;Content-type&#34;, Collections.singletonList(&#34;application/json&#34;));
+        header.put(&#34;Access-Token&#34;, Collections.singletonList(&#34;xxxxx&#34;));
 
-        List<Callable<String>> tasks = new ArrayList<>();
+        List&lt;Callable&lt;String&gt;&gt; tasks = new ArrayList&lt;&gt;();
 
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i &lt; 60; i&#43;&#43;) {
 
-            Callable<String> callable = () -> {
+            Callable&lt;String&gt; callable = () -&gt; {
                 RateLimiterTest instance = RateLimiterTest.getInstance();
                 return instance.runHttpGet(url, header);
             };
@@ -82,8 +82,8 @@ public class TestRate {
         }
 
         ExecutorService exec = Executors.newFixedThreadPool(60);
-        List<Future<String>> futures = exec.invokeAll(tasks);
-        for (Future<String> future : futures) {
+        List&lt;Future&lt;String&gt;&gt; futures = exec.invokeAll(tasks);
+        for (Future&lt;String&gt; future : futures) {
             String s = future.get();
             System.out.println(s);
         }
@@ -97,6 +97,6 @@ public class TestRate {
 
 ---
 
-> 作者: [hpkaiq](https://hpk.me)  
+> 作者: hpkaiq  
 > URL: https://hpk.me/posts/java-rate-limit-google-guava/  
 

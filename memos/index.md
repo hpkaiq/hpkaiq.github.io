@@ -3,21 +3,21 @@
 
 ### 哔哔两句
 
-{{< memos >}}
+{{&lt; memos &gt;}}
 
 ### 定格光影
 
 
-{{< album>}}
+{{&lt; album&gt;}}
 
 ### 好物推荐
 
 
-{{< goods >}}
+{{&lt; goods &gt;}}
 
 
 ---
 
-> 作者: [hpkaiq](https://hpk.me)  
+> 作者:   
 > URL: https://hpk.me/memos/  
 

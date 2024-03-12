@@ -1,6 +1,6 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>java - 标签 - PME-Blog</title><link>https://hpk.me/tags/java/</link><description>java - 标签 - PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 14:21:15 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/java/" rel="self" type="application/rss+xml"/><item><title>java 频次控制</title><link>https://hpk.me/posts/java-rate-limit-google-guava/</link><pubDate>Tue, 18 Apr 2023 14:21:15 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid><description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
-<h2 id="1-maven">1. Maven</h2>
-<div class="highlight"><div class="chroma">
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Java - 标签 - PME-Blog</title><link>https://hpk.me/tags/java/</link><description>Java - 标签 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 18 Apr 2023 14:21:15 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/java/" rel="self" type="application/rss+xml"/><item><title>java 频次控制</title><link>https://hpk.me/posts/java-rate-limit-google-guava/</link><pubDate>Tue, 18 Apr 2023 14:21:15 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid><description><![CDATA[<p>访问某接口拉取数据，接口需要频次控制，经调研，<code>com.google.common.util.concurrent.RateLimiter</code>可轻易实现。</p>
+<h2 id="1-maven" class="heading-element">
+  <a href="#1-maven" class="heading-mark"></a>1. Maven</h2><div class="highlight" id="id-1"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -25,11 +25,10 @@
 </span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>cn.hutool<span class="nt">&lt;/groupId&gt;</span>
 </span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>hutool-all<span class="nt">&lt;/artifactId&gt;</span>
 </span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>5.8.4<span class="nt">&lt;/version&gt;</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="2-测试代码">2. 测试代码</h2>
-<div class="highlight"><div class="chroma">
+</div><h2 id="2-测试代码" class="heading-element">
+  <a href="#2-%e6%b5%8b%e8%af%95%e4%bb%a3%e7%a0%81" class="heading-mark"></a>2. 测试代码</h2><div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -63,39 +62,38 @@
 </span><span class="lnt">30
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">cn.hutool.http.HttpRequest</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.google.common.util.concurrent.RateLimiter</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.concurrent.TimeUnit</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RateLimiterTest</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">RateLimiter</span> <span class="n">rateLimiter</span> <span class="o">=</span> <span class="n">RateLimiter</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="mi">20</span><span class="o">,</span><span class="mi">1000</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="nf">RateLimiterTest</span><span class="o">()</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">InstanceHolder</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kd">static</span> <span class="kd">final</span> <span class="n">RateLimiterTest</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RateLimiterTest</span><span class="o">();</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="n">RateLimiterTest</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">InstanceHolder</span><span class="o">.</span><span class="na">instance</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">runHttpGet</span><span class="o">(</span><span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">header</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">rateLimiter</span><span class="o">.</span><span class="na">acquire</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">HttpRequest</span>
-</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">url</span><span class="o">)</span>
-</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">header</span><span class="o">(</span><span class="n">header</span><span class="o">)</span>
-</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">execute</span><span class="o">()</span>
-</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">body</span><span class="o">();</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">cn.hutool.http.HttpRequest</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.google.common.util.concurrent.RateLimiter</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Map</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.concurrent.TimeUnit</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RateLimiterTest</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">RateLimiter</span><span class="w"> </span><span class="n">rateLimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RateLimiter</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">20</span><span class="p">,</span><span class="n">1000</span><span class="p">,</span><span class="w"> </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">MILLISECONDS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="nf">RateLimiterTest</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">InstanceHolder</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">RateLimiterTest</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RateLimiterTest</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">RateLimiterTest</span><span class="w"> </span><span class="nf">getInstance</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">InstanceHolder</span><span class="p">.</span><span class="na">instance</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">runHttpGet</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">header</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rateLimiter</span><span class="p">.</span><span class="na">acquire</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">HttpRequest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">header</span><span class="p">(</span><span class="n">header</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">execute</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">body</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
-</div><div class="highlight"><div class="chroma">
+</div><div class="highlight" id="id-3"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -132,63 +130,60 @@
 </span><span class="lnt">33
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.concurrent.*</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestRate</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">,</span> <span class="n">ExecutionException</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;https://xxxxx&#34;</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">header</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
-</span></span><span class="line"><span class="cl">        <span class="n">header</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;Content-type&#34;</span><span class="o">,</span> <span class="n">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="s">&#34;application/json&#34;</span><span class="o">));</span>
-</span></span><span class="line"><span class="cl">        <span class="n">header</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;Access-Token&#34;</span><span class="o">,</span> <span class="n">Collections</span><span class="o">.</span><span class="na">singletonList</span><span class="o">(</span><span class="s">&#34;xxxxx&#34;</span><span class="o">));</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="n">List</span><span class="o">&lt;</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">tasks</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">callable</span> <span class="o">=</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">                <span class="n">RateLimiterTest</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">RateLimiterTest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
-</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="na">runHttpGet</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">header</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">            <span class="o">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            <span class="n">tasks</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">callable</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="n">ExecutorService</span> <span class="n">exec</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="mi">60</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">List</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">futures</span> <span class="o">=</span> <span class="n">exec</span><span class="o">.</span><span class="na">invokeAll</span><span class="o">(</span><span class="n">tasks</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">:</span> <span class="n">futures</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">        <span class="o">}</span>
-</span></span><span class="line"><span class="cl">        <span class="n">exec</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.concurrent.*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">TestRate</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">InterruptedException</span><span class="p">,</span><span class="w"> </span><span class="n">ExecutionException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;https://xxxxx&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">header</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&#34;Content-type&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">Collections</span><span class="p">.</span><span class="na">singletonList</span><span class="p">(</span><span class="s">&#34;application/json&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">header</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&#34;Access-Token&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">Collections</span><span class="p">.</span><span class="na">singletonList</span><span class="p">(</span><span class="s">&#34;xxxxx&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">60</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">callable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">RateLimiterTest</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RateLimiterTest</span><span class="p">.</span><span class="na">getInstance</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">instance</span><span class="p">.</span><span class="na">runHttpGet</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">tasks</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">callable</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ExecutorService</span><span class="w"> </span><span class="n">exec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Executors</span><span class="p">.</span><span class="na">newFixedThreadPool</span><span class="p">(</span><span class="n">60</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">futures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exec</span><span class="p">.</span><span class="na">invokeAll</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">futures</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">future</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">s</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">exec</span><span class="p">.</span><span class="na">shutdown</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
-</div>]]></description></item><item><title>presto 自定义函数简述</title><link>https://hpk.me/posts/presto-udf-simple/</link><pubDate>Tue, 18 Apr 2023 14:16:42 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/presto-udf-simple/</guid><description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
+</div>]]></description></item><item><title>presto 自定义函数简述</title><link>https://hpk.me/posts/presto-udf-simple/</link><pubDate>Tue, 18 Apr 2023 14:16:42 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/presto-udf-simple/</guid><description><![CDATA[<p>presto自带unbase64函数某些时候会报错，所以想要自定义一个unbase64函数。</p>
 <p>presto自带unbase64函数，用法如下。</p>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-1"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">FROM_UTF8(from_base64(nickname))
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">FROM_UTF8(from_base64(nickname))</span></span></code></pre></td></tr></table>
 </div>
 </div><p>但是有些字符会报错。</p>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Query failed (#20220720_091551_00087_mkhun): Illegal base64 character -1a
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Query failed (#20220720_091551_00087_mkhun): Illegal base64 character -1a</span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="idea新建maven项目">idea新建maven项目</h2>
-<p>pom文件如下：</p>
-<div class="highlight"><div class="chroma">
+</div><h2 id="idea新建maven项目" class="heading-element">
+  <a href="#idea%e6%96%b0%e5%bb%bamaven%e9%a1%b9%e7%9b%ae" class="heading-mark"></a>idea新建maven项目</h2><p>pom文件如下：</p>
+<div class="highlight" id="id-3"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -319,11 +314,10 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">        <span class="nt">&lt;/plugins&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/build&gt;</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/build&gt;</span></span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="function开发">function开发</h2>
-<div class="highlight"><div class="chroma">
+</div><h2 id="function开发" class="heading-element">
+  <a href="#function%e5%bc%80%e5%8f%91" class="heading-mark"></a>function开发</h2><div class="highlight" id="id-4"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -351,34 +345,33 @@
 </span><span class="lnt">24
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">base64</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.common.type.StandardTypes</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.function.Description</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.function.ScalarFunction</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.function.SqlType</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">io.airlift.slice.Slice</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">io.airlift.slice.Slices</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnBase64Function</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nd">@ScalarFunction</span><span class="o">(</span><span class="s">&#34;unBase64&#34;</span><span class="o">)</span> <span class="c1">// 固定参数，表示函数名的意思，也就我们在使用Presto的时候用的函数名
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Description</span><span class="o">(</span><span class="s">&#34;base64解密&#34;</span><span class="o">)</span> <span class="c1">// 函数的注释
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@SqlType</span><span class="o">(</span><span class="n">StandardTypes</span><span class="o">.</span><span class="na">VARCHAR</span><span class="o">)</span> <span class="c1">// 表示数据类型
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Slice</span> <span class="nf">unBase64</span><span class="o">(</span><span class="nd">@SqlType</span><span class="o">(</span><span class="n">StandardTypes</span><span class="o">.</span><span class="na">VARCHAR</span><span class="o">)</span> <span class="n">Slice</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// 解码
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">String</span> <span class="n">res</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">            <span class="kt">byte</span><span class="o">[]</span> <span class="n">decodeBytes</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Base64</span><span class="o">.</span><span class="na">getDecoder</span><span class="o">().</span><span class="na">decode</span><span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">toStringUtf8</span><span class="o">());</span>
-</span></span><span class="line"><span class="cl">            <span class="n">res</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">decodeBytes</span><span class="o">,</span> <span class="s">&#34;utf-8&#34;</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="o">}</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Slices</span><span class="o">.</span><span class="na">utf8Slice</span><span class="o">(</span><span class="n">res</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">base64</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.facebook.presto.common.type.StandardTypes</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.facebook.presto.spi.function.Description</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.facebook.presto.spi.function.ScalarFunction</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.facebook.presto.spi.function.SqlType</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">io.airlift.slice.Slice</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">io.airlift.slice.Slices</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UnBase64Function</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@ScalarFunction</span><span class="p">(</span><span class="s">&#34;unBase64&#34;</span><span class="p">)</span><span class="w"> </span><span class="c1">// 固定参数，表示函数名的意思，也就我们在使用Presto的时候用的函数名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Description</span><span class="p">(</span><span class="s">&#34;base64解密&#34;</span><span class="p">)</span><span class="w"> </span><span class="c1">// 函数的注释</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@SqlType</span><span class="p">(</span><span class="n">StandardTypes</span><span class="p">.</span><span class="na">VARCHAR</span><span class="p">)</span><span class="w"> </span><span class="c1">// 表示数据类型</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Slice</span><span class="w"> </span><span class="nf">unBase64</span><span class="p">(</span><span class="nd">@SqlType</span><span class="p">(</span><span class="n">StandardTypes</span><span class="p">.</span><span class="na">VARCHAR</span><span class="p">)</span><span class="w"> </span><span class="n">Slice</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 解码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">decodeBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="na">util</span><span class="p">.</span><span class="na">Base64</span><span class="p">.</span><span class="na">getDecoder</span><span class="p">().</span><span class="na">decode</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="na">toStringUtf8</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">decodeBytes</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;utf-8&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Slices</span><span class="p">.</span><span class="na">utf8Slice</span><span class="p">(</span><span class="n">res</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="plugin开发">plugin开发</h2>
-<div class="highlight"><div class="chroma">
+</div><h2 id="plugin开发" class="heading-element">
+  <a href="#plugin%e5%bc%80%e5%8f%91" class="heading-mark"></a>plugin开发</h2><div class="highlight" id="id-5"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -398,39 +391,38 @@
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64.Base64Function</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64.UnBase64Function</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.facebook.presto.spi.Plugin</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableSet</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrestoUdfPlugin</span> <span class="kd">implements</span> <span class="n">Plugin</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">getFunctions</span><span class="o">()</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ImmutableSet</span><span class="o">.&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span><span class="n">builder</span><span class="o">()</span>
-</span></span><span class="line"><span class="cl">                <span class="c1">// 添加插件class
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">UnBase64Function</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Set</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">base64.Base64Function</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">base64.UnBase64Function</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.facebook.presto.spi.Plugin</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.google.common.collect.ImmutableSet</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PrestoUdfPlugin</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">Plugin</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span><span class="w"> </span><span class="n">getFunctions</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ImmutableSet</span><span class="p">.</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;?&gt;&gt;</span><span class="n">builder</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// 添加插件class</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">UnBase64Function</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="加载plugin">加载plugin</h2>
-<p>在src/main/resources下创建目录META-INF，再在META-INF目录下创建services目录，注意下图项目结构中META-INF是父目录 services是子目录，只是idea合并显示了，不是说文件夹名里面有点 “.” 。然后创建文件com.facebook.presto.spi.Plugin，文件内容为plugin的全类名。
+</div><h2 id="加载plugin" class="heading-element">
+  <a href="#%e5%8a%a0%e8%bd%bdplugin" class="heading-mark"></a>加载plugin</h2><p>在src/main/resources下创建目录META-INF，再在META-INF目录下创建services目录，注意下图项目结构中META-INF是父目录 services是子目录，只是idea合并显示了，不是说文件夹名里面有点 “.” 。然后创建文件com.facebook.presto.spi.Plugin，文件内容为plugin的全类名。
 例如本例：<code>PrestoUdfPlugin</code></p>
-<h2 id="上线">上线</h2>
-<ol>
+<h2 id="上线" class="heading-element">
+  <a href="#%e4%b8%8a%e7%ba%bf" class="heading-mark"></a>上线</h2><ol>
 <li>maven打包。</li>
 <li>在所有presto节点服务器的presto安装目录${PRESTO_HOME}/plugin下新建一个my_plugin目录。</li>
 <li>上传jar包，及相关依赖包（在lib目录下）到所有服务器新建的my_plugin目录下。</li>
 <li>重启presto： ${PRESTO_HOME}/bin/launcher restart。</li>
 </ol>
-<h1 id="项目结构">项目结构</h1>
-<p><figure><a class="lightgallery" href="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-thumbnail="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" data-sub-html="<h2>结构</h2><p>结构</p>"></a><figcaption class="image-caption">结构</figcaption>
+<h1 id="项目结构" class="heading-element">
+  <a href="#%e9%a1%b9%e7%9b%ae%e7%bb%93%e6%9e%84" class="heading-mark"></a>项目结构</h1><p><figure><a class="lightgallery" href="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=large" data-thumbnail="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=small" data-sub-html="<h2>结构</h2><p>结构</p>"><img loading="lazy" src="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" alt="结构" srcset="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=small, https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=medium 1.5x, https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=large 2x" data-title="结构" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/></a><figcaption class="image-caption">结构</figcaption>
   </figure></p>
-<p>参考：<a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>阿里Druid连接池连接不释放、连接泄漏排查</title><link>https://hpk.me/posts/druid-connect-not-free/</link><pubDate>Mon, 17 Apr 2023 21:12:25 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/druid-connect-not-free/</guid><description><![CDATA[<p>配置好下面三个属性。</p>
-<div class="highlight"><div class="chroma">
+<p>参考：<a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>阿里Druid连接池连接不释放、连接泄漏排查</title><link>https://hpk.me/posts/druid-connect-not-free/</link><pubDate>Mon, 17 Apr 2023 21:12:25 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/druid-connect-not-free/</guid><description><![CDATA[<p>配置好下面三个属性。</p>
+<div class="highlight" id="id-1"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
@@ -445,11 +437,10 @@
 </span></span><span class="line"><span class="cl"><span class="c">&lt;!-- 超时时间；单位为秒。180秒=3分钟   --&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;removeAbandonedTimeout&#34;</span> <span class="na">value=</span><span class="s">&#34;180&#34;</span> <span class="nt">/&gt;</span>  
 </span></span><span class="line"><span class="cl"><span class="c">&lt;!-- 关闭abanded连接时输出错误日志   --&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;logAbandoned&#34;</span> <span class="na">value=</span><span class="s">&#34;true&#34;</span> <span class="nt">/&gt;</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;logAbandoned&#34;</span> <span class="na">value=</span><span class="s">&#34;true&#34;</span> <span class="nt">/&gt;</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>查看日志文件。</p>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
@@ -470,13 +461,12 @@
 </span></span><span class="line"><span class="cl">	at com.xxxx.xx.common.util.JdbcUtil.linkTrace(JdbcUtil.java:39)
 </span></span><span class="line"><span class="cl">	at com.xxxx.xx.xxxxx.service.impl.DashboardServiceImpl.getExpenTrend(DashboardServiceImpl.java:263)
 </span></span><span class="line"><span class="cl">	at com.xxxx.xx.xxxxx.service.impl.DashboardServiceImpl.getBossData(DashboardServiceImpl.java:58)
-</span></span><span class="line"><span class="cl">	at com.xxxx.xx.xxxxx.controller.DashboardController.getBossData(DashboardController.java:43)
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl">	at com.xxxx.xx.xxxxx.controller.DashboardController.getBossData(DashboardController.java:43)</span></span></code></pre></td></tr></table>
 </div>
-</div><p>日志里查找<code>removeAbandoned</code>关键字，找到自己哪个方法获取连接后没有关闭资源，排查原因。</p>]]></description></item><item><title>spring cloud java反向代理访问阿里云OSS私有资源</title><link>https://hpk.me/posts/spring-proxy-oss/</link><pubDate>Mon, 17 Apr 2023 20:43:10 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/spring-proxy-oss/</guid><description><![CDATA[<p>最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。</p>
+</div><p>日志里查找<code>removeAbandoned</code>关键字，找到自己哪个方法获取连接后没有关闭资源，排查原因。</p>]]></description></item><item><title>spring cloud java反向代理访问阿里云OSS私有资源</title><link>https://hpk.me/posts/spring-proxy-oss/</link><pubDate>Mon, 17 Apr 2023 20:43:10 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/spring-proxy-oss/</guid><description><![CDATA[<p>最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。</p>
 <p>（一）
 首先要解决反向代理的问题，搜到<code>org.mitre.dsmiley.httpproxy.ProxyServlet</code>可解决。</p>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-1"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
@@ -489,10 +479,9 @@
 </span></span><span class="line"><span class="cl">   <span class="nt">&lt;groupId&gt;</span>org.mitre.dsmiley.httpproxy<span class="nt">&lt;/groupId&gt;</span>
 </span></span><span class="line"><span class="cl">   <span class="nt">&lt;artifactId&gt;</span>smiley-http-proxy-servlet<span class="nt">&lt;/artifactId&gt;</span>
 </span></span><span class="line"><span class="cl">   <span class="nt">&lt;version&gt;</span>1.11<span class="nt">&lt;/version&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></td></tr></table>
 </div>
-</div><div class="highlight"><div class="chroma">
+</div><div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -509,24 +498,23 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
-</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyConfig</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nd">@Bean</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">ServletRegistrationBean</span> <span class="nf">servletRegistrationAliBean01</span><span class="o">()</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="n">ServletRegistrationBean</span> <span class="n">oss</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">ServletRegistrationBean</span><span class="o">(</span><span class="k">new</span> <span class="n">ProxyServlet</span><span class="o">(),</span> <span class="s">&#34;/ali/bucket_name/*&#34;</span><span class="o">);</span><span class="c1">//修改为自己的bucket_name
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">oss</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&#34;bucket_name&#34;</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">oss</span><span class="o">.</span><span class="na">addInitParameter</span><span class="o">(</span><span class="s">&#34;targetUri&#34;</span><span class="o">,</span> <span class="s">&#34;http://bucket_name.oss-cn-beijing.aliyuncs.com&#34;</span><span class="o">);</span><span class="c1">//本地测试环境用外网地址，线上改成内网访问的地址
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">oss</span><span class="o">.</span><span class="na">addInitParameter</span><span class="o">(</span><span class="n">ProxyServlet</span><span class="o">.</span><span class="na">P_LOG</span><span class="o">,</span> <span class="s">&#34;true&#34;</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">oss</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyConfig</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">ServletRegistrationBean</span><span class="w"> </span><span class="nf">servletRegistrationAliBean01</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ServletRegistrationBean</span><span class="w"> </span><span class="n">oss</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ServletRegistrationBean</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ProxyServlet</span><span class="p">(),</span><span class="w"> </span><span class="s">&#34;/ali/bucket_name/*&#34;</span><span class="p">);</span><span class="c1">//修改为自己的bucket_name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">oss</span><span class="p">.</span><span class="na">setName</span><span class="p">(</span><span class="s">&#34;bucket_name&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">oss</span><span class="p">.</span><span class="na">addInitParameter</span><span class="p">(</span><span class="s">&#34;targetUri&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;http://bucket_name.oss-cn-beijing.aliyuncs.com&#34;</span><span class="p">);</span><span class="c1">//本地测试环境用外网地址，线上改成内网访问的地址</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">oss</span><span class="p">.</span><span class="na">addInitParameter</span><span class="p">(</span><span class="n">ProxyServlet</span><span class="p">.</span><span class="na">P_LOG</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;true&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">oss</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>（二）
 Controller配置如下，转发到自己配置的反向代理</p>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-3"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -541,22 +529,21 @@ Controller配置如下，转发到自己配置的反向代理</p>
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-gdscript" data-lang="gdscript"><span class="line"><span class="cl"><span class="err">@</span><span class="n">RestController</span>
-</span></span><span class="line"><span class="cl"><span class="err">@</span><span class="n">RefreshScope</span>
-</span></span><span class="line"><span class="cl"><span class="err">@</span><span class="nf">RequestMapping</span><span class="p">(</span><span class="s2">&#34;/api/es&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">public</span> <span class="kd">class</span> <span class="nc">TestController</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">     <span class="err">@</span><span class="nf">RequestMapping</span><span class="p">(</span><span class="s2">&#34;/static/**&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="n">public</span> <span class="kt">void</span> <span class="nf">testVideoOne</span><span class="p">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ServletException</span><span class="p">,</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">URISyntaxException</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="nc">String</span> <span class="n">resourcePath</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="nf">getRequestURI</span><span class="p">()</span><span class="o">.</span><span class="nf">replace</span><span class="p">(</span><span class="s2">&#34;/api/es/static&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">HeaderUtil</span><span class="o">.</span><span class="nf">setHeaderOwn</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">resourcePath</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="n">request</span><span class="o">.</span><span class="nf">getRequestDispatcher</span><span class="p">(</span><span class="s2">&#34;/ali&#34;</span> <span class="o">+</span> <span class="n">resourcePath</span><span class="p">)</span><span class="o">.</span><span class="nf">forward</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@RestController
+</span></span><span class="line"><span class="cl">@RefreshScope
+</span></span><span class="line"><span class="cl">@RequestMapping(&#34;/api/es&#34;)
+</span></span><span class="line"><span class="cl">public class TestController {
+</span></span><span class="line"><span class="cl">     @RequestMapping(&#34;/static/**&#34;)
+</span></span><span class="line"><span class="cl">    public void testVideoOne(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, URISyntaxException {
+</span></span><span class="line"><span class="cl">        String resourcePath = request.getRequestURI().replace(&#34;/api/es/static&#34;,&#34;&#34;);
+</span></span><span class="line"><span class="cl">        HeaderUtil.setHeaderOwn(request,resourcePath);
+</span></span><span class="line"><span class="cl">        request.getRequestDispatcher(&#34;/ali&#34; + resourcePath).forward(request, response);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}</span></span></code></pre></td></tr></table>
 </div>
 </div><p>（三）
 其中为request设置Header以认证OSS访问的HeaderUtil如下，其中有OSS Authorization计算的java实现，用java的反射在request中添加Header信息。</p>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-4"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -656,103 +643,102 @@ Controller配置如下，转发到自己配置的反向代理</p>
 </span><span class="lnt">96
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">import org.apache.commons.codec.binary.Base64;
-</span></span><span class="line"><span class="cl">import org.apache.tomcat.util.http.MimeHeaders;
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">commons</span><span class="o">.</span><span class="n">codec</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">Base64</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">tomcat</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">MimeHeaders</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">import javax.crypto.Mac;
-</span></span><span class="line"><span class="cl">import javax.crypto.spec.SecretKeySpec;
-</span></span><span class="line"><span class="cl">import javax.servlet.http.HttpServletRequest;
-</span></span><span class="line"><span class="cl">import java.lang.reflect.Field;
-</span></span><span class="line"><span class="cl">import java.net.URISyntaxException;
-</span></span><span class="line"><span class="cl">import java.nio.charset.Charset;
-</span></span><span class="line"><span class="cl">import java.security.InvalidKeyException;
-</span></span><span class="line"><span class="cl">import java.security.NoSuchAlgorithmException;
-</span></span><span class="line"><span class="cl">import java.text.SimpleDateFormat;
-</span></span><span class="line"><span class="cl">import java.util.Date;
-</span></span><span class="line"><span class="cl">import java.util.Locale;
-</span></span><span class="line"><span class="cl">import java.util.TimeZone;
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">javax</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">Mac</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">javax</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">SecretKeySpec</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">javax</span><span class="o">.</span><span class="n">servlet</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">HttpServletRequest</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">lang</span><span class="o">.</span><span class="n">reflect</span><span class="o">.</span><span class="n">Field</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">URISyntaxException</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">nio</span><span class="o">.</span><span class="n">charset</span><span class="o">.</span><span class="n">Charset</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">InvalidKeyException</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">security</span><span class="o">.</span><span class="n">NoSuchAlgorithmException</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">SimpleDateFormat</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Date</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">Locale</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">TimeZone</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">public class HeaderUtil {
-</span></span><span class="line"><span class="cl">    /**
-</span></span><span class="line"><span class="cl">     * 给request加入Header信息，验证OSS访问权限
-</span></span><span class="line"><span class="cl">     * @param request
-</span></span><span class="line"><span class="cl">     * @throws URISyntaxException
-</span></span><span class="line"><span class="cl">     */
-</span></span><span class="line"><span class="cl">    public static void setHeaderOwn(HttpServletRequest request,String resourcePath) throws URISyntaxException {
-</span></span><span class="line"><span class="cl">        SimpleDateFormat sdf = new SimpleDateFormat(&#34;EEE, dd MMM yyyy HH:mm:ss &#39;GMT&#39;&#34;, Locale.US);
-</span></span><span class="line"><span class="cl">        sdf.setTimeZone(TimeZone.getTimeZone(&#34;GMT&#34;));
-</span></span><span class="line"><span class="cl">        String date_GMT = sdf.format(new Date());
-</span></span><span class="line"><span class="cl">        String data = request.getMethod() + &#34;\n&#34;
-</span></span><span class="line"><span class="cl">                + &#34;\n&#34;
-</span></span><span class="line"><span class="cl">                + &#34;\n&#34;
-</span></span><span class="line"><span class="cl">                + date_GMT + &#34;\n&#34;
-</span></span><span class="line"><span class="cl">                + resourcePath;
-</span></span><span class="line"><span class="cl">        String signature = genHMAC(&#34;AccessKeySecret&#34;, data);//AccessKeySecret改成自己的
-</span></span><span class="line"><span class="cl">        reflectSetParam(request, &#34;Authorization&#34;, &#34;OSS AccessKeyId:&#34; + signature);//AccessKeyId改成自己的
-</span></span><span class="line"><span class="cl">        reflectSetParam(request, &#34;Date&#34;, date_GMT);
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl"><span class="n">public</span> <span class="k">class</span> <span class="n">HeaderUtil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">/**</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">给</span><span class="n">request加入Header信息</span><span class="err">，验证</span><span class="n">OSS访问权限</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="n">param</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="n">throws</span> <span class="n">URISyntaxException</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">    <span class="n">public</span> <span class="k">static</span> <span class="n">void</span> <span class="n">setHeaderOwn</span><span class="p">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span><span class="ne">String</span> <span class="n">resourcePath</span><span class="p">)</span> <span class="n">throws</span> <span class="n">URISyntaxException</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="n">new</span> <span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s2">&#34;EEE, dd MMM yyyy HH:mm:ss &#39;GMT&#39;&#34;</span><span class="p">,</span> <span class="n">Locale</span><span class="o">.</span><span class="n">US</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sdf</span><span class="o">.</span><span class="n">setTimeZone</span><span class="p">(</span><span class="n">TimeZone</span><span class="o">.</span><span class="n">getTimeZone</span><span class="p">(</span><span class="s2">&#34;GMT&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="ne">String</span> <span class="n">date_GMT</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new</span> <span class="n">Date</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="ne">String</span> <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getMethod</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">+</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">+</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">+</span> <span class="n">date_GMT</span> <span class="o">+</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">+</span> <span class="n">resourcePath</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="ne">String</span> <span class="n">signature</span> <span class="o">=</span> <span class="n">genHMAC</span><span class="p">(</span><span class="s2">&#34;AccessKeySecret&#34;</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span><span class="o">//</span><span class="n">AccessKeySecret改成自己的</span>
+</span></span><span class="line"><span class="cl">        <span class="n">reflectSetParam</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&#34;Authorization&#34;</span><span class="p">,</span> <span class="s2">&#34;OSS AccessKeyId:&#34;</span> <span class="o">+</span> <span class="n">signature</span><span class="p">);</span><span class="o">//</span><span class="n">AccessKeyId改成自己的</span>
+</span></span><span class="line"><span class="cl">        <span class="n">reflectSetParam</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&#34;Date&#34;</span><span class="p">,</span> <span class="n">date_GMT</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    /**
-</span></span><span class="line"><span class="cl">     * 反射修改header信息，key-value键值对加入到header中
-</span></span><span class="line"><span class="cl">     *
-</span></span><span class="line"><span class="cl">     * @param request
-</span></span><span class="line"><span class="cl">     * @param key
-</span></span><span class="line"><span class="cl">     * @param value
-</span></span><span class="line"><span class="cl">     */
-</span></span><span class="line"><span class="cl">    private static void reflectSetParam(HttpServletRequest request, String key, String value) {
-</span></span><span class="line"><span class="cl">        Class&lt;? extends HttpServletRequest&gt; requestClass = request.getClass();
-</span></span><span class="line"><span class="cl">        // System.out.println(&#34;request实现类=&#34;+requestClass.getName());
-</span></span><span class="line"><span class="cl">        try {
-</span></span><span class="line"><span class="cl">            Field request1 = requestClass.getDeclaredField(&#34;request&#34;);
-</span></span><span class="line"><span class="cl">            request1.setAccessible(true);
-</span></span><span class="line"><span class="cl">            Object o = request1.get(request);
-</span></span><span class="line"><span class="cl">            Field coyoteRequest = o.getClass().getDeclaredField(&#34;coyoteRequest&#34;);
-</span></span><span class="line"><span class="cl">            coyoteRequest.setAccessible(true);
-</span></span><span class="line"><span class="cl">            Object o1 = coyoteRequest.get(o);
-</span></span><span class="line"><span class="cl">            // System.out.println(&#34;coyoteRequest实现类=&#34;+o1.getClass().getName());
-</span></span><span class="line"><span class="cl">            Field headers = o1.getClass().getDeclaredField(&#34;headers&#34;);
-</span></span><span class="line"><span class="cl">            headers.setAccessible(true);
-</span></span><span class="line"><span class="cl">            MimeHeaders o2 = (MimeHeaders) headers.get(o1);
-</span></span><span class="line"><span class="cl">            o2.addValue(key).setString(value);
-</span></span><span class="line"><span class="cl">        } catch (Exception e) {
-</span></span><span class="line"><span class="cl">            e.printStackTrace();
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="o">/**</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">反射修改</span><span class="n">header信息</span><span class="err">，</span><span class="n">key</span><span class="o">-</span><span class="n">value键值对加入到header中</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="n">param</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="n">param</span> <span class="n">key</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="n">param</span> <span class="n">value</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">    <span class="n">private</span> <span class="k">static</span> <span class="n">void</span> <span class="n">reflectSetParam</span><span class="p">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span> <span class="ne">String</span> <span class="n">key</span><span class="p">,</span> <span class="ne">String</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Class</span><span class="o">&lt;</span><span class="err">?</span> <span class="k">extends</span> <span class="n">HttpServletRequest</span><span class="o">&gt;</span> <span class="n">requestClass</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getClass</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">//</span> <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s2">&#34;request实现类=&#34;</span><span class="o">+</span><span class="n">requestClass</span><span class="o">.</span><span class="n">getName</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="n">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Field</span> <span class="n">request1</span> <span class="o">=</span> <span class="n">requestClass</span><span class="o">.</span><span class="n">getDeclaredField</span><span class="p">(</span><span class="s2">&#34;request&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">request1</span><span class="o">.</span><span class="n">setAccessible</span><span class="p">(</span><span class="bp">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="ne">Object</span> <span class="n">o</span> <span class="o">=</span> <span class="n">request1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Field</span> <span class="n">coyoteRequest</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">getClass</span><span class="p">()</span><span class="o">.</span><span class="n">getDeclaredField</span><span class="p">(</span><span class="s2">&#34;coyoteRequest&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">coyoteRequest</span><span class="o">.</span><span class="n">setAccessible</span><span class="p">(</span><span class="bp">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="ne">Object</span> <span class="n">o1</span> <span class="o">=</span> <span class="n">coyoteRequest</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">//</span> <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="s2">&#34;coyoteRequest实现类=&#34;</span><span class="o">+</span><span class="n">o1</span><span class="o">.</span><span class="n">getClass</span><span class="p">()</span><span class="o">.</span><span class="n">getName</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Field</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">o1</span><span class="o">.</span><span class="n">getClass</span><span class="p">()</span><span class="o">.</span><span class="n">getDeclaredField</span><span class="p">(</span><span class="s2">&#34;headers&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">headers</span><span class="o">.</span><span class="n">setAccessible</span><span class="p">(</span><span class="bp">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">MimeHeaders</span> <span class="n">o2</span> <span class="o">=</span> <span class="p">(</span><span class="n">MimeHeaders</span><span class="p">)</span> <span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">o2</span><span class="o">.</span><span class="n">addValue</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">setString</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    /**
-</span></span><span class="line"><span class="cl">     * HmacSHA1 Base64加密
-</span></span><span class="line"><span class="cl">     * @param key
-</span></span><span class="line"><span class="cl">     * @param data
-</span></span><span class="line"><span class="cl">     * @return
-</span></span><span class="line"><span class="cl">     */
-</span></span><span class="line"><span class="cl">    public static String genHMAC(String key, String data) {
-</span></span><span class="line"><span class="cl">        byte[] result = null;
-</span></span><span class="line"><span class="cl">        try {
-</span></span><span class="line"><span class="cl">            //根据给定的字节数组构造一个密钥,第二参数指定一个密钥算法的名称
-</span></span><span class="line"><span class="cl">            SecretKeySpec signinKey = new SecretKeySpec(key.getBytes(), &#34;HmacSHA1&#34;);
-</span></span><span class="line"><span class="cl">            //生成一个指定 Mac 算法 的 Mac 对象
-</span></span><span class="line"><span class="cl">            Mac mac = Mac.getInstance(&#34;HmacSHA1&#34;);
-</span></span><span class="line"><span class="cl">            //用给定密钥初始化 Mac 对象
-</span></span><span class="line"><span class="cl">            mac.init(signinKey);
-</span></span><span class="line"><span class="cl">            //完成 Mac 操作
-</span></span><span class="line"><span class="cl">            byte[] rawHmac = mac.doFinal(data.getBytes(Charset.forName(&#34;UTF-8&#34;)));
-</span></span><span class="line"><span class="cl">            result = Base64.encodeBase64(rawHmac);
+</span></span><span class="line"><span class="cl">    <span class="o">/**</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="n">HmacSHA1</span> <span class="n">Base64加密</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="n">param</span> <span class="n">key</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="n">param</span> <span class="n">data</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*</span> <span class="err">@</span><span class="k">return</span>
+</span></span><span class="line"><span class="cl">     <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">    <span class="n">public</span> <span class="k">static</span> <span class="ne">String</span> <span class="n">genHMAC</span><span class="p">(</span><span class="ne">String</span> <span class="n">key</span><span class="p">,</span> <span class="ne">String</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">byte</span><span class="p">[]</span> <span class="n">result</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="o">//</span><span class="err">根据给定的字节数组构造一个密钥</span><span class="p">,</span><span class="err">第二参数指定一个密钥算法的名称</span>
+</span></span><span class="line"><span class="cl">            <span class="n">SecretKeySpec</span> <span class="n">signinKey</span> <span class="o">=</span> <span class="n">new</span> <span class="n">SecretKeySpec</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">getBytes</span><span class="p">(),</span> <span class="s2">&#34;HmacSHA1&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">//</span><span class="err">生成一个指定</span> <span class="n">Mac</span> <span class="err">算法</span> <span class="err">的</span> <span class="n">Mac</span> <span class="err">对象</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Mac</span> <span class="n">mac</span> <span class="o">=</span> <span class="n">Mac</span><span class="o">.</span><span class="n">getInstance</span><span class="p">(</span><span class="s2">&#34;HmacSHA1&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">//</span><span class="err">用给定密钥初始化</span> <span class="n">Mac</span> <span class="err">对象</span>
+</span></span><span class="line"><span class="cl">            <span class="n">mac</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">signinKey</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">//</span><span class="err">完成</span> <span class="n">Mac</span> <span class="err">操作</span>
+</span></span><span class="line"><span class="cl">            <span class="n">byte</span><span class="p">[]</span> <span class="n">rawHmac</span> <span class="o">=</span> <span class="n">mac</span><span class="o">.</span><span class="n">doFinal</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">getBytes</span><span class="p">(</span><span class="n">Charset</span><span class="o">.</span><span class="n">forName</span><span class="p">(</span><span class="s2">&#34;UTF-8&#34;</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">result</span> <span class="o">=</span> <span class="n">Base64</span><span class="o">.</span><span class="n">encodeBase64</span><span class="p">(</span><span class="n">rawHmac</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        } catch (NoSuchAlgorithmException e) {
-</span></span><span class="line"><span class="cl">            System.err.println(e.getMessage());
-</span></span><span class="line"><span class="cl">        } catch (InvalidKeyException e) {
-</span></span><span class="line"><span class="cl">            System.err.println(e.getMessage());
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        if (null != result) {
-</span></span><span class="line"><span class="cl">            return new String(result);
-</span></span><span class="line"><span class="cl">        } else {
-</span></span><span class="line"><span class="cl">            return null;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">NoSuchAlgorithmException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">getMessage</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">InvalidKeyException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">getMessage</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">null</span> <span class="o">!=</span> <span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">new</span> <span class="ne">String</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>最后访问的地址例如：
 http://127.0.0.1:8081/api/es/static/bucket_name/object_name

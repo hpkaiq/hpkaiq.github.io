@@ -1,15 +1,14 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>kudu - 标签 - PME-Blog</title><link>https://hpk.me/tags/kudu/</link><description>kudu - 标签 - PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>hpkaiq@qq.com (hpkaiq)</managingEditor><webMaster>hpkaiq@qq.com (hpkaiq)</webMaster><lastBuildDate>Tue, 18 Apr 2023 13:56:34 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/kudu/" rel="self" type="application/rss+xml"/><item><title>kudu-spark KuduContext java.io.InvalidClassException 解决</title><link>https://hpk.me/posts/kudu-spark-invalid-class-exception/</link><pubDate>Tue, 18 Apr 2023 13:56:34 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/kudu-spark-invalid-class-exception/</guid><description><![CDATA[<p>背景：
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Kudu - 标签 - PME-Blog</title><link>https://hpk.me/tags/kudu/</link><description>Kudu - 标签 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 18 Apr 2023 13:56:34 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/kudu/" rel="self" type="application/rss+xml"/><item><title>kudu-spark KuduContext java.io.InvalidClassException 解决</title><link>https://hpk.me/posts/kudu-spark-invalid-class-exception/</link><pubDate>Tue, 18 Apr 2023 13:56:34 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/kudu-spark-invalid-class-exception/</guid><description><![CDATA[<p>背景：
 线上kudu 集群版本为1.11.0版本, spark 使用 kudu-spark2_2.11-1.7.0.jar，
 为了使用新版本中的
 <code>val wo = new KuduWriteOptions(ignoreNull = true)</code>
 特性，升级至 kudu-spark2_2.11-1.11.0.jar 版本，但是报错。</p>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-1"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">InvalidClassException</span><span class="o">:</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">kudu</span><span class="o">.</span><span class="na">spark</span><span class="o">.</span><span class="na">kudu</span><span class="o">.</span><span class="na">KuduContext</span><span class="o">;</span> <span class="n">local</span> <span class="kd">class</span> <span class="nc">incompatible</span><span class="o">:</span> <span class="n">stream</span> <span class="n">classdesc</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="n">xxxxxxxx</span><span class="o">,</span> <span class="n">local</span> <span class="kd">class</span> <span class="nc">serialVersionUID</span> <span class="o">=</span> <span class="n">xxxxxxx111</span>
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">java</span><span class="p">.</span><span class="na">io</span><span class="p">.</span><span class="na">InvalidClassException</span><span class="p">:</span><span class="w"> </span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">kudu</span><span class="p">.</span><span class="na">spark</span><span class="p">.</span><span class="na">kudu</span><span class="p">.</span><span class="na">KuduContext</span><span class="p">;</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="kd">class</span> <span class="nc">incompatible</span><span class="p">:</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="n">classdesc</span><span class="w"> </span><span class="n">serialVersionUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xxxxxxxx</span><span class="p">,</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="kd">class</span> <span class="nc">serialVersionUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xxxxxxx111</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>在https://issues.apache.org/jira/browse/KUDU-2898 中说这个已经修复，但是修复的版本是kudu 1.12.0，升级线上kudu版本这个暂时不考虑，只好自己修改源码，重新编译 kudu-spark2_2.11-1.11.0.jar</p>
 <ul>
@@ -26,13 +25,13 @@
 <p>4.修改文件 KuduContext.scala 、 KuduRDD.scala， 增加或修改 @SerialVersionUID(xxxxxxxxxxL) ，xxxxxxxxxx改为报错信息中的local class serialVersionUID<br></p>
 </li>
 <li>
-<p><br></p>
+<p><img loading="lazy" src="https://i3.wp.com/telegra.ph/file/62c78529eb3073b0727e7.png" alt="请输入图片描述" srcset="https://i3.wp.com/telegra.ph/file/62c78529eb3073b0727e7.png?size=small, https://i3.wp.com/telegra.ph/file/62c78529eb3073b0727e7.png?size=medium 1.5x, https://i3.wp.com/telegra.ph/file/62c78529eb3073b0727e7.png?size=large 2x" data-title="请输入图片描述" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/><br></p>
 </li>
 <li>
-<p><br></p>
+<p><img loading="lazy" src="https://i0.wp.com/telegra.ph/file/c5e7c401b84230d7a9bc3.png" alt="请输入图片描述" srcset="https://i0.wp.com/telegra.ph/file/c5e7c401b84230d7a9bc3.png?size=small, https://i0.wp.com/telegra.ph/file/c5e7c401b84230d7a9bc3.png?size=medium 1.5x, https://i0.wp.com/telegra.ph/file/c5e7c401b84230d7a9bc3.png?size=large 2x" data-title="请输入图片描述" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/><br></p>
 </li>
 <li>
-<p><br></p>
+<p><img loading="lazy" src="https://i0.wp.com/telegra.ph/file/9513fccdb6c8b328ad76a.png" alt="请输入图片描述" srcset="https://i0.wp.com/telegra.ph/file/9513fccdb6c8b328ad76a.png?size=small, https://i0.wp.com/telegra.ph/file/9513fccdb6c8b328ad76a.png?size=medium 1.5x, https://i0.wp.com/telegra.ph/file/9513fccdb6c8b328ad76a.png?size=large 2x" data-title="请输入图片描述" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/><br></p>
 </li>
 <li>
 <p>5：OperationType.scala文件也需修改，和 上面的serialVersionUID不同，走完整个流程运行会报这个文件的serialVersionUID错误，改成错误信息中的local class serialVersionUID</p>
@@ -41,7 +40,7 @@
 <p>6.将 kudu-spark2_2.11-1.11.0.pom 中的 dependencies 粘贴至 maven 中项目的pom文件中，还需额外增加以下依赖：</p>
 </li>
 </ul>
-<div class="highlight"><div class="chroma">
+<div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -76,8 +75,7 @@
 </span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.hdrhistogram<span class="nt">&lt;/groupId&gt;</span>
 </span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>HdrHistogram<span class="nt">&lt;/artifactId&gt;</span>
 </span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>2.1.12<span class="nt">&lt;/version&gt;</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
-</span></span></code></pre></td></tr></table>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>
@@ -94,5 +92,5 @@
 <ol>
 <li><a href="https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885"target="_blank" rel="external nofollow noopener noreferrer">https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
 <li><a href="https://issues.apache.org/jira/browse/KUDU-2898"target="_blank" rel="external nofollow noopener noreferrer">https://issues.apache.org/jira/browse/KUDU-2898<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
-</ol>]]></description></item><item><title>Apache Kudu 写入数据定期出问题</title><link>https://hpk.me/posts/kudu-periodic-issues/</link><pubDate>Mon, 17 Apr 2023 21:23:09 +0800</pubDate><author>hpkaiq</author><guid>https://hpk.me/posts/kudu-periodic-issues/</guid><description><![CDATA[<p>线上项目出现一个很奇怪的问题，数据经过Spark程序消费Kafka写入Kudu，出现Kudu Master连接超时，这个问题开始排查不出原因，有点头大，只能采用下下策，重启Spark程序，出现过几次后， 我记录了出现的时间，发现每次出现时间有个固定周期，一周，有规律就是最大的好消息，感觉离发现真相不远了，果然网上有这方面的问题讨论，虽说以前也去网上搜索过相关问题，毕竟Kudu相比于Hive、HBase还是小众了一点。。。是Kudu Java Client的问题，使用1.5以上版本就没问题了。</p>
+</ol>]]></description></item><item><title>Apache Kudu 写入数据定期出问题</title><link>https://hpk.me/posts/kudu-periodic-issues/</link><pubDate>Mon, 17 Apr 2023 21:23:09 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/kudu-periodic-issues/</guid><description><![CDATA[<p>线上项目出现一个很奇怪的问题，数据经过Spark程序消费Kafka写入Kudu，出现Kudu Master连接超时，这个问题开始排查不出原因，有点头大，只能采用下下策，重启Spark程序，出现过几次后， 我记录了出现的时间，发现每次出现时间有个固定周期，一周，有规律就是最大的好消息，感觉离发现真相不远了，果然网上有这方面的问题讨论，虽说以前也去网上搜索过相关问题，毕竟Kudu相比于Hive、HBase还是小众了一点。。。是Kudu Java Client的问题，使用1.5以上版本就没问题了。</p>
 <p>参考：<a href="https://blog.csdn.net/u011489205/article/details/79173537"target="_blank" rel="external nofollow noopener noreferrer">关于kudu使用的一些问题及解决办法<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item></channel></rss>
