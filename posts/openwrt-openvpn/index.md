@@ -95,7 +95,7 @@ route 10.88.1.0 255.255.255.0 vpn_gateway
 
 3. 此时openwrt网页openvpn下就有了刚刚加的配置了，勾选启用，点击保存应用。
 
-![image-20230720120756596](https://i2.wp.com/telegra.ph/file/0f4dea7f988b1a619fab3.png)
+![image-20230720120756596](https://im.gurl.eu.org/file/0f4dea7f988b1a619fab3.png)
 
 ## （5）修改openwrt防火墙
 

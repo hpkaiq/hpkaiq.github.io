@@ -65,9 +65,9 @@ java.io.InvalidClassException: org.apache.kudu.spark.kudu.KuduContext; local cla
 2. https://issues.apache.org/jira/browse/KUDU-2898
 
 
-[1]: https://i3.wp.com/telegra.ph/file/62c78529eb3073b0727e7.png
-[2]: https://i0.wp.com/telegra.ph/file/c5e7c401b84230d7a9bc3.png
-[3]: https://i0.wp.com/telegra.ph/file/9513fccdb6c8b328ad76a.png
+[1]: https://im.gurl.eu.org/file/62c78529eb3073b0727e7.png
+[2]: https://im.gurl.eu.org/file/c5e7c401b84230d7a9bc3.png
+[3]: https://im.gurl.eu.org/file/9513fccdb6c8b328ad76a.png
 
 
 ---
