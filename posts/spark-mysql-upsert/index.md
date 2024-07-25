@@ -68,17 +68,17 @@ object DataFrameWriterEnhance {
                 // In this case, we should truncate table and then load.
                 JdbcUtils.truncateTable(conn, options)
                 val tableSchema = JdbcUtils.getSchemaOption(conn, options)
-                updateTable(df, tableSchema, isCaseSensitive, options)
+                updateTable(df, tableSchema, isCaseSensitive, options, parameters.getOrElse(&#34;ignoreNull&#34;, &#34;false&#34;).toBoolean)
               } else {
                 // Otherwise, do not truncate the table, instead drop and recreate it
                 JdbcUtils.dropTable(conn, options.table, options)
                 JdbcUtils.createTable(conn, df, options)
-                updateTable(df, Some(df.schema), isCaseSensitive, options)
+                updateTable(df, Some(df.schema), isCaseSensitive, options, parameters.getOrElse(&#34;ignoreNull&#34;, &#34;false&#34;).toBoolean)
               }
 
             case SaveMode.Append =&gt;
               val tableSchema = JdbcUtils.getSchemaOption(conn, options)
-              updateTable(df, tableSchema, isCaseSensitive, options)
+              updateTable(df, tableSchema, isCaseSensitive, options, parameters.getOrElse(&#34;ignoreNull&#34;, &#34;false&#34;).toBoolean)
 
             case SaveMode.ErrorIfExists =&gt;
               throw new Exception(
@@ -92,7 +92,7 @@ object DataFrameWriterEnhance {
           }
         } else {
           JdbcUtils.createTable(conn, df, options)
-          updateTable(df, Some(df.schema), isCaseSensitive, options)
+          updateTable(df, Some(df.schema), isCaseSensitive, options, parameters.getOrElse(&#34;ignoreNull&#34;, &#34;false&#34;).toBoolean)
         }
       } finally {
         conn.close()
@@ -104,7 +104,8 @@ object DataFrameWriterEnhance {
     def updateTable(df: DataFrame,
                     tableSchema: Option[StructType],
                     isCaseSensitive: Boolean,
-                    options: JdbcOptionsInWrite): Unit = {
+                    options: JdbcOptionsInWrite,
+                    ignoreNull: Boolean = false): Unit = {
       val url = options.url
       val table = options.table
       val dialect = JdbcDialects.get(url)
@@ -113,7 +114,7 @@ object DataFrameWriterEnhance {
       val batchSize = options.batchSize
       val isolationLevel = options.isolationLevel
 
-      val updateStmt = getUpdateStatement(table, rddSchema, tableSchema, isCaseSensitive, dialect)
+      val updateStmt = getUpdateStatement(table, rddSchema, tableSchema, isCaseSensitive, dialect, ignoreNull)
       println(updateStmt)
       val repartitionedDF = options.numPartitions match {
         case Some(n) if n &lt;= 0 =&gt; throw new IllegalArgumentException(
@@ -154,10 +155,17 @@ object DataFrameWriterEnhance {
         }.mkString(&#34;,&#34;)
       }
       val placeholders = rddSchema.fields.map(_ =&gt; &#34;?&#34;).mkString(&#34;,&#34;)
-      s&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders)
-         |ON DUPLICATE KEY UPDATE
-         |${columns.split(&#34;,&#34;).map(col =&gt; s&#34;$col=VALUES($col)&#34;).mkString(&#34;,&#34;)}
-         |&#34;&#34;&#34;.stripMargin
+      if (ignoreNull) {
+        s&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders) AS data_new
+           |ON DUPLICATE KEY UPDATE
+           |${columns.split(&#34;,&#34;).map(col =&gt; s&#34;$col=IF(data_new.$col is null,$table.$col,data_new.$col)&#34;).mkString(&#34;,&#34;)}
+           |&#34;&#34;&#34;.stripMargin
+      } else {
+        s&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders)
+           |ON DUPLICATE KEY UPDATE
+           |${columns.split(&#34;,&#34;).map(col =&gt; s&#34;$col=VALUES($col)&#34;).mkString(&#34;,&#34;)}
+           |&#34;&#34;&#34;.stripMargin
+      }
     }
   }
 }
@@ -174,7 +182,7 @@ import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 
 object MysqlUtils {
 
-  def upsert(rawDF: DataFrame, database: String, tableName: String)(implicit spark: SparkSession): Unit = {
+  def upsert(rawDF: DataFrame, database: String, tableName: String, ignoreNull: Boolean = false)(implicit spark: SparkSession): Unit = {
     var df = rawDF
     for (elem &lt;- df.schema.fields) {
       if (elem.dataType == NullType) {
@@ -193,6 +201,7 @@ object MysqlUtils {
       .option(&#34;useSSL&#34;, &#34;false&#34;)
       .option(&#34;showSql&#34;, &#34;false&#34;)
       .option(&#34;numPartitions&#34;, &#34;1&#34;)
+      .option(&#34;ignoreNull&#34;, ignoreNull)
       .update()
   }
 
@@ -229,6 +238,7 @@ object TestMysqlUpsert {
       .toDF(&#34;key_one&#34;, &#34;key_two&#34;, &#34;val_one&#34;, &#34;val_two&#34;)
 
     MysqlUtils.upsert(df, database, &#34;test_unique_key&#34;)
+    //MysqlUtils.upsert(df, database, &#34;test_unique_key&#34;, true) ignoreNull=true 忽略df里为null的列，不更新
     spark.close()
 
   }

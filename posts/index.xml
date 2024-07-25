@@ -1,124 +1,329 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>所有文章 - PME-Blog</title><link>https://hpk.me/posts/</link><description>所有文章 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 12 Mar 2024 11:22:13 +0800</lastBuildDate><atom:link href="https://hpk.me/posts/" rel="self" type="application/rss+xml"/><item><title>kudu-spark KuduContext java.io.InvalidClassException 解决</title><link>https://hpk.me/posts/kudu-spark-invalid-class-exception/</link><pubDate>Tue, 18 Apr 2023 13:56:34 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/kudu-spark-invalid-class-exception/</guid><description><![CDATA[<p>背景：
-线上kudu 集群版本为1.11.0版本, spark 使用 kudu-spark2_2.11-1.7.0.jar，
-为了使用新版本中的
-<code>val wo = new KuduWriteOptions(ignoreNull = true)</code>
-特性，升级至 kudu-spark2_2.11-1.11.0.jar 版本，但是报错。</p>
-<div class="highlight" id="id-1"><div class="chroma">
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>所有文章 - PME-Blog</title><link>https://hpk.me/posts/</link><description>所有文章 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 12 Mar 2024 11:22:13 +0800</lastBuildDate><atom:link href="https://hpk.me/posts/" rel="self" type="application/rss+xml"/><item><title>spark 实现 mysql upsert</title><link>https://hpk.me/posts/spark-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:23:06 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/spark-mysql-upsert/</guid><description><![CDATA[<p><strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。</strong></p>
+<p>基于 <strong>spark2.4.3 scala2.11.8</strong></p>
+<h2 id="工具类-dataframewriterenhance" class="heading-element">
+  <a href="#%e5%b7%a5%e5%85%b7%e7%b1%bb-dataframewriterenhance" class="heading-mark"></a>工具类 DataFrameWriterEnhance</h2><div class="highlight" id="id-1"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">java</span><span class="p">.</span><span class="na">io</span><span class="p">.</span><span class="na">InvalidClassException</span><span class="p">:</span><span class="w"> </span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">kudu</span><span class="p">.</span><span class="na">spark</span><span class="p">.</span><span class="na">kudu</span><span class="p">.</span><span class="na">KuduContext</span><span class="p">;</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="kd">class</span> <span class="nc">incompatible</span><span class="p">:</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="n">classdesc</span><span class="w"> </span><span class="n">serialVersionUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xxxxxxxx</span><span class="p">,</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="kd">class</span> <span class="nc">serialVersionUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xxxxxxx111</span></span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.xxx.utils</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.catalyst.plans.logical.LogicalPlan</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.execution.SQLExecution</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.execution.datasources.DataSource</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.execution.datasources.jdbc.</span><span class="p">{</span><span class="n">JDBCOptions</span><span class="p">,</span><span class="w"> </span><span class="n">JdbcOptionsInWrite</span><span class="p">,</span><span class="w"> </span><span class="n">JdbcRelationProvider</span><span class="p">,</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.jdbc.</span><span class="p">{</span><span class="n">JdbcDialect</span><span class="p">,</span><span class="w"> </span><span class="n">JdbcDialects</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.sources.BaseRelation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.types.StructType</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql._</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.sql.Connection</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">object</span><span class="w"> </span><span class="n">DataFrameWriterEnhance</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">implicit</span><span class="w"> </span><span class="kd">class</span> <span class="nf">DataFrameWriterMysqlUpdateEnhance</span><span class="p">(</span><span class="n">writer</span><span class="p">:</span><span class="w"> </span><span class="n">DataFrameWriter</span><span class="o">[</span><span class="n">Row</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">update</span><span class="p">():</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">extraOptionsField</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">writer</span><span class="p">.</span><span class="na">getClass</span><span class="p">.</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;org$apache$spark$sql$DataFrameWriter$$extraOptions&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">dfField</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">writer</span><span class="p">.</span><span class="na">getClass</span><span class="p">.</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;df&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">sourceField</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">writer</span><span class="p">.</span><span class="na">getClass</span><span class="p">.</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;source&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">partitioningColumnsField</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">writer</span><span class="p">.</span><span class="na">getClass</span><span class="p">.</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;partitioningColumns&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">extraOptionsField</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">dfField</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">sourceField</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">partitioningColumnsField</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">extraOptions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">extraOptionsField</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">writer</span><span class="p">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">scala</span><span class="p">.</span><span class="na">collection</span><span class="p">.</span><span class="na">Map</span><span class="o">[</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">]]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dfField</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">writer</span><span class="p">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">DataFrame</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">partitioningColumns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">partitioningColumnsField</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">writer</span><span class="p">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">Option</span><span class="o">[</span><span class="n">Seq</span><span class="o">[</span><span class="n">String</span><span class="o">]]]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">logicalPlanField</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">getClass</span><span class="p">.</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;logicalPlan&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">logicalPlanField</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="kd">var</span><span class="w"> </span><span class="n">logicalPlan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">logicalPlanField</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">df</span><span class="p">).</span><span class="na">asInstanceOf</span><span class="o">[</span><span class="n">LogicalPlan</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">sparkSession</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">dataSource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataSource</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">sparkSession</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">className</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="s">&#34;${DataFrameWriterEnhance.getClass.getName}MysqlUpdateRelationProvider&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">partitionColumns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">partitioningColumns</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="n">Nil</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">extraOptions</span><span class="p">.</span><span class="na">toMap</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">logicalPlan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataSource</span><span class="p">.</span><span class="na">planForWriting</span><span class="p">(</span><span class="n">SaveMode</span><span class="p">.</span><span class="na">Append</span><span class="p">,</span><span class="w"> </span><span class="n">logicalPlan</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">qe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="na">sessionState</span><span class="p">.</span><span class="na">executePlan</span><span class="p">(</span><span class="n">logicalPlan</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">SQLExecution</span><span class="p">.</span><span class="na">withNewExecutionId</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="w"> </span><span class="n">qe</span><span class="p">)(</span><span class="n">qe</span><span class="p">.</span><span class="na">toRdd</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">class</span> <span class="nc">MysqlUpdateRelationProvider</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">JdbcRelationProvider</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">override</span><span class="w"> </span><span class="n">def</span><span class="w"> </span><span class="nf">createRelation</span><span class="p">(</span><span class="n">sqlContext</span><span class="p">:</span><span class="w"> </span><span class="n">SQLContext</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="p">:</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">:</span><span class="w"> </span><span class="n">Map</span><span class="o">[</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">:</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">):</span><span class="w"> </span><span class="n">BaseRelation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JdbcOptionsInWrite</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlContext</span><span class="p">.</span><span class="na">sparkSession</span><span class="p">.</span><span class="na">sessionState</span><span class="p">.</span><span class="na">conf</span><span class="p">.</span><span class="na">caseSensitiveAnalysis</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">createConnectionFactory</span><span class="p">(</span><span class="n">options</span><span class="p">)()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">tableExists</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">tableExists</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tableExists</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">mode</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">.</span><span class="na">Overwrite</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">options</span><span class="p">.</span><span class="na">isTruncate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">isCascadingTruncateTable</span><span class="p">(</span><span class="n">options</span><span class="p">.</span><span class="na">url</span><span class="p">).</span><span class="na">contains</span><span class="p">(</span><span class="kc">false</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// In this case, we should truncate table and then load.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">truncateTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">val</span><span class="w"> </span><span class="n">tableSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">getSchemaOption</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// Otherwise, do not truncate the table, instead drop and recreate it</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">dropTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">table</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">createTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">),</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">.</span><span class="na">Append</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">val</span><span class="w"> </span><span class="n">tableSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">getSchemaOption</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">.</span><span class="na">ErrorIfExists</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Exception</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">s</span><span class="s">&#34;Table or view &#39;${options.table}&#39; already exists. &#34;</span><span class="w"> </span><span class="o">+</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="n">s</span><span class="s">&#34;SaveMode: ErrorIfExists.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">.</span><span class="na">Ignore</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// With `SaveMode.Ignore` mode, if table already exists, the save operation is expected</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// to not save the contents of the DataFrame and to not change the existing data.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// Therefore, it is okay to do nothing here and then just return the relation below.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">createTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">),</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">conn</span><span class="p">.</span><span class="na">close</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">createRelation</span><span class="p">(</span><span class="n">sqlContext</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">:</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">tableSchema</span><span class="p">:</span><span class="w"> </span><span class="n">Option</span><span class="o">[</span><span class="n">StructType</span><span class="o">]</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">isCaseSensitive</span><span class="p">:</span><span class="w"> </span><span class="n">Boolean</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">options</span><span class="p">:</span><span class="w"> </span><span class="n">JdbcOptionsInWrite</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ignoreNull</span><span class="p">:</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">):</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">url</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">table</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">dialect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcDialects</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">rddSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">getConnection</span><span class="p">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Connection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">createConnectionFactory</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">batchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">batchSize</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">isolationLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">isolationLevel</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">updateStmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getUpdateStatement</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">rddSchema</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">dialect</span><span class="p">,</span><span class="w"> </span><span class="n">ignoreNull</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">println</span><span class="p">(</span><span class="n">updateStmt</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">repartitionedDF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">numPartitions</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">0</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IllegalArgumentException</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">s</span><span class="s">&#34;Invalid value `$n` for parameter `${JDBCOptions.JDBC_NUM_PARTITIONS}` in table writing &#34;</span><span class="w"> </span><span class="o">+</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;via JDBC. The minimum value is 1.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">rdd</span><span class="p">.</span><span class="na">partitions</span><span class="p">.</span><span class="na">length</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">coalesce</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">df</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">repartitionedDF</span><span class="p">.</span><span class="na">rdd</span><span class="p">.</span><span class="na">foreachPartition</span><span class="p">(</span><span class="n">iterator</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">savePartition</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">getConnection</span><span class="p">,</span><span class="w"> </span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">iterator</span><span class="p">,</span><span class="w"> </span><span class="n">rddSchema</span><span class="p">,</span><span class="w"> </span><span class="n">updateStmt</span><span class="p">,</span><span class="w"> </span><span class="n">batchSize</span><span class="p">,</span><span class="w"> </span><span class="n">dialect</span><span class="p">,</span><span class="w"> </span><span class="n">isolationLevel</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">getUpdateStatement</span><span class="p">(</span><span class="n">table</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                           </span><span class="n">rddSchema</span><span class="p">:</span><span class="w"> </span><span class="n">StructType</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                           </span><span class="n">tableSchema</span><span class="p">:</span><span class="w"> </span><span class="n">Option</span><span class="o">[</span><span class="n">StructType</span><span class="o">]</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                           </span><span class="n">isCaseSensitive</span><span class="p">:</span><span class="w"> </span><span class="n">Boolean</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                           </span><span class="n">dialect</span><span class="p">:</span><span class="w"> </span><span class="n">JdbcDialect</span><span class="p">):</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tableSchema</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rddSchema</span><span class="p">.</span><span class="na">fields</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dialect</span><span class="p">.</span><span class="na">quoteIdentifier</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="na">name</span><span class="p">)).</span><span class="na">mkString</span><span class="p">(</span><span class="s">&#34;,&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">columnNameEquality</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isCaseSensitive</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">spark</span><span class="p">.</span><span class="na">sql</span><span class="p">.</span><span class="na">catalyst</span><span class="p">.</span><span class="na">analysis</span><span class="p">.</span><span class="na">caseSensitiveResolution</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">spark</span><span class="p">.</span><span class="na">sql</span><span class="p">.</span><span class="na">catalyst</span><span class="p">.</span><span class="na">analysis</span><span class="p">.</span><span class="na">caseInsensitiveResolution</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// The generated insert statement needs to follow rddSchema&#39;s column sequence and</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// tableSchema&#39;s column names. When appending data into some case-sensitive DBMSs like</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// PostgreSQL/Oracle, we need to respect the existing case-sensitive column names instead of</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// RDD column names for user convenience.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">tableColumnNames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">.</span><span class="na">get</span><span class="p">.</span><span class="na">fieldNames</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rddSchema</span><span class="p">.</span><span class="na">fields</span><span class="p">.</span><span class="na">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">val</span><span class="w"> </span><span class="n">normalizedName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tableColumnNames</span><span class="p">.</span><span class="na">find</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">columnNameEquality</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">.</span><span class="na">name</span><span class="p">)).</span><span class="na">getOrElse</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Exception</span><span class="p">(</span><span class="n">s</span><span class="s">&#34;&#34;&#34;Column &#34;</span><span class="n">$</span><span class="p">{</span><span class="n">col</span><span class="p">.</span><span class="na">name</span><span class="p">}</span><span class="s">&#34; not found in schema $tableSchema&#34;&#34;&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">dialect</span><span class="p">.</span><span class="na">quoteIdentifier</span><span class="p">(</span><span class="n">normalizedName</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}.</span><span class="na">mkString</span><span class="p">(</span><span class="s">&#34;,&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">placeholders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rddSchema</span><span class="p">.</span><span class="na">fields</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&#34;?&#34;</span><span class="p">).</span><span class="na">mkString</span><span class="p">(</span><span class="s">&#34;,&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ignoreNull</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">s</span><span class="s">&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders) AS data_new
+</span></span></span><span class="line"><span class="cl"><span class="s">           |ON DUPLICATE KEY UPDATE
+</span></span></span><span class="line"><span class="cl"><span class="s">           |${columns.split(&#34;</span><span class="p">,</span><span class="s">&#34;).map(col =&gt; s&#34;</span><span class="n">$col</span><span class="o">=</span><span class="n">IF</span><span class="p">(</span><span class="n">data_new</span><span class="p">.</span><span class="na">$col</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="n">$table</span><span class="p">.</span><span class="na">$col</span><span class="p">,</span><span class="n">data_new</span><span class="p">.</span><span class="na">$col</span><span class="p">)</span><span class="s">&#34;).mkString(&#34;</span><span class="p">,</span><span class="s">&#34;)}
+</span></span></span><span class="line"><span class="cl"><span class="s">           |&#34;&#34;&#34;</span><span class="p">.</span><span class="na">stripMargin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">s</span><span class="s">&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders)
+</span></span></span><span class="line"><span class="cl"><span class="s">           |ON DUPLICATE KEY UPDATE
+</span></span></span><span class="line"><span class="cl"><span class="s">           |${columns.split(&#34;</span><span class="p">,</span><span class="s">&#34;).map(col =&gt; s&#34;</span><span class="n">$col</span><span class="o">=</span><span class="n">VALUES</span><span class="p">(</span><span class="n">$col</span><span class="p">)</span><span class="s">&#34;).mkString(&#34;</span><span class="p">,</span><span class="s">&#34;)}
+</span></span></span><span class="line"><span class="cl"><span class="s">           |&#34;&#34;&#34;</span><span class="p">.</span><span class="na">stripMargin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
-</div><p>在https://issues.apache.org/jira/browse/KUDU-2898 中说这个已经修复，但是修复的版本是kudu 1.12.0，升级线上kudu版本这个暂时不考虑，只好自己修改源码，重新编译 kudu-spark2_2.11-1.11.0.jar</p>
-<ul>
-<li>
-<p>1.解压 kudu-spark2_2.11-1.11.0.jar ，将解压出的所有文件夹移动至一个空文件夹，例如tmp</p>
-</li>
-<li>
-<p>2.在idea中新建maven项目，配置好 scala 等环境</p>
-</li>
-<li>
-<p>3.解压 kudu-spark2_2.11-1.11.0-sources.jar，将 其中 org 文件夹 复制 至 maven中刚刚建好的项目中（org/apache/kudu/spark/kudu）</p>
-</li>
-<li>
-<p>4.修改文件 KuduContext.scala 、 KuduRDD.scala， 增加或修改 @SerialVersionUID(xxxxxxxxxxL) ，xxxxxxxxxx改为报错信息中的local class serialVersionUID<br></p>
-</li>
-<li>
-<p><img loading="lazy" src="https://image.hpk.me/file/62c78529eb3073b0727e7.png" alt="请输入图片描述" srcset="https://image.hpk.me/file/62c78529eb3073b0727e7.png?size=small, https://image.hpk.me/file/62c78529eb3073b0727e7.png?size=medium 1.5x, https://image.hpk.me/file/62c78529eb3073b0727e7.png?size=large 2x" data-title="请输入图片描述" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/><br></p>
-</li>
-<li>
-<p><img loading="lazy" src="https://image.hpk.me/file/c5e7c401b84230d7a9bc3.png" alt="请输入图片描述" srcset="https://image.hpk.me/file/c5e7c401b84230d7a9bc3.png?size=small, https://image.hpk.me/file/c5e7c401b84230d7a9bc3.png?size=medium 1.5x, https://image.hpk.me/file/c5e7c401b84230d7a9bc3.png?size=large 2x" data-title="请输入图片描述" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/><br></p>
-</li>
-<li>
-<p><img loading="lazy" src="https://image.hpk.me/file/9513fccdb6c8b328ad76a.png" alt="请输入图片描述" srcset="https://image.hpk.me/file/9513fccdb6c8b328ad76a.png?size=small, https://image.hpk.me/file/9513fccdb6c8b328ad76a.png?size=medium 1.5x, https://image.hpk.me/file/9513fccdb6c8b328ad76a.png?size=large 2x" data-title="请输入图片描述" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/><br></p>
-</li>
-<li>
-<p>5：OperationType.scala文件也需修改，和 上面的serialVersionUID不同，走完整个流程运行会报这个文件的serialVersionUID错误，改成错误信息中的local class serialVersionUID</p>
-</li>
-<li>
-<p>6.将 kudu-spark2_2.11-1.11.0.pom 中的 dependencies 粘贴至 maven 中项目的pom文件中，还需额外增加以下依赖：</p>
-</li>
-</ul>
-<div class="highlight" id="id-2"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.apache.kudu<span class="nt">&lt;/groupId&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>kudu-client<span class="nt">&lt;/artifactId&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>1.11.0<span class="nt">&lt;/version&gt;</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.apache.yetus<span class="nt">&lt;/groupId&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>audience-annotations<span class="nt">&lt;/artifactId&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>0.13.0<span class="nt">&lt;/version&gt;</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.hdrhistogram<span class="nt">&lt;/groupId&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>HdrHistogram<span class="nt">&lt;/artifactId&gt;</span>
-</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>2.1.12<span class="nt">&lt;/version&gt;</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>
-<p>7.idea中将maven项目打包</p>
-</li>
-<li>
-<p>8.将idea中打好的包解压，将其中 org/apache/kudu/spark/kudu  下的文件覆盖至 tmp 中 org/apache/kudu/spark/kudu</p>
-</li>
-<li>
-<p>9.将 tmp 文件夹下的所有目录打包成新的jar包</p>
-</li>
-</ul>
-<p>参考链接：</p>
-<ol>
-<li><a href="https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885"target="_blank" rel="external nofollow noopener noreferrer">https://community.cloudera.com/t5/Support-Questions/KUDU-need-rebuild-post-upgrade-of-CDH-cluster/td-p/92885<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
-<li><a href="https://issues.apache.org/jira/browse/KUDU-2898"target="_blank" rel="external nofollow noopener noreferrer">https://issues.apache.org/jira/browse/KUDU-2898<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></li>
-</ol>]]></description></item><item><title>Openwrt下使用TOTP动态验证码连接Openvpn</title><link>https://hpk.me/posts/openwrt-openvpn/</link><pubDate>Thu, 20 Jul 2023 12:24:22 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/openwrt-openvpn/</guid><description><![CDATA[<h1 id="背景" class="heading-element">
-  <a href="#%e8%83%8c%e6%99%af" class="heading-mark"></a>背景</h1><p>在家办公需要使用 openvpn 连接公司内网，而且密码使用  固定密码 +TOTP 验证码 的形式，每次都需要打开电脑的openvpn客户端，打开验证码客户端复制验证码，连接，只能说繁琐。希望通过家里的软路由openwrt的openvpn客户端来实现上述操作的一键连接，实现家里每个终端设备都能连接公司内网。</p>
-<h1 id="实操" class="heading-element">
-  <a href="#%e5%ae%9e%e6%93%8d" class="heading-mark"></a>实操</h1><p>确保你的openwrt服务列表里已经安装openvpn，如没有请自行安装，在openwrt下新建 /root/openvpn 目录，一切操作均在这个目录下进行。</p>
-<h2 id="1openwrt安装oathtool" class="heading-element">
-  <a href="#1openwrt%e5%ae%89%e8%a3%85oathtool" class="heading-mark"></a>（1）openwrt安装oathtool</h2><p>下载连接： <a href="https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk"target="_blank" rel="external nofollow noopener noreferrer">https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
-<p>下载上传至openwrt，安装 <code>opkg install  /tmp/upload/oath-toolkit_2.6.5-1_x86_64.ipk</code></p>
-<p>验证： <code>oathtool -b --totp '你的密钥'</code>  和谷歌身份验证器里的验证码此时是否一致。</p>
-<h2 id="2生成账户密码" class="heading-element">
-  <a href="#2%e7%94%9f%e6%88%90%e8%b4%a6%e6%88%b7%e5%af%86%e7%a0%81" class="heading-mark"></a>（2）生成账户密码</h2><p>在/root/openvpn下新建<code>generate-password.sh</code> 脚本，内容如下，</p>
-<div class="highlight" id="id-1"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">yzm</span><span class="o">=</span><span class="k">$(</span>/usr/bin/oathtool -b --totp <span class="s1">&#39;你的密钥&#39;</span><span class="k">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> -e <span class="s2">&#34;公司openvpn账号\n公司openvpn固定密码</span><span class="si">${</span><span class="nv">yzm</span><span class="si">}</span><span class="s2">&#34;</span> &gt; /root/openvpn/userpass.txt</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="3openvpn配置文件" class="heading-element">
-  <a href="#3openvpn%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" class="heading-mark"></a>（3）openvpn配置文件</h2><p>上传<code>xxx.crt</code>、<code>xxx.key</code>、<code>xxx.ovpn</code>等文件到openwrt，并移动到/root/openvpn 目录下，修改ovpn文件。</p>
-<p>auth-user-pass此项修改位为 <code>auth-user-pass userpass.txt</code>，从文件中读取用户名密码。</p>
-<p>为了使指定的ip段使用openvpn，而其他的网络走路由默认线路，在ovpn文件下追加<code>route-nopull</code>及其下面的内容。</p>
-<p>其中 10.87.1.0、10.88.1.0 修改为需要走openvpn的ip段，这样 10.87.1.1~10.87.1.254 、10.88.1.1~10.88.1.254 就会走openvpn，根据自己需要修改。</p>
-<div class="highlight" id="id-2"><div class="chroma">
+</div><h2 id="工具类-mysqlutils" class="heading-element">
+  <a href="#%e5%b7%a5%e5%85%b7%e7%b1%bb-mysqlutils" class="heading-mark"></a>工具类 MysqlUtils</h2><div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -143,52 +348,57 @@
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">client
-</span></span><span class="line"><span class="cl">dev tun
-</span></span><span class="line"><span class="cl">link-mtu <span class="m">1500</span>
-</span></span><span class="line"><span class="cl">proto tcp
-</span></span><span class="line"><span class="cl">remote xxx.com <span class="m">8888</span>
-</span></span><span class="line"><span class="cl">resolv-retry infinite
-</span></span><span class="line"><span class="cl">nobind
-</span></span><span class="line"><span class="cl">persist-key
-</span></span><span class="line"><span class="cl">persist-tun
-</span></span><span class="line"><span class="cl">ca /root/openvpn/xxx.crt
-</span></span><span class="line"><span class="cl">remote-cert-tls server
-</span></span><span class="line"><span class="cl">tls-auth /root/openvpn/xxx.key <span class="m">1</span>
-</span></span><span class="line"><span class="cl">cipher AES-256-CBC
-</span></span><span class="line"><span class="cl">auth-user-pass /root/openvpn/userpass.txt
-</span></span><span class="line"><span class="cl">verb <span class="m">3</span>
-</span></span><span class="line"><span class="cl">auth-nocache
-</span></span><span class="line"><span class="cl">reneg-sec <span class="m">36000</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">route-nopull
-</span></span><span class="line"><span class="cl">pull-filter ignore <span class="s2">&#34;dhcp-option DNS&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">route 10.87.1.0 255.255.255.0 vpn_gateway
-</span></span><span class="line"><span class="cl">route 10.88.1.0 255.255.255.0 vpn_gateway</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.xxx.utils</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.xxx.utils.DataFrameWriterEnhance.DataFrameWriterMysqlUpdateEnhance</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.functions.col</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.types.</span><span class="p">{</span><span class="n">NullType</span><span class="p">,</span><span class="w"> </span><span class="n">ShortType</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.spark.sql.</span><span class="p">{</span><span class="n">DataFrame</span><span class="p">,</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">,</span><span class="w"> </span><span class="n">SparkSession</span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">object</span><span class="w"> </span><span class="n">MysqlUtils</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">def</span><span class="w"> </span><span class="nf">upsert</span><span class="p">(</span><span class="n">rawDF</span><span class="p">:</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">,</span><span class="w"> </span><span class="n">database</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">tableName</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">ignoreNull</span><span class="p">:</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)(</span><span class="n">implicit</span><span class="w"> </span><span class="n">spark</span><span class="p">:</span><span class="w"> </span><span class="n">SparkSession</span><span class="p">):</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawDF</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">for</span><span class="w"> </span><span class="p">(</span><span class="n">elem</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">.</span><span class="na">fields</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="na">dataType</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NullType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">withColumn</span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="na">name</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="na">name</span><span class="p">).</span><span class="na">cast</span><span class="p">(</span><span class="n">ShortType</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">df</span><span class="p">.</span><span class="na">write</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="s">&#34;jdbc&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">mode</span><span class="p">(</span><span class="n">SaveMode</span><span class="p">.</span><span class="na">Append</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;driver&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;com.mysql.jdbc.Driver&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;url&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">spark</span><span class="p">.</span><span class="na">conf</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">s</span><span class="s">&#34;spark.job.mysql.${database}.url&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;user&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">spark</span><span class="p">.</span><span class="na">conf</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">s</span><span class="s">&#34;spark.job.mysql.${database}.username&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;password&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">spark</span><span class="p">.</span><span class="na">conf</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">s</span><span class="s">&#34;spark.job.mysql.${database}.password&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;dbtable&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">tableName</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;useSSL&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;showSql&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;numPartitions&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;1&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">ignoreNull</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="4openwrt配置修改" class="heading-element">
-  <a href="#4openwrt%e9%85%8d%e7%bd%ae%e4%bf%ae%e6%94%b9" class="heading-mark"></a>（4）openwrt配置修改</h2><ol>
-<li>
-<p>修改 /etc/config/openvpn ，在其下追加自己的openvpn配置，如下所示，名字根据需要修改。</p>
+</div><h2 id="使用" class="heading-element">
+  <a href="#%e4%bd%bf%e7%94%a8" class="heading-mark"></a>使用</h2><p>spark启动脚本加入mysql配置</p>
 <div class="highlight" id="id-3"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">config openvpn &#39;公司vpn&#39;
-</span></span><span class="line"><span class="cl">        option config &#39;/root/openvpn/xxx.ovpn&#39;
-</span></span><span class="line"><span class="cl">        option auth_nocache &#39;1&#39;</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>为了在启动时先生成密码文件userpass.txt，修改 /etc/init.d/openvpn 脚本，在 <code>openvpn_add_instance()</code> 函数下第一行加上</p>
-<p><code>sh /root/openvpn/generate-password.sh</code>，如下所示。</p>
-<div class="highlight" id="id-4"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -202,38 +412,81 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">openvpn_add_instance<span class="o">()</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        sh /root/openvpn/generate-password.sh
-</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">name</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">dir</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$2</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">conf</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$3</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">security</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$4</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">up</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$5</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">local</span> <span class="nv">down</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$6</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">		...
-</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">spark-submit <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--master yarn <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--deploy-mode cluster <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-memory 3G <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--num-executors <span class="m">5</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--executor-cores <span class="m">4</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--driver-memory 3G <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.job.mysql.test.url<span class="o">=</span><span class="si">${</span><span class="nv">jdbc_url</span><span class="si">}</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.job.mysql.test.username<span class="o">=</span><span class="si">${</span><span class="nv">jdbc_username</span><span class="si">}</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--conf spark.job.mysql.test.password<span class="o">=</span><span class="si">${</span><span class="nv">jdbc_password</span><span class="si">}</span> <span class="err">\</span></span></span></code></pre></td></tr></table>
 </div>
-</div></li>
-<li>
-<p>此时openwrt网页openvpn下就有了刚刚加的配置了，勾选启用，点击保存应用。</p>
-</li>
-</ol>
-<p><img loading="lazy" src="https://image.hpk.me/file/0f4dea7f988b1a619fab3.png" alt="image-20230720120756596" srcset="https://image.hpk.me/file/0f4dea7f988b1a619fab3.png?size=small, https://image.hpk.me/file/0f4dea7f988b1a619fab3.png?size=medium 1.5x, https://image.hpk.me/file/0f4dea7f988b1a619fab3.png?size=large 2x" data-title="image-20230720120756596" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/></p>
-<h2 id="5修改openwrt防火墙" class="heading-element">
-  <a href="#5%e4%bf%ae%e6%94%b9openwrt%e9%98%b2%e7%81%ab%e5%a2%99" class="heading-mark"></a>（5）修改openwrt防火墙</h2><p>上面的操作完成后，你会发现在openwrt里能ping通需要通过openvpn连接的ip段，但是连接路由的设备并不能连通，需要修改防火墙，在防火墙自定义规则里添加如下内容，其中<code>192.168.8.0/24</code>修改为你的路由网段，<code>10.87.1.0/24,10.88.1.0/24</code>修改为你需要通过openvpn连接的公司ip网段<code>10.87.1.*,10.88.1.*</code>,如果想要达到连接 <code>10.87.*.*</code>的效果，可以改成 <code>10.87.0.0/16</code> ，这方面的网络知识，请自行查阅相关资料。</p>
-<p>注：我使用了openwrt的mosdns功能，公司的内网域名放到了mosdns自定义hosts里了。没使用这个功能可以通过网络-DHCP/DNS里额外的HOSTS文件来实现自定义域名。</p>
+</div><p>使用范例</p>
+<div class="highlight" id="id-4"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">utils.MysqlUtils</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">object</span><span class="w"> </span><span class="n">TestMysqlUpsert</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span><span class="w"> </span><span class="n">Array</span><span class="o">[</span><span class="n">String</span><span class="o">]</span><span class="p">):</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">implicit</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="n">spark</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SparkSession</span><span class="p">.</span><span class="na">builder</span><span class="p">().</span><span class="na">enableHiveSupport</span><span class="p">().</span><span class="na">getOrCreate</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kn">import</span><span class="w"> </span><span class="nn">spark.implicits._</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;test&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">arr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Array</span><span class="p">((</span><span class="n">1</span><span class="p">,</span><span class="n">11</span><span class="p">,</span><span class="s">&#34;name1&#34;</span><span class="p">,</span><span class="n">11111</span><span class="p">),(</span><span class="n">2</span><span class="p">,</span><span class="n">22</span><span class="p">,</span><span class="s">&#34;name2&#34;</span><span class="p">,</span><span class="n">22222</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spark</span><span class="p">.</span><span class="na">sparkContext</span><span class="p">.</span><span class="na">parallelize</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">toDF</span><span class="p">(</span><span class="s">&#34;key_one&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;key_two&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;val_one&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;val_two&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">MysqlUtils</span><span class="p">.</span><span class="na">upsert</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;test_unique_key&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//MysqlUtils.upsert(df, database, &#34;test_unique_key&#34;, true) ignoreNull=true 忽略df里为null的列，不更新</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">spark</span><span class="p">.</span><span class="na">close</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>test_unique_key表结构</p>
 <div class="highlight" id="id-5"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">iptables -I FORWARD -o tun0 -j ACCEPT
-</span></span><span class="line"><span class="cl">iptables -t nat -I POSTROUTING -s 192.168.8.0/24 -d 10.87.1.0/24,10.88.1.0/24 -o tun0 -j MASQUERADE</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">test_unique_key</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">key_one</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">key_two</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">val_one</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">val_two</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">UNIQUE</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="o">`</span><span class="n">uk</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">key_one</span><span class="o">`</span><span class="p">,</span><span class="o">`</span><span class="n">key_two</span><span class="o">`</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="w"> </span><span class="k">COMMENT</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">;</span></span></span></code></pre></td></tr></table>
 </div>
-</div><h1 id="参考" class="heading-element">
-  <a href="#%e5%8f%82%e8%80%83" class="heading-mark"></a>参考</h1><p><a href="http://www.phperz.com/article/15/1226/177358.html"target="_blank" rel="external nofollow noopener noreferrer">openwrt下的openvpn client实现 - PHPERZ中文资讯站<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>
-<p><a href="https://m.zohead.com/archives/openwrt-openvpn-ipset/?wpmp_switcher=true"target="_blank" rel="external nofollow noopener noreferrer">Soul Of Free Loop » 博客存档 » OpenWRT实现OpenVPN按ipset自动分流 (zohead.com)<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>一些免费的大模型资源</title><link>https://hpk.me/posts/about_chatgpt/</link><pubDate>Tue, 12 Mar 2024 11:22:13 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/about_chatgpt/</guid><description><![CDATA[<p>一些免费的大模型资源，可生成兼容Openai api 接口的资源。</p>
+</div><h2 id="参考" class="heading-element">
+  <a href="#%e5%8f%82%e8%80%83" class="heading-mark"></a>参考</h2><p><a href="https://blog.csdn.net/qq_18453581/article/details/125907861" title="csdn_Spark Upsert写入Mysql(scala增强) 无需依赖"target="_blank" rel="external nofollow noopener noreferrer">csdn_Spark Upsert写入Mysql(scala增强) 无需依赖<i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true"></i></a></p>]]></description></item><item><title>一些免费的大模型资源</title><link>https://hpk.me/posts/about_chatgpt/</link><pubDate>Tue, 12 Mar 2024 11:22:13 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/about_chatgpt/</guid><description><![CDATA[<p>一些免费的大模型资源，可生成兼容Openai api 接口的资源。</p>
 <h2 id="谷歌gemini" class="heading-element">
   <a href="#%e8%b0%b7%e6%ad%8cgemini" class="heading-mark"></a>谷歌Gemini</h2><p>申请地址：https://makersuite.google.com/app/apikey</p>
 <h2 id="字节coze海外版" class="heading-element">
@@ -272,7 +525,7 @@
   <a href="#3openvpn%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" class="heading-mark"></a>（3）openvpn配置文件</h2><p>上传<code>xxx.crt</code>、<code>xxx.key</code>、<code>xxx.ovpn</code>等文件到openwrt，并移动到/root/openvpn 目录下，修改ovpn文件。</p>
 <p>auth-user-pass此项修改位为 <code>auth-user-pass userpass.txt</code>，从文件中读取用户名密码。</p>
 <p>为了使指定的ip段使用openvpn，而其他的网络走路由默认线路，在ovpn文件下追加<code>route-nopull</code>及其下面的内容。</p>
-<p>其中 10.87.1.0、10.88.1.0 修改为需要走openvpn的ip段，这样 10.87.1.1~10.87.1.254 、10.88.1.1~10.88.1.254 就会走openvpn，根据自己需要修改。</p>
+<p>其中 10.87.1.0、10.88.1.0 修改为需要走openvpn的ip段，这样 10.87.1.1<del>10.87.1.254 、10.88.1.1</del>10.88.1.254 就会走openvpn，根据自己需要修改。</p>
 <div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -1170,6 +1423,14 @@
 </span><span class="lnt">148
 </span><span class="lnt">149
 </span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.xxx.utils</span><span class="w">
@@ -1229,17 +1490,17 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// In this case, we should truncate table and then load.</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">truncateTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">val</span><span class="w"> </span><span class="n">tableSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">getSchemaOption</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// Otherwise, do not truncate the table, instead drop and recreate it</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">dropTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">table</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">createTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">),</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">),</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">.</span><span class="na">Append</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">val</span><span class="w"> </span><span class="n">tableSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">getSchemaOption</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="n">SaveMode</span><span class="p">.</span><span class="na">ErrorIfExists</span><span class="w"> </span><span class="o">=&gt;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Exception</span><span class="p">(</span><span class="w">
@@ -1253,7 +1514,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">JdbcUtils</span><span class="p">.</span><span class="na">createTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">),</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">),</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">.</span><span class="na">getOrElse</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">).</span><span class="na">toBoolean</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">conn</span><span class="p">.</span><span class="na">close</span><span class="p">()</span><span class="w">
@@ -1265,7 +1526,8 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">updateTable</span><span class="p">(</span><span class="n">df</span><span class="p">:</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">tableSchema</span><span class="p">:</span><span class="w"> </span><span class="n">Option</span><span class="o">[</span><span class="n">StructType</span><span class="o">]</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">isCaseSensitive</span><span class="p">:</span><span class="w"> </span><span class="n">Boolean</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">options</span><span class="p">:</span><span class="w"> </span><span class="n">JdbcOptionsInWrite</span><span class="p">):</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">options</span><span class="p">:</span><span class="w"> </span><span class="n">JdbcOptionsInWrite</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">ignoreNull</span><span class="p">:</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">):</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">url</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">table</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">dialect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JdbcDialects</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">
@@ -1274,7 +1536,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">batchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">batchSize</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">isolationLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">isolationLevel</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">updateStmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getUpdateStatement</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">rddSchema</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">dialect</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">updateStmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getUpdateStatement</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">rddSchema</span><span class="p">,</span><span class="w"> </span><span class="n">tableSchema</span><span class="p">,</span><span class="w"> </span><span class="n">isCaseSensitive</span><span class="p">,</span><span class="w"> </span><span class="n">dialect</span><span class="p">,</span><span class="w"> </span><span class="n">ignoreNull</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">println</span><span class="p">(</span><span class="n">updateStmt</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">repartitionedDF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="na">numPartitions</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="n">Some</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">0</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IllegalArgumentException</span><span class="p">(</span><span class="w">
@@ -1315,10 +1577,17 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}.</span><span class="na">mkString</span><span class="p">(</span><span class="s">&#34;,&#34;</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">val</span><span class="w"> </span><span class="n">placeholders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rddSchema</span><span class="p">.</span><span class="na">fields</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&#34;?&#34;</span><span class="p">).</span><span class="na">mkString</span><span class="p">(</span><span class="s">&#34;,&#34;</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">s</span><span class="s">&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders)
-</span></span></span><span class="line"><span class="cl"><span class="s">         |ON DUPLICATE KEY UPDATE
-</span></span></span><span class="line"><span class="cl"><span class="s">         |${columns.split(&#34;</span><span class="p">,</span><span class="s">&#34;).map(col =&gt; s&#34;</span><span class="n">$col</span><span class="o">=</span><span class="n">VALUES</span><span class="p">(</span><span class="n">$col</span><span class="p">)</span><span class="s">&#34;).mkString(&#34;</span><span class="p">,</span><span class="s">&#34;)}
-</span></span></span><span class="line"><span class="cl"><span class="s">         |&#34;&#34;&#34;</span><span class="p">.</span><span class="na">stripMargin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ignoreNull</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">s</span><span class="s">&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders) AS data_new
+</span></span></span><span class="line"><span class="cl"><span class="s">           |ON DUPLICATE KEY UPDATE
+</span></span></span><span class="line"><span class="cl"><span class="s">           |${columns.split(&#34;</span><span class="p">,</span><span class="s">&#34;).map(col =&gt; s&#34;</span><span class="n">$col</span><span class="o">=</span><span class="n">IF</span><span class="p">(</span><span class="n">data_new</span><span class="p">.</span><span class="na">$col</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="n">$table</span><span class="p">.</span><span class="na">$col</span><span class="p">,</span><span class="n">data_new</span><span class="p">.</span><span class="na">$col</span><span class="p">)</span><span class="s">&#34;).mkString(&#34;</span><span class="p">,</span><span class="s">&#34;)}
+</span></span></span><span class="line"><span class="cl"><span class="s">           |&#34;&#34;&#34;</span><span class="p">.</span><span class="na">stripMargin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">s</span><span class="s">&#34;&#34;&#34;INSERT INTO $table ($columns) VALUES ($placeholders)
+</span></span></span><span class="line"><span class="cl"><span class="s">           |ON DUPLICATE KEY UPDATE
+</span></span></span><span class="line"><span class="cl"><span class="s">           |${columns.split(&#34;</span><span class="p">,</span><span class="s">&#34;).map(col =&gt; s&#34;</span><span class="n">$col</span><span class="o">=</span><span class="n">VALUES</span><span class="p">(</span><span class="n">$col</span><span class="p">)</span><span class="s">&#34;).mkString(&#34;</span><span class="p">,</span><span class="s">&#34;)}
+</span></span></span><span class="line"><span class="cl"><span class="s">           |&#34;&#34;&#34;</span><span class="p">.</span><span class="na">stripMargin</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></td></tr></table>
@@ -1359,6 +1628,7 @@
 </span><span class="lnt">31
 </span><span class="lnt">32
 </span><span class="lnt">33
+</span><span class="lnt">34
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.xxx.utils</span><span class="w">
@@ -1370,7 +1640,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">object</span><span class="w"> </span><span class="n">MysqlUtils</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">def</span><span class="w"> </span><span class="nf">upsert</span><span class="p">(</span><span class="n">rawDF</span><span class="p">:</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">,</span><span class="w"> </span><span class="n">database</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">tableName</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">)(</span><span class="n">implicit</span><span class="w"> </span><span class="n">spark</span><span class="p">:</span><span class="w"> </span><span class="n">SparkSession</span><span class="p">):</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">def</span><span class="w"> </span><span class="nf">upsert</span><span class="p">(</span><span class="n">rawDF</span><span class="p">:</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">,</span><span class="w"> </span><span class="n">database</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">tableName</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">ignoreNull</span><span class="p">:</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)(</span><span class="n">implicit</span><span class="w"> </span><span class="n">spark</span><span class="p">:</span><span class="w"> </span><span class="n">SparkSession</span><span class="p">):</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rawDF</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">for</span><span class="w"> </span><span class="p">(</span><span class="n">elem</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df</span><span class="p">.</span><span class="na">schema</span><span class="p">.</span><span class="na">fields</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">elem</span><span class="p">.</span><span class="na">dataType</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NullType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1389,6 +1659,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;useSSL&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;showSql&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;false&#34;</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;numPartitions&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;1&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">option</span><span class="p">(</span><span class="s">&#34;ignoreNull&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">ignoreNull</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">update</span><span class="p">()</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
@@ -1442,6 +1713,7 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
+</span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">utils.MysqlUtils</span><span class="w">
@@ -1457,6 +1729,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">.</span><span class="na">toDF</span><span class="p">(</span><span class="s">&#34;key_one&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;key_two&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;val_one&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;val_two&#34;</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">MysqlUtils</span><span class="p">.</span><span class="na">upsert</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">database</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;test_unique_key&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//MysqlUtils.upsert(df, database, &#34;test_unique_key&#34;, true) ignoreNull=true 忽略df里为null的列，不更新</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">spark</span><span class="p">.</span><span class="na">close</span><span class="p">()</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">

@@ -23,7 +23,7 @@
   <a href="#3openvpn%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" class="heading-mark"></a>（3）openvpn配置文件</h2><p>上传<code>xxx.crt</code>、<code>xxx.key</code>、<code>xxx.ovpn</code>等文件到openwrt，并移动到/root/openvpn 目录下，修改ovpn文件。</p>
 <p>auth-user-pass此项修改位为 <code>auth-user-pass userpass.txt</code>，从文件中读取用户名密码。</p>
 <p>为了使指定的ip段使用openvpn，而其他的网络走路由默认线路，在ovpn文件下追加<code>route-nopull</code>及其下面的内容。</p>
-<p>其中 10.87.1.0、10.88.1.0 修改为需要走openvpn的ip段，这样 10.87.1.1~10.87.1.254 、10.88.1.1~10.88.1.254 就会走openvpn，根据自己需要修改。</p>
+<p>其中 10.87.1.0、10.88.1.0 修改为需要走openvpn的ip段，这样 10.87.1.1<del>10.87.1.254 、10.88.1.1</del>10.88.1.254 就会走openvpn，根据自己需要修改。</p>
 <div class="highlight" id="id-2"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
