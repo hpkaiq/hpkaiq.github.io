@@ -133,7 +133,8 @@ object DataFrameWriterEnhance {
                            rddSchema: StructType,
                            tableSchema: Option[StructType],
                            isCaseSensitive: Boolean,
-                           dialect: JdbcDialect): String = {
+                           dialect: JdbcDialect,
+                           ignoreNull: Boolean): String = {
       val columns = if (tableSchema.isEmpty) {
         rddSchema.fields.map(x =&gt; dialect.quoteIdentifier(x.name)).mkString(&#34;,&#34;)
       } else {
