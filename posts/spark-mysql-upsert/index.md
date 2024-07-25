@@ -1,7 +1,9 @@
-# spark 实现 mysql upsert
+# spark 实现 mysql upsert，可忽略null值
 
 
 **实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。**
+
+**2024.07.25更新：新增特性，忽略值为null的列，即当df里列值为null时，不更新mysql表数据，保留表原有的值。**
 
 &lt;!--more--&gt;
 
