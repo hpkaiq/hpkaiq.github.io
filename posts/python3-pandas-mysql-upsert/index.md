@@ -1,5 +1,7 @@
-# python3 pandas 实现mysql upsert操作（唯一键更新）
+# Python3 Pandas 实现mysql Upsert操作（唯一键更新）
 
+
+python3 pandas 实现mysql upsert操作，基于唯一键有则更新，无则插入。
 
 &lt;!--more--&gt;
 

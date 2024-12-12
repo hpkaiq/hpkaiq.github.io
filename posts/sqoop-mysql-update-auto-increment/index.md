@@ -1,4 +1,4 @@
-# sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题
+# Sqoop Mysql Update AUTO_INCREMENT 自增主键重复增长问题
 
 
 &lt;!--more--&gt;

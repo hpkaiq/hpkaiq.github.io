@@ -1,4 +1,4 @@
-# spring cloud java反向代理访问阿里云OSS私有资源
+# Spring Cloud Java反向代理访问阿里云OSS私有资源
 
 
 最近用到阿里云oss，有阿里云服务器，通过代理内网访问可以实现免除OSS流量费，查到很多nginx反向代理的教程，但是纯java实现没有找到，感觉可以试一试。

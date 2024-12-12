@@ -1,5 +1,7 @@
-# python3 easyocr 简单使用识别参数
+# Python3 Easyocr 简单使用识别参数
 
+
+python3 easyocr 学习，测试。
 
 &lt;!--more--&gt;
 

@@ -1,4 +1,4 @@
-# 脚本执行spark-shell scala文件退出
+# 脚本执行spark-Shell Scala文件退出
 
 
 &lt;!--more--&gt;

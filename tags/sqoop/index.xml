@@ -1,16 +1,1 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Sqoop - 标签 - PME-Blog</title><link>https://hpk.me/tags/sqoop/</link><description>Sqoop - 标签 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 18 Apr 2023 14:11:19 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/sqoop/" rel="self" type="application/rss+xml"/><item><title>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</title><link>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</link><pubDate>Tue, 18 Apr 2023 14:11:19 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</guid><description><![CDATA[<div class="highlight" id="id-1"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sqoop <span class="nb">export</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--update-key unique_index_columns <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>--update-mode allowinsert</span></span></code></pre></td></tr></table>
-</div>
-</div><p>问题描述：
-用上述模式 sqoop 导入数据更新 mysql 数据，无论导入的数据与mysql里数据相比有没有更新，mysql表的 AUTO_INCREMENT 的PRIMARY KEY 例如 （<code>id</code> int(11) NOT NULL AUTO_INCREMENT COMMENT &lsquo;自增主键&rsquo;） 实际都是增加了的，当有新唯一主键数据插入时，id会是累加后的开始，会变的很大。</p>
-<p>解决：
-sqoop源码层级暂时没看原因。。。
-可以从业务流程上解决下这个问题，保证导入的数据都是新增或者更新的，不会有与mysql一样的数据，可以一定程度上减少 id 的增长。</p>]]></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sqoop - 标签 - PME-Blog</title><link>https://hpk.me/tags/sqoop/</link><description>PME-Blog 难得自在</description><generator>Hugo 0.139.4 &amp; FixIt v0.3.16</generator><language>zh-CN</language><lastBuildDate>Tue, 18 Apr 2023 14:52:13 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/sqoop/index.xml" rel="self" type="application/rss+xml"/><item><title>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</title><link>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</link><pubDate>Tue, 18 Apr 2023 14:11:19 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/sqoop-mysql-update-auto-increment/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>sqoop mysql update AUTO_INCREMENT 自增主键重复增长问题</description></item></channel></rss>

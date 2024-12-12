@@ -1,4 +1,4 @@
-# phoenix-client-4.14.1-HBase-1.4.jar jar包冲突解决
+# Phoenix-Client-4.14.1-HBase-1.4.jar Jar包冲突解决
 
 
 项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。

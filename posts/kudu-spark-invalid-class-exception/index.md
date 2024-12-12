@@ -1,4 +1,4 @@
-# kudu-spark KuduContext  java.io.InvalidClassException 解决
+# Kudu-Spark KuduContext  Java.io.InvalidClassException 解决
 
 
 背景：

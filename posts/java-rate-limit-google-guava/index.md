@@ -1,4 +1,4 @@
-# java 频次控制
+# Java 频次控制
 
 
 访问某接口拉取数据，接口需要频次控制，经调研，`com.google.common.util.concurrent.RateLimiter`可轻易实现。

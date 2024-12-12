@@ -1,4 +1,4 @@
-# spark yarn cluster模式下log4j日志的配置
+# Spark Yarn Cluster模式下log4j日志的配置
 
 
 &lt;!--more--&gt;

@@ -1,8 +1,1 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Hbase - 标签 - PME-Blog</title><link>https://hpk.me/tags/hbase/</link><description>Hbase - 标签 | PME-Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 18 Apr 2023 13:49:28 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/hbase/" rel="self" type="application/rss+xml"/><item><title>phoenix-client-4.14.1-HBase-1.4.jar jar包冲突解决</title><link>https://hpk.me/posts/phoenix-client-hbase-jar/</link><pubDate>Tue, 18 Apr 2023 13:49:28 +0800</pubDate><author>作者</author><guid>https://hpk.me/posts/phoenix-client-hbase-jar/</guid><description><![CDATA[<p>项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。</p>
-<p>先jar命令解压jar包，然后删除以下内容。然后在jar命令打成jar包。</p>
-<ol>
-<li>rm -r javax/</li>
-<li>rm -r com/jayway/</li>
-<li>rm -r org/apache/phoenix/shaded/org/apache/thrift</li>
-<li>rm -r com/sun/jersey/</li>
-</ol>]]></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hbase - 标签 - PME-Blog</title><link>https://hpk.me/tags/hbase/</link><description>PME-Blog 难得自在</description><generator>Hugo 0.139.4 &amp; FixIt v0.3.16</generator><language>zh-CN</language><lastBuildDate>Tue, 18 Apr 2023 14:52:13 +0800</lastBuildDate><atom:link href="https://hpk.me/tags/hbase/index.xml" rel="self" type="application/rss+xml"/><item><title>phoenix-client-4.14.1-HBase-1.4.jar jar包冲突解决</title><link>https://hpk.me/posts/phoenix-client-hbase-jar/</link><pubDate>Tue, 18 Apr 2023 13:49:28 +0800</pubDate><guid>https://hpk.me/posts/phoenix-client-hbase-jar/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>&lt;p>项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。&lt;/p></description></item></channel></rss>

@@ -1,4 +1,4 @@
-# Cloudflare优选ip并使用dnspodcn api设置解析
+# Cloudflare优选ip并使用dnspodcn Api设置解析
 
 
 Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。

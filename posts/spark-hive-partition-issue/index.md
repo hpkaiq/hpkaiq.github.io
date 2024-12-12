@@ -1,4 +1,4 @@
-# spark 读取 hive date 分区表 奇怪的报错
+# Spark 读取 Hive Date 分区表 奇怪的报错
 
 
 &lt;!--more--&gt;
