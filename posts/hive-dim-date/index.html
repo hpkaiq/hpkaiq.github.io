@@ -1,0 +1,599 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><meta name=robots content="noodp"><title>hive 日期维度表 - PME-Blog</title><meta name=author content>
+<meta name=author-link content><meta name=description content="hive日期维度表，常用的字段基本都有。"><meta name=keywords content='draft'><meta itemprop=name content="hive 日期维度表"><meta itemprop=description content="hive日期维度表，常用的字段基本都有。"><meta itemprop=datePublished content="2024-12-12T11:38:59+08:00"><meta itemprop=dateModified content="2024-12-12T11:47:38+08:00"><meta itemprop=wordCount content="1896"><meta itemprop=image content="https://hpk.me/images/ico.png"><meta itemprop=keywords content="draft,"><meta property="og:title" content="hive 日期维度表"><meta property="og:description" content="hive日期维度表，常用的字段基本都有。"><meta property="og:type" content="article"><meta property="og:url" content="https://hpk.me/posts/hive-dim-date/"><meta property="og:image" content="https://hpk.me/images/ico.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-12-12T11:38:59+08:00"><meta property="article:modified_time" content="2024-12-12T11:47:38+08:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://hpk.me/images/ico.png"><meta name=twitter:title content="hive 日期维度表"><meta name=twitter:description content="hive日期维度表，常用的字段基本都有。"><meta name=application-name content="PME-Blog"><meta name=apple-mobile-web-app-title content="PME-Blog"><meta name=theme-color data-light=#ffffff data-dark=#252627 content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=/images/ico.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://hpk.me/posts/hive-dim-date/><link rel=prev href=https://hpk.me/posts/about_chatgpt/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"hive 日期维度表","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/hpk.me\/posts\/hive-dim-date\/"},"image":["https:\/\/hpk.me\/images\/ico.png"],"genre":"posts","keywords":"draft","wordcount":1896,"url":"https:\/\/hpk.me\/posts\/hive-dim-date\/","datePublished":"2024-12-12T11:38:59+08:00","dateModified":"2024-12-12T11:47:38+08:00","publisher":{"@type":"Organization","name":"hpkaiq","logo":"https:\/\/hpk.me\/images\/ico.png"},"author":{"@type":"Person","name":"hpkaiq"},"description":""}</script></head><body data-header-desktop=sticky data-header-mobile=auto><script>(window.localStorage?.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("data-theme","dark")</script><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=PME-Blog><img loading=lazy src=/images/ico.png alt=PME-Blog data-title=PME-Blog class=logo style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'><span class=header-title-text>PME-Blog</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/posts/><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden=true></i> 所有文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden=true></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden=true></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class="fa-solid fa-users fa-fw fa-sm" aria-hidden=true></i> 友链</a></li><li class=menu-item><a class=menu-link href=/guestbook/><i class="fa-solid fa-comments fa-fw fa-sm" aria-hidden=true></i> 留言</a></li><li class=menu-item><a class=menu-link href=/memos/><i class="fa-solid fa-spinner fa-fw fa-sm" aria-hidden=true></i> memos</a></li><li class=menu-item><a class=menu-link href=/about/><i class="fa-solid fa-user-tie fa-fw fa-sm" aria-hidden=true></i> 关于</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id=search-desktop><input type=text placeholder=搜索文章标题或内容…… id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></li><li class="menu-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=PME-Blog><img loading=lazy src=/images/ico.png alt=/images/ico.png data-title=/images/ico.png class=logo style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'><span class=header-title-text>PME-Blog</span></a><span class=header-subtitle></span></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><nav><ul class=menu id=menu-mobile><li class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容…… id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fa-solid fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fa-solid fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></li><li class=menu-item><a class=menu-link href=/posts/><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden=true></i> 所有文章</a></li><li class=menu-item><a class=menu-link href=/categories/><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden=true></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden=true></i> 标签</a></li><li class=menu-item><a class=menu-link href=/friends/ title=友情链接><i class="fa-solid fa-users fa-fw fa-sm" aria-hidden=true></i> 友链</a></li><li class=menu-item><a class=menu-link href=/guestbook/><i class="fa-solid fa-comments fa-fw fa-sm" aria-hidden=true></i> 留言</a></li><li class=menu-item><a class=menu-link href=/memos/><i class="fa-solid fa-spinner fa-fw fa-sm" aria-hidden=true></i> memos</a></li><li class=menu-item><a class=menu-link href=/about/><i class="fa-solid fa-user-tie fa-fw fa-sm" aria-hidden=true></i> 关于</a></li><li class="menu-item menu-system"><span class="menu-system-item theme-switch" title=切换主题><i class="fa-solid fa-adjust fa-fw" aria-hidden=true></i></span></li></ul></nav></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>hive 日期维度表</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><span class=author><img loading=lazy src="https://gravatar.loli.net/avatar/c9071960ddf1e02205da512f3fdd21db?s=32&amp;d=mp" alt=hpkaiq data-title=hpkaiq class=avatar style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'>&nbsp;hpkaiq</span></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/draft/ class=post-category title="分类 - Draft"><i class="fa-regular fa-folder fa-fw" aria-hidden=true></i> Draft</a></span></div><div class=post-meta-line><span title="发布于 2024-12-12 11:38:59"><i class="fa-solid fa-calendar-days fa-fw me-1" aria-hidden=true></i><time datetime=2024-12-12>2024-12-12</time></span>&nbsp;<span title="更新于 2024-12-12 11:47:38"><i class="fa-regular fa-calendar-check fa-fw me-1" aria-hidden=true></i><time datetime=2024-12-12>2024-12-12</time></span>&nbsp;<span title="1896 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden=true></i>约 1900 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden=true></i>预计阅读 4 分钟</span>&nbsp;<span id=/posts/hive-dim-date/ class=comment-visitors data-flag-title="hive 日期维度表">
+<i class="fa-regular fa-eye fa-fw me-1" aria-hidden=true></i><span id=twikoo_visitors>-</span>&nbsp;次阅读
+</span>&nbsp;<span id=/posts/hive-dim-date/ class=comment-count data-flag-title="hive 日期维度表">
+<i class="fa-regular fa-comments fa-fw me-1" aria-hidden=true></i><span id=twikoo-comment-count>-</span>&nbsp;条评论
+</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><ul><li><a href=#1-建表语句>1. 建表语句</a></li><li><a href=#2-插入数据>2. 插入数据</a></li></ul></li></ul></nav></div></div><div class=content id=content data-end-flag=（完）><p>hive日期维度表，常用的字段基本都有。</p><h3 id=1-建表语句 class=heading-element><a href=#1-%e5%bb%ba%e8%a1%a8%e8%af%ad%e5%8f%a5 class=heading-mark></a>1. 建表语句</h3><p>hive执行以下语句建表。库名表名，存储格式、位置根据需要修改。</p><div class=highlight id=id-1><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>create</span><span class=w> </span><span class=k>table</span><span class=w> </span><span class=k>if</span><span class=w> </span><span class=k>not</span><span class=w> </span><span class=k>exists</span><span class=w> </span><span class=n>datasystem</span><span class=p>.</span><span class=n>dim_date</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>date_id</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;日期(yyyymmdd)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>datestr</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;日期(yyyy-mm-dd)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>date_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;日期名称中文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>weekid</span><span class=w> </span><span class=nb>int</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;周(0-6,周日~周六)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>week_cn_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;周_名称_中文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>week_en_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;周_名称_英文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>week_en_nm</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;周_名称_英文缩写&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>yearmonthid</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月份id(yyyymm)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>yearmonthstr</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月份(yyyy-mm)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>monthid</span><span class=w> </span><span class=nb>int</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月份id（1-12）&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>monthstr</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月份&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_cn_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月份名称_中文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_en_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月份名称_英文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_en_nm</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月份名称_简写_英文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>quarterid</span><span class=w> </span><span class=nb>int</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;季度id（1-4）&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>quarterstr</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;季度名称&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>quarter_cn_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;季度名称_中文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>quarter_en_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;季度名称_英文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>quarter_cn_nm</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;季度名称_简写中文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>quarter_en_nm</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;季度名称_简写英文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>yearid</span><span class=w> </span><span class=nb>int</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;年份id&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>year_cn_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;年份名称_中文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>year_en_name</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;年份名称_英文&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_start_date</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;当月1号(yyyy-mm-dd)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_end_date</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;当月最后日期(yyyy-mm-dd)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_timespan</span><span class=w> </span><span class=nb>int</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;月跨天数&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>week_with_year</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;年-当年第几周&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>week_of_year</span><span class=w> </span><span class=nb>int</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;当年第几周&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>day_of_year</span><span class=w> </span><span class=nb>int</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;当年第几天&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>workday_flag</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;是否工作日(周一至周五Y，否则:N)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>weekend_flag</span><span class=w> </span><span class=n>string</span><span class=w> </span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;是否周末(周六和周日Y,否则:N)&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=k>comment</span><span class=w> </span><span class=s1>&#39;日期维度表&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>STORED</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>PARQUET</span><span class=p>;</span></span></span></code></pre></td></tr></table></div></div><h3 id=2-插入数据 class=heading-element><a href=#2-%e6%8f%92%e5%85%a5%e6%95%b0%e6%8d%ae class=heading-mark></a>2. 插入数据</h3><p>hive执行以下语句插入数据，注意修改对应的库名表名。</p><div class=highlight id=id-2><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>insert</span><span class=w> </span><span class=n>overwrite</span><span class=w> </span><span class=k>table</span><span class=w> </span><span class=n>datasystem</span><span class=p>.</span><span class=n>dim_date</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>select</span><span class=w> </span><span class=n>date_id</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>datestr</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>yearid</span><span class=p>,</span><span class=s1>&#39;年&#39;</span><span class=p>,</span><span class=n>monthid</span><span class=p>,</span><span class=s1>&#39;月&#39;</span><span class=p>,</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>9</span><span class=p>,</span><span class=mi>2</span><span class=p>),</span><span class=s1>&#39;日&#39;</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>date_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>weekid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=n>weekid</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;星期日&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;星期一&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>2</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;星期二&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>3</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;星期三&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>4</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;星期四&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;星期五&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>6</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;星期六&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>week_cn_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=n>weekid</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Sunday&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Monday&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>2</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Tuesday&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>3</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Wednesday&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>4</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Thurday&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Friday&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>6</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Saturday&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>week_en_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=n>weekid</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Sun&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Mon&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>2</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Tues&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>3</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Wed&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>4</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Thur&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Fri&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>6</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Sat&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>week_en_nm</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>substr</span><span class=p>(</span><span class=n>date_id</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>6</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>yearmonthid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>7</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>yearmonthstr</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>monthid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>yearid</span><span class=p>,</span><span class=s1>&#39;年&#39;</span><span class=p>,</span><span class=n>monthid</span><span class=p>,</span><span class=s1>&#39;月&#39;</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>monthstr</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>monthid</span><span class=p>,</span><span class=s1>&#39;月&#39;</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>month_cn_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=n>monthid</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;January&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>2</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;February&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>3</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;March&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>4</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;April&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;May&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>6</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;June&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>7</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;July&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>8</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;August&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>9</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;September&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>10</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;October&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>11</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;November&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>12</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;December&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>month_en_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=n>monthid</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Jan&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>2</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Feb&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>3</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Mar&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>4</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Apr&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;May&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>6</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Jun&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>7</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Jul&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>8</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Aug&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>9</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Sept&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>10</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Oct&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>11</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Nov&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>12</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Dec&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>month_en_nm</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>quarterid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>yearid</span><span class=p>,</span><span class=n>quarterid</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>quarterstr</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>yearid</span><span class=p>,</span><span class=s1>&#39;年第&#39;</span><span class=p>,</span><span class=n>quarterid</span><span class=p>,</span><span class=s1>&#39;季度&#39;</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>quarter_cn_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>yearid</span><span class=p>,</span><span class=s1>&#39;Q&#39;</span><span class=p>,</span><span class=n>quarterid</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>quarter_en_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=n>quarterid</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;第一季度&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>2</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;第二季度&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>3</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;第三季度&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=mi>4</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;第四季度&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>quarter_cn_nm</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=s1>&#39;Q&#39;</span><span class=p>,</span><span class=n>quarterid</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>quarter_en_nm</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>yearid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>yearid</span><span class=p>,</span><span class=s1>&#39;年&#39;</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>year_cn_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>yearid</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>year_en_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_start_date</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>month_end_date</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>datediff</span><span class=p>(</span><span class=n>month_end_date</span><span class=p>,</span><span class=n>month_start_date</span><span class=p>)</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>month_timespan</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>week_with_year</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>week_of_year</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>day_of_year</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=n>weekid</span><span class=w> </span><span class=k>in</span><span class=w> </span><span class=p>(</span><span class=mi>1</span><span class=p>,</span><span class=mi>2</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>5</span><span class=p>)</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Y&#39;</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=s1>&#39;N&#39;</span><span class=w> </span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>workday_flag</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=n>weekid</span><span class=w> </span><span class=k>in</span><span class=w> </span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=mi>6</span><span class=p>)</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=s1>&#39;Y&#39;</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=s1>&#39;N&#39;</span><span class=w> </span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>weekend_flag</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>from</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>select</span><span class=w> </span><span class=n>from_unixtime</span><span class=p>(</span><span class=n>unix_timestamp</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=s1>&#39;yyyy-MM-dd&#39;</span><span class=p>),</span><span class=s1>&#39;yyyyMMdd&#39;</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>date_id</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>datestr</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>datestr</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>pmod</span><span class=p>(</span><span class=n>datediff</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;2012-01-01&#39;</span><span class=p>),</span><span class=w> </span><span class=mi>7</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>weekid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>4</span><span class=p>),</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>6</span><span class=p>,</span><span class=mi>2</span><span class=p>))</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>yearmonthid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>7</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>yearmonthstr</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>cast</span><span class=p>(</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>6</span><span class=p>,</span><span class=mi>2</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nb>int</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>monthid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>case</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=k>cast</span><span class=p>(</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>6</span><span class=p>,</span><span class=mi>2</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nb>int</span><span class=p>)</span><span class=w> </span><span class=o>&lt;=</span><span class=w> </span><span class=mi>3</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=mi>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=k>cast</span><span class=p>(</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>6</span><span class=p>,</span><span class=mi>2</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nb>int</span><span class=p>)</span><span class=w> </span><span class=o>&lt;=</span><span class=w> </span><span class=mi>6</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=mi>2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=k>cast</span><span class=p>(</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>6</span><span class=p>,</span><span class=mi>2</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nb>int</span><span class=p>)</span><span class=w> </span><span class=o>&lt;=</span><span class=w> </span><span class=mi>9</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=mi>3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>when</span><span class=w> </span><span class=k>cast</span><span class=p>(</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>6</span><span class=p>,</span><span class=mi>2</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nb>int</span><span class=p>)</span><span class=w> </span><span class=o>&lt;=</span><span class=w> </span><span class=mi>12</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=mi>4</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>end</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>quarterid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>substr</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>4</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>yearid</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>date_sub</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=n>dayofmonth</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>month_start_date</span><span class=w> </span><span class=c1>--当月第一天
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>last_day</span><span class=p>(</span><span class=n>date_sub</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=n>dayofmonth</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span><span class=w> </span><span class=n>month_end_date</span><span class=w> </span><span class=c1>--当月最后一天
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>concat</span><span class=p>(</span><span class=k>case</span><span class=w> </span><span class=k>when</span><span class=w> </span><span class=k>month</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>and</span><span class=w> </span><span class=n>weekofyear</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>10</span><span class=w> </span><span class=k>then</span><span class=w> </span><span class=k>cast</span><span class=p>((</span><span class=k>year</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=w> </span><span class=o>-</span><span class=mi>1</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>string</span><span class=p>)</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=k>cast</span><span class=p>(</span><span class=k>year</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>string</span><span class=p>)</span><span class=w> </span><span class=k>end</span><span class=p>,</span><span class=s1>&#39;-&#39;</span><span class=p>,</span><span class=k>cast</span><span class=p>(</span><span class=n>weekofyear</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>string</span><span class=p>))</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>week_with_year</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=n>weekofyear</span><span class=p>(</span><span class=n>datestr</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>week_of_year</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>,</span><span class=k>cast</span><span class=p>(</span><span class=n>date_format</span><span class=p>(</span><span class=n>datestr</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;D&#39;</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nb>int</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>day_of_year</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>from</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>select</span><span class=w> </span><span class=n>date_add</span><span class=p>(</span><span class=s1>&#39;2000-01-01&#39;</span><span class=p>,</span><span class=n>t0</span><span class=p>.</span><span class=n>pos</span><span class=p>)</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=n>datestr</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>from</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>select</span><span class=w> </span><span class=n>posexplode</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>split</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>repeat</span><span class=p>(</span><span class=s1>&#39;o&#39;</span><span class=p>,</span><span class=w> </span><span class=n>datediff</span><span class=p>(</span><span class=n>from_unixtime</span><span class=p>(</span><span class=n>unix_timestamp</span><span class=p>(</span><span class=s1>&#39;20991231&#39;</span><span class=p>,</span><span class=s1>&#39;yyyymmdd&#39;</span><span class=p>),</span><span class=s1>&#39;yyyy-mm-dd&#39;</span><span class=p>),</span><span class=w> </span><span class=s1>&#39;2000-01-01&#39;</span><span class=p>)),</span><span class=w> </span><span class=s1>&#39;o&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w> </span><span class=n>t0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w> </span><span class=n>t</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w> </span><span class=n>A</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>;</span></span></span></code></pre></td></tr></table></div></div></div><div class=post-reward><div class=comment>Buy me a coffee~</div><input type=checkbox class=reward-input name=reward id=fi-reward hidden>
+<label class=reward-button for=fi-reward>赞赏</label><div class=reward-ways data-mode=fixed><div><img loading=lazy src=/images/alipay.jpg alt="hpkaiq 支付宝" data-title="hpkaiq 支付宝" style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'><span data-animation>支付宝</span></div><div><img loading=lazy src=/images/wechat.jpg alt="hpkaiq 微信" data-title="hpkaiq 微信" style="background:url(/images/loading.min.svg)no-repeat 50%" onload='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e);this.dataset.lazyloaded=""' onerror='this.title=this.dataset.title;for(const e of["style","data-title","onerror","onload"])this.removeAttribute(e)'><span data-animation>微信</span></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2024-12-12 11:47:38">更新于 2024-12-12&nbsp;</span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/hive-dim-date/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://hpk.me/posts/hive-dim-date/ data-title="hive 日期维度表"><i class="fa-brands fa-weibo fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 百度" data-sharer=baidu data-url=https://hpk.me/posts/hive-dim-date/ data-title="hive 日期维度表"><i data-svg-src=/lib/simple-icons/icons/baidu.min.svg aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags fa-fw me-1" aria-hidden=true></i><a href=/tags/draft/ class=post-tag title="标签 - Draft">Draft</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/about_chatgpt/ class=post-nav-item rel=prev title=一些免费的大模型资源><i class="fa-solid fa-angle-left fa-fw" aria-hidden=true></i>一些免费的大模型资源</a></div></div><div id=comments><div id=twikoo></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://twikoo.js.org/ rel="external nofollow noopener noreferrer">Twikoo</a>.</noscript></div></article><aside class=toc id=toc-auto aria-label=目录><h2 class=toc-title>目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden=true></i></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line powered">由 <a href=https://gohugo.io/ target=_blank rel="external nofollow noopener noreferrer" title="Hugo 0.124.0"><img class=hugo-icon src=/images/hugo.min.svg alt="Hugo logo"> Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/hugo-fixit/FixIt target=_blank rel=external title="FixIt v0.3.2"><img class=fixit-icon src=/images/fixit.min.svg alt="FixIt logo"> FixIt</a></div><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright fa-fw" aria-hidden=true></i>
+<span itemprop=copyrightYear>2018 - 2024</span><span class=author itemprop=copyrightHolder>
+<a href=/></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class="footer-line statistics order-first"><span class=site-time title=网站运行中……><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden=true></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中……</span></span></div></div></footer></div><div class=widgets><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role=button aria-label=回到顶部><i class="fa-solid fa-arrow-up fa-fw" aria-hidden=true></i><span class=variant-numeric>0%</span></div><div class="fixed-button view-comments d-none" role=button aria-label=查看评论><i class="fa-solid fa-comment fa-fw" aria-hidden=true></i></div></div><div id=mask></div><div class=reading-progress-bar style=left:0;top:0;--bg-progress:#000;--bg-progress-dark:#fff></div><noscript><div class=noscript-warning>FixIt 主题在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><link rel=stylesheet href=/lib/pace/themes/blue/pace-theme-minimal.css><script src=/lib/twikoo/twikoo.all.min.js defer></script><script src=/lib/katex/katex.min.js defer></script><script src=/lib/katex/auto-render.min.js defer></script><script src=/lib/autocomplete/autocomplete.min.js defer></script><script src=/lib/algoliasearch/algoliasearch-lite.umd.min.js defer></script><script src=/lib/instant-page/instantpage.min.js async defer type=module></script><script src=/lib/twemoji/twemoji.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/lib/pangu/pangu.min.js defer></script><script src=/lib/cell-watermark/watermark.min.js defer></script><script src=/lib/pace/pace.min.js async defer></script><script>window.config={autoBookmark:!0,code:{copyTitle:"复制到剪贴板",editLockTitle:"锁定可编辑代码块",editUnLockTitle:"解锁可编辑代码块",editable:!0,maxShownLines:50},comment:{enable:!0,expired:!1,twikoo:{commentCount:!0,el:"#twikoo",envId:"https://twikoo.hpk.me",lang:"zh-cn"}},cookieconsent:{content:{dismiss:"同意",link:"了解更多",message:"本网站使用 Cookies 来改善您的浏览体验。"},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},pangu:{enable:!0,selector:"article"},search:{algoliaAppID:"5U8ZYL7U7R",algoliaIndex:"hugo-index",algoliaSearchKey:"c6c22ef4d08f6a06e97fedfbad3e965b",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"},siteTime:"2016-10-24T10:24:24+08:00",twemoji:!0,watermark:{appendto:".wrapper>main",colspacing:30,content:'<img style="height: 0.85rem;" src="/images/ico.png" alt="logo" /> hpkaiq',enable:!0,fontfamily:"MMT_LRH,沐目体",fontsize:1.1,height:20,opacity:.0125,rotate:15,rowspacing:60,width:150}}</script><script src=/js/theme.min.js defer></script></body></html>
