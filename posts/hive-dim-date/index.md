@@ -278,7 +278,9 @@ end as quarterid
 
 ,last_day(date_sub(datestr,dayofmonth(datestr)-1)) month_end_date --当月最后一天
 
-,concat(case when month(datestr) = 1 and weekofyear(datestr) &gt; 10 then cast((year(datestr) -1) as string) else cast(year(datestr) as string) end,&#39;-&#39;,cast(weekofyear(datestr) as string)) as week_with_year
+,concat(case when month(datestr) = 1 and weekofyear(datestr) &gt; 10 then cast((year(datestr) -1) as string)
+ when month(datestr) = 12 and weekofyear(datestr) &lt; 10 then cast((year(datestr) &#43;1) as string)
+ else cast(year(datestr) as string) end,&#39;-&#39;,cast(weekofyear(datestr) as string)) as week_with_year
 
 ,weekofyear(datestr) as week_of_year
 
