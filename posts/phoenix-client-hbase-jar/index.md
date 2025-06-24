@@ -3,7 +3,7 @@
 
 项目用到phoenix，使用了这个jar包phoenix-client-4.14.1-HBase-1.4.jar，这个jar包导致的jar包冲突很多，一番摸索，解决了，解决如下。
 
-&lt;!--more--&gt;
+<!--more-->
 
 
 
@@ -17,6 +17,6 @@
 
 ---
 
-> 作者:   
+> 作者: <no value>  
 > URL: https://hpk.me/posts/phoenix-client-hbase-jar/  
 

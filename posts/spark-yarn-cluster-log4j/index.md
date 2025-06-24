@@ -1,7 +1,7 @@
 # Spark Yarn Cluster模式下log4j日志的配置
 
 
-&lt;!--more--&gt;
+<!--more-->
 
 最近线上的spark项目日志文件急剧增加，磁盘顶不住了啊，解决日志文件问题，参考下面三篇文章，基本就可以搞明白了。
 
@@ -18,6 +18,6 @@
 
 ---
 
-> 作者:   
+> 作者: <no value>  
 > URL: https://hpk.me/posts/spark-yarn-cluster-log4j/  
 

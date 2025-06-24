@@ -3,17 +3,17 @@
 
 ### 哔哔两句
 
-{{&lt; memos &gt;}}
+{{< memos >}}
 
 ### 定格光影
 
 
-{{&lt; album&gt;}}
+{{< album>}}
 
 ### 好物推荐
 
 
-{{&lt; goods &gt;}}
+{{< goods >}}
 
 
 ---

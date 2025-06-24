@@ -3,9 +3,9 @@
 
 # 背景
 
-在家办公需要使用 openvpn 连接公司内网，而且密码使用  固定密码 &#43;TOTP 验证码 的形式，每次都需要打开电脑的openvpn客户端，打开验证码客户端复制验证码，连接，只能说繁琐。希望通过家里的软路由openwrt的openvpn客户端来实现上述操作的一键连接，实现家里每个终端设备都能连接公司内网。
+在家办公需要使用 openvpn 连接公司内网，而且密码使用  固定密码 +TOTP 验证码 的形式，每次都需要打开电脑的openvpn客户端，打开验证码客户端复制验证码，连接，只能说繁琐。希望通过家里的软路由openwrt的openvpn客户端来实现上述操作的一键连接，实现家里每个终端设备都能连接公司内网。
 
-&lt;!--more--&gt;
+<!--more-->
 
 # 实操
 
@@ -17,16 +17,16 @@
 
 下载上传至openwrt，安装 `opkg install  /tmp/upload/oath-toolkit_2.6.5-1_x86_64.ipk`
 
-验证： `oathtool -b --totp &#39;你的密钥&#39;`  和谷歌身份验证器里的验证码此时是否一致。
+验证： `oathtool -b --totp '你的密钥'`  和谷歌身份验证器里的验证码此时是否一致。
 
 ## （2）生成账户密码
 
 在/root/openvpn下新建`generate-password.sh` 脚本，内容如下，
 
 ```bash
-yzm=$(/usr/bin/oathtool -b --totp &#39;你的密钥&#39;)
+yzm=$(/usr/bin/oathtool -b --totp '你的密钥')
 
-echo -e &#34;公司openvpn账号\n公司openvpn固定密码${yzm}&#34; &gt; /root/openvpn/userpass.txt
+echo -e "公司openvpn账号\n公司openvpn固定密码${yzm}" > /root/openvpn/userpass.txt
 
 ```
 
@@ -60,7 +60,7 @@ auth-nocache
 reneg-sec 36000
 
 route-nopull
-pull-filter ignore &#34;dhcp-option DNS&#34;
+pull-filter ignore "dhcp-option DNS"
 
 route 10.87.1.0 255.255.255.0 vpn_gateway
 route 10.88.1.0 255.255.255.0 vpn_gateway
@@ -71,9 +71,9 @@ route 10.88.1.0 255.255.255.0 vpn_gateway
 1. 修改 /etc/config/openvpn ，在其下追加自己的openvpn配置，如下所示，名字根据需要修改。
 
    ```
-   config openvpn &#39;公司vpn&#39;
-           option config &#39;/root/openvpn/xxx.ovpn&#39;
-           option auth_nocache &#39;1&#39;
+   config openvpn '公司vpn'
+           option config '/root/openvpn/xxx.ovpn'
+           option auth_nocache '1'
    ```
 
 2. 为了在启动时先生成密码文件userpass.txt，修改 /etc/init.d/openvpn 脚本，在 `openvpn_add_instance()` 函数下第一行加上
@@ -83,12 +83,12 @@ route 10.88.1.0 255.255.255.0 vpn_gateway
    ```bash
    openvpn_add_instance() {
            sh /root/openvpn/generate-password.sh
-           local name=&#34;$1&#34;
-           local dir=&#34;$2&#34;
-           local conf=&#34;$3&#34;
-           local security=&#34;$4&#34;
-           local up=&#34;$5&#34;
-           local down=&#34;$6&#34;
+           local name="$1"
+           local dir="$2"
+           local conf="$3"
+           local security="$4"
+           local up="$5"
+           local down="$6"
    		...
    }
    ```

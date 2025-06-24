@@ -1,14 +1,14 @@
 # 脚本执行spark-Shell Scala文件退出
 
 
-&lt;!--more--&gt;
+<!--more-->
 
 脚本
 ```bash
 #! /bin/bash
 source /etc/profile
 
-set &#43;o posix  # to enable process substitution when not running on bash 
+set +o posix  # to enable process substitution when not running on bash 
 
 scala_file=$1
 
@@ -31,19 +31,19 @@ spark-shell --master yarn \
 --conf spark.yarn.executor.memoryOverhead=4096 \
 --conf spark.network.timeout=300s \
 --name sparkshell_scala \
--i &lt;(echo &#39;val args = &#34;&#39;$arguments&#39;&#34;.split(&#34;\\s&#43;&#34;)&#39; ; cat $scala_file)
+-i <(echo 'val args = "'$arguments'".split("\\s+")' ; cat $scala_file)
 
 ```
 简单scala文件示例
 ```java
 val path = args(0)
-spark.read.parquet(path).where(&#34;app_id = 77701&#34;).repartition(1).write.parquet(s&#34;${path}_new&#34;)
+spark.read.parquet(path).where("app_id = 77701").repartition(1).write.parquet(s"${path}_new")
 sys.exit
 ```
 
 如果不需要传参，可简单使用
 ```bash
-spark-shell &lt; test.scala
+spark-shell < test.scala
 ```
 
 

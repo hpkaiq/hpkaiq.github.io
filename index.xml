@@ -1,5 +1,260 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>PME-Blog</title><link>https://hpk.me/</link><description>PME-Blog 难得自在</description><generator>Hugo 0.139.4 &amp; FixIt v0.3.16</generator><language>zh-CN</language><lastBuildDate>Thu, 12 Dec 2024 15:45:00 +0800</lastBuildDate><atom:link href="https://hpk.me/index.xml" rel="self" type="application/rss+xml"/><item><title>hive 日期维度表</title><link>https://hpk.me/posts/hive-dim-date/</link><pubDate>Thu, 12 Dec 2024 11:38:59 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/hive-dim-date/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>&lt;p>hive日期维度表，常用的字段基本都有。&lt;/p>
-&lt;h3 id="1-建表语句" class="heading-element">&lt;span>1. 建表语句&lt;/span>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>PME-Blog</title><link>https://hpk.me/</link><description>PME-Blog 难得自在</description><generator>Hugo 0.147.9 &amp; FixIt v0.3.21-b2e6f70a</generator><language>zh-CN</language><lastBuildDate>Wed, 25 Jun 2025 00:42:43 +0800</lastBuildDate><atom:link href="https://hpk.me/index.xml" rel="self" type="application/rss+xml"/><item><title>Spark通过Jdbc读取Doris varchar类型长度异常</title><link>https://hpk.me/posts/394428b/</link><pubDate>Wed, 25 Jun 2025 00:27:44 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/394428b/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>&lt;p>spark内通过jdbc方式读取doris数据，varchar类型长度不足85时总是自动填充空格至85长度。&lt;/p>
+&lt;h2 class="heading-element" id="1-自定义-mysql-dialect-类">&lt;span>1. 自定义 MySQL Dialect 类&lt;/span>
+ &lt;a href="#1-%e8%87%aa%e5%ae%9a%e4%b9%89-mysql-dialect-%e7%b1%bb" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-xml" data-lang="xml">&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;lt;scala.version&amp;gt;&lt;/span>2.12.18&lt;span class="nt">&amp;lt;/scala.version&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;lt;spark.version&amp;gt;&lt;/span>3.5.3&lt;span class="nt">&amp;lt;/spark.version&amp;gt;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-scala" data-lang="scala">&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">org.apache.spark.sql.execution.datasources.jdbc.&lt;/span>&lt;span class="o">{&lt;/span>&lt;span class="nc">JDBCOptions&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="nc">JdbcUtils&lt;/span>&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">org.apache.spark.sql.jdbc.&lt;/span>&lt;span class="o">{&lt;/span>&lt;span class="nc">JdbcDialect&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="nc">JdbcDialects&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">org.apache.spark.sql.types._&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">java.sql.&lt;/span>&lt;span class="o">{&lt;/span>&lt;span class="nc">Connection&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">import&lt;/span> &lt;span class="nn">scala.collection.mutable.ArrayBuilder&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">object&lt;/span> &lt;span class="nc">MyDorisDialect&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">def&lt;/span> &lt;span class="n">useMyJdbcDialect&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">jdbcUrl&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">String&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Unit&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将当前的 JdbcDialect 对象unregistered掉
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nc">JdbcDialects&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">unregisterDialect&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcDialects&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">jdbcUrl&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">jdbcUrl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">contains&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;jdbc:mysql&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">JdbcDialects&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">registerDialect&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">new&lt;/span> &lt;span class="n">customMySqlJdbcDialect&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">jdbcUrl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">contains&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;jdbc:postgresql&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">jdbcUrl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">contains&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;jdbc:sqlserver&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">jdbcUrl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">contains&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;jdbc:oracle&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">jdbcUrl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">contains&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;jdbc:informix&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">customMySqlJdbcDialect&lt;/span> &lt;span class="k">extends&lt;/span> &lt;span class="nc">JdbcDialect&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">override&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="n">quoteIdentifier&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">colName&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">String&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">String&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">s&amp;#34;`&lt;/span>&lt;span class="si">$colName&lt;/span>&lt;span class="s">`&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">override&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="n">schemasExists&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">conn&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Connection&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">options&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">JDBCOptions&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">schema&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">String&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Boolean&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">listSchemas&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">conn&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">options&lt;/span>&lt;span class="o">).&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="k">_&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">head&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">schema&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">override&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="n">listSchemas&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">conn&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Connection&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">options&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">JDBCOptions&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Array&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="kt">Array&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="kt">String&lt;/span>&lt;span class="o">]]&lt;/span> &lt;span class="k">=&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">val&lt;/span> &lt;span class="n">schemaBuilder&lt;/span> &lt;span class="k">=&lt;/span> &lt;span class="nc">ArrayBuilder&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">make&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="kt">Array&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="kt">String&lt;/span>&lt;span class="o">]]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">JdbcUtils&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">executeQuery&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">conn&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">options&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="s">&amp;#34;SHOW SCHEMAS&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span> &lt;span class="n">rs&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">rs&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="o">())&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">schemaBuilder&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="nc">Array&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">rs&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getString&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Database&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">catch&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="k">_:&lt;/span> &lt;span class="kt">Exception&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">logWarning&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;Cannot show schemas.&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">schemaBuilder&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">result&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">override&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="n">isCascadingTruncateTable&lt;/span>&lt;span class="o">()&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Option&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="kt">Boolean&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="k">=&lt;/span> &lt;span class="nc">Some&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="kc">false&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">override&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="n">canHandle&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">url&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">String&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Boolean&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">url&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">startsWith&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;jdbc:mysql&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">override&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="n">getCatalystType&lt;/span>&lt;span class="o">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sqlType&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Int&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">typeName&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">String&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Int&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">md&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">MetadataBuilder&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Option&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="kt">DataType&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="k">=&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">VARBINARY&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">typeName&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;BIT&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">size&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// MariaDB connector behaviour
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// This could instead be a BinaryType if we&amp;#39;d rather return bit-vectors of up to 64 bits as
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// byte arrays instead of longs.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">md&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">putLong&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;binarylong&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">LongType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">BIT&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">size&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// MySQL connector behaviour
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">md&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">putLong&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;binarylong&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">LongType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">BIT&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">typeName&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;TINYINT&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">BooleanType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;TINYTEXT&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">equalsIgnoreCase&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">typeName&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// TINYTEXT is Types.VARCHAR(63) from mysql jdbc, but keep it AS-IS for historical reason
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nc">Some&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">StringType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">VARCHAR&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">typeName&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">equals&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;JSON&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Some MySQL JDBC drivers converts JSON type into Types.VARCHAR with a precision of -1.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// Explicitly converts it into StringType here.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nc">Some&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">StringType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">VARCHAR&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">CHAR&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">Some&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">StringType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">TINYINT&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">md&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">build&lt;/span>&lt;span class="o">().&lt;/span>&lt;span class="n">getBoolean&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;isSigned&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">Some&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">ByteType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">Some&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">ShortType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="o">(&lt;/span>&lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">TIMESTAMP&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">DATE&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">101&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">sqlType&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">102&lt;/span>&lt;span class="o">)&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将不支持的 Timestamp with local Timezone 以TimestampType形式返回
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// Some(TimestampType)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nc">Some&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">StringType&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="nc">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/**
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * 从 Spark(DataType) 到 MySQL(SQLType) 的数据类型映射
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> *
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * @param dt
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> * @return
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">override&lt;/span> &lt;span class="k">def&lt;/span> &lt;span class="n">getJDBCType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">dt&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">DataType&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">Option&lt;/span>&lt;span class="o">[&lt;/span>&lt;span class="kt">JdbcType&lt;/span>&lt;span class="o">]&lt;/span> &lt;span class="k">=&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dt&lt;/span> &lt;span class="k">match&lt;/span> &lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">IntegerType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;INTEGER&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">INTEGER&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">LongType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;BIGINT&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">BIGINT&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">DoubleType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;DOUBLE PRECISION&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">DOUBLE&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">FloatType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;REAL&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">FLOAT&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">ShortType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;INTEGER&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">SMALLINT&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">ByteType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;BYTE&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">TINYINT&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">BooleanType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;BIT(1)&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">BIT&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">StringType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;TEXT&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">CLOB&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">BinaryType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;BLOB&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">BLOB&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">TimestampType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;TIMESTAMP&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">TIMESTAMP&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="nc">DateType&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;DATE&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">DATE&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="n">t&lt;/span>&lt;span class="k">:&lt;/span> &lt;span class="kt">DecimalType&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="nc">Option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="nc">JdbcType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">s&amp;#34;DECIMAL(&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="n">t&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">precision&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s">,&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="n">t&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">scale&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s">)&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">java&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sql&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">Types&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="nc">DECIMAL&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">case&lt;/span> &lt;span class="k">_&lt;/span> &lt;span class="k">=&amp;gt;&lt;/span> &lt;span class="nc">JdbcUtils&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getCommonJDBCType&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">dt&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="2使用">&lt;span>2.使用&lt;/span>
+ &lt;a href="#2%e4%bd%bf%e7%94%a8" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-scala" data-lang="scala">&lt;span class="line">&lt;span class="cl"> &lt;span class="nc">MyDorisDialect&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">useMyJdbcDialect&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="n">spark&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">s&amp;#34;spark.job.doris.jdbcurl&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">spark&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">read&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">format&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;jdbc&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="n">option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;driver&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="s">&amp;#34;com.mysql.jdbc.Driver&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="n">option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;url&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">spark&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">s&amp;#34;spark.job.doris.jdbcurl&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="n">option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;dbtable&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="s">s&amp;#34;(&lt;/span>&lt;span class="si">$sql&lt;/span>&lt;span class="s">) as df&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="n">option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;user&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">spark&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">s&amp;#34;spark.job.doris.username&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="n">option&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;password&amp;#34;&lt;/span>&lt;span class="o">,&lt;/span> &lt;span class="n">spark&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">conf&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">s&amp;#34;spark.job.doris.password&amp;#34;&lt;/span>&lt;span class="o">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="o">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">	 &lt;span class="o">.&lt;/span>&lt;span class="n">show&lt;/span>&lt;span class="o">()&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 class="heading-element" id="3参考">&lt;span>3.参考&lt;/span>
+ &lt;a href="#3%e5%8f%82%e8%80%83" class="heading-mark">
+ &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
+ &lt;/a>
+&lt;/h2>&lt;ol>
+&lt;li>&lt;a href="https://github.com/apache/doris/discussions/24809"target="_blank" rel="external nofollow noopener noreferrer">jdbc获取元数据类型问题 · apache/doris · Discussion #24809&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.com/kinoxyz1/bigdata-learning-notes/blob/master/note/spark/Spark%e8%af%bb%e5%8f%96JDBC%e6%95%b0%e6%8d%aeTime%e7%b1%bb%e5%9e%8b%e5%ad%97%e6%ae%b5%e5%bc%82%e5%b8%b8%e8%a7%a3%e6%9e%90.md"target="_blank" rel="external nofollow noopener noreferrer">bigdata-learning-notes/note/spark/Spark读取JDBC数据Time类型字段异常解析.md at master · kinoxyz1/bigdata-learning-notes&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/li>
+&lt;/ol></description></item><item><title>hive 日期维度表</title><link>https://hpk.me/posts/hive-dim-date/</link><pubDate>Thu, 12 Dec 2024 11:38:59 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/hive-dim-date/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>&lt;p>hive日期维度表，常用的字段基本都有。&lt;/p>
+&lt;h3 class="heading-element" id="1-建表语句">&lt;span>1. 建表语句&lt;/span>
  &lt;a href="#1-%e5%bb%ba%e8%a1%a8%e8%af%ad%e5%8f%a5" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -143,7 +398,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="n">STORED&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">AS&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">PARQUET&lt;/span>&lt;span class="p">;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="2-插入数据" class="heading-element">&lt;span>2. 插入数据&lt;/span>
+&lt;/div>&lt;h3 class="heading-element" id="2-插入数据">&lt;span>2. 插入数据&lt;/span>
  &lt;a href="#2-%e6%8f%92%e5%85%a5%e6%95%b0%e6%8d%ae" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -608,52 +863,52 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div></description></item><item><title>一些免费的大模型资源</title><link>https://hpk.me/posts/about_chatgpt/</link><pubDate>Tue, 12 Mar 2024 11:22:13 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/about_chatgpt/</guid><category domain="https://hpk.me/categories/chatgpt/">Chatgpt</category><description>&lt;p>一些免费的大模型资源，可生成兼容Openai api 接口的资源。&lt;/p>
-&lt;h2 id="谷歌gemini" class="heading-element">&lt;span>谷歌Gemini&lt;/span>
+&lt;h2 class="heading-element" id="谷歌gemini">&lt;span>谷歌Gemini&lt;/span>
  &lt;a href="#%e8%b0%b7%e6%ad%8cgemini" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>申请地址：https://makersuite.google.com/app/apikey&lt;/p>
-&lt;h2 id="字节coze海外版" class="heading-element">&lt;span>字节Coze海外版&lt;/span>
+&lt;h2 class="heading-element" id="字节coze海外版">&lt;span>字节Coze海外版&lt;/span>
  &lt;a href="#%e5%ad%97%e8%8a%82coze%e6%b5%b7%e5%a4%96%e7%89%88" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>官网：https://www.coze.com/&lt;/p>
 &lt;p>搭配：https://github.com/deanxv/coze-discord-proxy&lt;/p>
 &lt;p>​	代理&lt;code>Discord&lt;/code>对话&lt;code>Coze-Bot&lt;/code>，实现以API形式请求GPT4模型，提供对话、文生图、图生文、知识库检索等功能。&lt;/p>
-&lt;h2 id="groq" class="heading-element">&lt;span>Groq&lt;/span>
+&lt;h2 class="heading-element" id="groq">&lt;span>Groq&lt;/span>
  &lt;a href="#groq" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>官网：https://console.groq.com/keys&lt;/p>
-&lt;h2 id="api集成" class="heading-element">&lt;span>Api集成&lt;/span>
+&lt;h2 class="heading-element" id="api集成">&lt;span>Api集成&lt;/span>
  &lt;a href="#api%e9%9b%86%e6%88%90" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>&lt;a href="https://github.com/songquanpeng/one-api"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/songquanpeng/one-api&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/p>
 &lt;p>​	OpenAI 接口管理 &amp;amp; 分发系统，支持 Azure、Anthropic Claude、Google PaLM 2 &amp;amp; Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑以及腾讯混元，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用。&lt;/p>
-&lt;h2 id="web页面集成" class="heading-element">&lt;span>Web页面集成&lt;/span>
+&lt;h2 class="heading-element" id="web页面集成">&lt;span>Web页面集成&lt;/span>
  &lt;a href="#web%e9%a1%b5%e9%9d%a2%e9%9b%86%e6%88%90" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>&lt;a href="https://github.com/lobehub/lobe-chat"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/lobehub/lobe-chat&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/p>
-&lt;p>​	开源、现代化设计的 ChatGPT/LLMs 聊天应用与开发框架，支持语音合成、多模态、可扩展的（function call）插件系统，一键免费拥有你自己的 ChatGPT/Gemini/Ollama 应用。&lt;/p></description></item><item><title>Openwrt下使用TOTP动态验证码连接Openvpn</title><link>https://hpk.me/posts/openwrt-openvpn/</link><pubDate>Thu, 20 Jul 2023 12:24:22 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/openwrt-openvpn/</guid><category domain="https://hpk.me/categories/openwrt/">Openwrt</category><description>&lt;h2 id="背景" class="heading-element">&lt;span>背景&lt;/span>
+&lt;p>​	开源、现代化设计的 ChatGPT/LLMs 聊天应用与开发框架，支持语音合成、多模态、可扩展的（function call）插件系统，一键免费拥有你自己的 ChatGPT/Gemini/Ollama 应用。&lt;/p></description></item><item><title>Openwrt下使用TOTP动态验证码连接Openvpn</title><link>https://hpk.me/posts/openwrt-openvpn/</link><pubDate>Thu, 20 Jul 2023 12:24:22 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/openwrt-openvpn/</guid><category domain="https://hpk.me/categories/openwrt/">Openwrt</category><description>&lt;h2 class="heading-element" id="背景">&lt;span>背景&lt;/span>
  &lt;a href="#%e8%83%8c%e6%99%af" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>在家办公需要使用 openvpn 连接公司内网，而且密码使用 固定密码 +TOTP 验证码 的形式，每次都需要打开电脑的openvpn客户端，打开验证码客户端复制验证码，连接，只能说繁琐。希望通过家里的软路由openwrt的openvpn客户端来实现上述操作的一键连接，实现家里每个终端设备都能连接公司内网。&lt;/p>
-&lt;h2 id="实操" class="heading-element">&lt;span>实操&lt;/span>
+&lt;h2 class="heading-element" id="实操">&lt;span>实操&lt;/span>
  &lt;a href="#%e5%ae%9e%e6%93%8d" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>确保你的openwrt服务列表里已经安装openvpn，如没有请自行安装，在openwrt下新建 /root/openvpn 目录，一切操作均在这个目录下进行。&lt;/p>
-&lt;h2 id="1openwrt安装oathtool" class="heading-element">&lt;span>（1）openwrt安装oathtool&lt;/span>
+&lt;h2 class="heading-element" id="1openwrt安装oathtool">&lt;span>（1）openwrt安装oathtool&lt;/span>
  &lt;a href="#1openwrt%e5%ae%89%e8%a3%85oathtool" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>下载连接： &lt;a href="https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk"target="_blank" rel="external nofollow noopener noreferrer">https://downloads.openwrt.org/releases/packages-21.02/x86_64/packages/oath-toolkit_2.6.5-1_x86_64.ipk&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/p>
 &lt;p>下载上传至openwrt，安装 &lt;code>opkg install /tmp/upload/oath-toolkit_2.6.5-1_x86_64.ipk&lt;/code>&lt;/p>
 &lt;p>验证： &lt;code>oathtool -b --totp '你的密钥'&lt;/code> 和谷歌身份验证器里的验证码此时是否一致。&lt;/p>
-&lt;h2 id="2生成账户密码" class="heading-element">&lt;span>（2）生成账户密码&lt;/span>
+&lt;h2 class="heading-element" id="2生成账户密码">&lt;span>（2）生成账户密码&lt;/span>
  &lt;a href="#2%e7%94%9f%e6%88%90%e8%b4%a6%e6%88%b7%e5%af%86%e7%a0%81" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -669,7 +924,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> -e &lt;span class="s2">&amp;#34;公司openvpn账号\n公司openvpn固定密码&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nv">yzm&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &amp;gt; /root/openvpn/userpass.txt&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="3openvpn配置文件" class="heading-element">&lt;span>（3）openvpn配置文件&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="3openvpn配置文件">&lt;span>（3）openvpn配置文件&lt;/span>
  &lt;a href="#3openvpn%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -728,7 +983,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">route 10.87.1.0 255.255.255.0 vpn_gateway
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">route 10.88.1.0 255.255.255.0 vpn_gateway&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="4openwrt配置修改" class="heading-element">&lt;span>（4）openwrt配置修改&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="4openwrt配置修改">&lt;span>（4）openwrt配置修改&lt;/span>
  &lt;a href="#4openwrt%e9%85%8d%e7%bd%ae%e4%bf%ae%e6%94%b9" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -780,8 +1035,8 @@
 &lt;p>此时openwrt网页openvpn下就有了刚刚加的配置了，勾选启用，点击保存应用。&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;p>&lt;img loading="lazy" src="https://image.hpk.me/file/0f4dea7f988b1a619fab3.png" alt="image-20230720120756596" srcset="https://image.hpk.me/file/0f4dea7f988b1a619fab3.png?size=small, https://image.hpk.me/file/0f4dea7f988b1a619fab3.png?size=medium 1.5x, https://image.hpk.me/file/0f4dea7f988b1a619fab3.png?size=large 2x" data-title="image-20230720120756596" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/>&lt;/p>
-&lt;h2 id="5修改openwrt防火墙" class="heading-element">&lt;span>（5）修改openwrt防火墙&lt;/span>
+&lt;p>&lt;img loading="lazy" src='https://image.hpk.me/file/0f4dea7f988b1a619fab3.png' alt="image-20230720120756596">&lt;/p>
+&lt;h2 class="heading-element" id="5修改openwrt防火墙">&lt;span>（5）修改openwrt防火墙&lt;/span>
  &lt;a href="#5%e4%bf%ae%e6%94%b9openwrt%e9%98%b2%e7%81%ab%e5%a2%99" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -796,7 +1051,7 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">iptables -I FORWARD -o tun0 -j ACCEPT
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">iptables -t nat -I POSTROUTING -s 192.168.8.0/24 -d 10.87.1.0/24,10.88.1.0/24 -o tun0 -j MASQUERADE&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="参考" class="heading-element">&lt;span>参考&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="参考">&lt;span>参考&lt;/span>
  &lt;a href="#%e5%8f%82%e8%80%83" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -876,16 +1131,16 @@
 &lt;/div>
 &lt;/div>&lt;p>效果如下。&lt;/p>
 &lt;p>&lt;a href="https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u"target="_blank" rel="external nofollow noopener noreferrer">https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a> 原格式：&lt;/p>
-&lt;p>&lt;img loading="lazy" src="https://i2.wp.com/telegra.ph/file/c9f85fc0ce5ae50deee7e.png" alt="image-20230529113558662" srcset="https://i2.wp.com/telegra.ph/file/c9f85fc0ce5ae50deee7e.png?size=small, https://i2.wp.com/telegra.ph/file/c9f85fc0ce5ae50deee7e.png?size=medium 1.5x, https://i2.wp.com/telegra.ph/file/c9f85fc0ce5ae50deee7e.png?size=large 2x" data-title="image-20230529113558662" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/>&lt;/p>
+&lt;p>&lt;img loading="lazy" src='https://i2.wp.com/telegra.ph/file/c9f85fc0ce5ae50deee7e.png' alt="image-20230529113558662">&lt;/p>
 &lt;p>转换后格式：&lt;/p>
-&lt;p>&lt;img loading="lazy" src="https://i2.wp.com/telegra.ph/file/f1143dd072298c19c2191.png" alt="image-20230529113721128" srcset="https://i2.wp.com/telegra.ph/file/f1143dd072298c19c2191.png?size=small, https://i2.wp.com/telegra.ph/file/f1143dd072298c19c2191.png?size=medium 1.5x, https://i2.wp.com/telegra.ph/file/f1143dd072298c19c2191.png?size=large 2x" data-title="image-20230529113721128" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/>&lt;/p></description></item><item><title>Cloudflare优选ip并使用dnspodcn api设置解析</title><link>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</link><pubDate>Mon, 29 May 2023 10:45:18 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</guid><category domain="https://hpk.me/categories/cloudflare/">Cloudflare</category><description>&lt;p>Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。&lt;/p>
-&lt;h2 id="优选ip" class="heading-element">&lt;span>优选ip&lt;/span>
+&lt;p>&lt;img loading="lazy" src='https://i2.wp.com/telegra.ph/file/f1143dd072298c19c2191.png' alt="image-20230529113721128">&lt;/p></description></item><item><title>Cloudflare优选ip并使用dnspodcn api设置解析</title><link>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</link><pubDate>Mon, 29 May 2023 10:45:18 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/cloudflare-betterip-dnspodcn/</guid><category domain="https://hpk.me/categories/cloudflare/">Cloudflare</category><description>&lt;p>Cloudflare优选ip并使用dnspodcn api设置解析，实现在本地网络环境下nas或者其他服务器上优选IP，并自动解析到自己的dnspodcn域名，实现速度最优。&lt;/p>
+&lt;h2 class="heading-element" id="优选ip">&lt;span>优选ip&lt;/span>
  &lt;a href="#%e4%bc%98%e9%80%89ip" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>请参考github项目 &lt;a href="https://github.com/XIU2/CloudflareSpeedTest"target="_blank" rel="external nofollow noopener noreferrer">XIU2/CloudflareSpeedTest: 🌩「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4 / IPv6)！另外也支持其他 CDN / 网站 IP ~ (github.com)&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/p>
 &lt;p>我的本地服务器为centos8系统，下载并解压到 /opt/cloudflareST 目录。&lt;/p>
-&lt;h2 id="dnspodcn-api-设置解析" class="heading-element">&lt;span>dnspodcn api 设置解析&lt;/span>
+&lt;h2 class="heading-element" id="dnspodcn-api-设置解析">&lt;span>dnspodcn api 设置解析&lt;/span>
  &lt;a href="#dnspodcn-api-%e8%ae%be%e7%bd%ae%e8%a7%a3%e6%9e%90" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1425,7 +1680,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> arDdnsCheck &lt;span class="s2">&amp;#34;xx.yy&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;sub1&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$yys_line&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">done&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="定时运行" class="heading-element">&lt;span>定时运行&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="定时运行">&lt;span>定时运行&lt;/span>
  &lt;a href="#%e5%ae%9a%e6%97%b6%e8%bf%90%e8%a1%8c" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1440,7 +1695,7 @@
 &lt;/div></description></item><item><title>spark 实现 mysql upsert，可忽略null值</title><link>https://hpk.me/posts/spark-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:23:06 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/spark-mysql-upsert/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>&lt;p>&lt;strong>实现 spark dataframe/dataset 根据mysql表唯一键实现有则更新，无则插入功能。&lt;/strong>&lt;/p>
 &lt;p>&lt;strong>2024.07.25更新：新增特性，忽略值为null的列，即当df里列值为null时，不更新mysql表数据，保留表原有的值。&lt;/strong>&lt;/p>
 &lt;p>基于 &lt;strong>spark2.4.3 scala2.11.8&lt;/strong>&lt;/p>
-&lt;h2 id="工具类-dataframewriterenhance" class="heading-element">&lt;span>工具类 DataFrameWriterEnhance&lt;/span>
+&lt;h2 class="heading-element" id="工具类-dataframewriterenhance">&lt;span>工具类 DataFrameWriterEnhance&lt;/span>
  &lt;a href="#%e5%b7%a5%e5%85%b7%e7%b1%bb-dataframewriterenhance" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1767,7 +2022,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="工具类-mysqlutils" class="heading-element">&lt;span>工具类 MysqlUtils&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="工具类-mysqlutils">&lt;span>工具类 MysqlUtils&lt;/span>
  &lt;a href="#%e5%b7%a5%e5%85%b7%e7%b1%bb-mysqlutils" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1844,7 +2099,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="使用" class="heading-element">&lt;span>使用&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="使用">&lt;span>使用&lt;/span>
  &lt;a href="#%e4%bd%bf%e7%94%a8" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1936,12 +2191,12 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="k">UNIQUE&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">KEY&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">uk&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">key_one&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="n">key_two&lt;/span>&lt;span class="o">`&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">ENGINE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">InnoDB&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">DEFAULT&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">CHARSET&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">utf8&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">COMMENT&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;test&amp;#39;&lt;/span>&lt;span class="p">;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="参考" class="heading-element">&lt;span>参考&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="参考">&lt;span>参考&lt;/span>
  &lt;a href="#%e5%8f%82%e8%80%83" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>&lt;a href="https://blog.csdn.net/qq_18453581/article/details/125907861" title="csdn_Spark Upsert写入Mysql(scala增强) 无需依赖"target="_blank" rel="external nofollow noopener noreferrer">csdn_Spark Upsert写入Mysql(scala增强) 无需依赖&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/p></description></item><item><title>java 频次控制</title><link>https://hpk.me/posts/java-rate-limit-google-guava/</link><pubDate>Tue, 18 Apr 2023 14:21:15 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/java-rate-limit-google-guava/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>&lt;p>访问某接口拉取数据，接口需要频次控制，经调研，&lt;code>com.google.common.util.concurrent.RateLimiter&lt;/code>可轻易实现。&lt;/p>
-&lt;h2 id="1-maven" class="heading-element">&lt;span>1. Maven&lt;/span>
+&lt;h2 class="heading-element" id="1-maven">&lt;span>1. Maven&lt;/span>
  &lt;a href="#1-maven" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -1972,7 +2227,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;lt;version&amp;gt;&lt;/span>5.8.4&lt;span class="nt">&amp;lt;/version&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;lt;/dependency&amp;gt;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="2-测试代码" class="heading-element">&lt;span>2. 测试代码&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="2-测试代码">&lt;span>2. 测试代码&lt;/span>
  &lt;a href="#2-%e6%b5%8b%e8%af%95%e4%bb%a3%e7%a0%81" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -2162,7 +2417,7 @@
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">Query failed (#20220720_091551_00087_mkhun): Illegal base64 character -1a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="idea新建maven项目" class="heading-element">&lt;span>idea新建maven项目&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="idea新建maven项目">&lt;span>idea新建maven项目&lt;/span>
  &lt;a href="#idea%e6%96%b0%e5%bb%bamaven%e9%a1%b9%e7%9b%ae" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -2300,7 +2555,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;lt;/plugins&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;lt;/build&amp;gt;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="function开发" class="heading-element">&lt;span>function开发&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="function开发">&lt;span>function开发&lt;/span>
  &lt;a href="#function%e5%bc%80%e5%8f%91" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -2357,7 +2612,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="plugin开发" class="heading-element">&lt;span>plugin开发&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="plugin开发">&lt;span>plugin开发&lt;/span>
  &lt;a href="#plugin%e5%bc%80%e5%8f%91" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -2398,13 +2653,13 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="w">
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="加载plugin" class="heading-element">&lt;span>加载plugin&lt;/span>
+&lt;/div>&lt;h2 class="heading-element" id="加载plugin">&lt;span>加载plugin&lt;/span>
  &lt;a href="#%e5%8a%a0%e8%bd%bdplugin" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
 &lt;/h2>&lt;p>在src/main/resources下创建目录META-INF，再在META-INF目录下创建services目录，注意下图项目结构中META-INF是父目录 services是子目录，只是idea合并显示了，不是说文件夹名里面有点 “.” 。然后创建文件com.facebook.presto.spi.Plugin，文件内容为plugin的全类名。
 例如本例：&lt;code>PrestoUdfPlugin&lt;/code>&lt;/p>
-&lt;h2 id="上线" class="heading-element">&lt;span>上线&lt;/span>
+&lt;h2 class="heading-element" id="上线">&lt;span>上线&lt;/span>
  &lt;a href="#%e4%b8%8a%e7%ba%bf" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
@@ -2414,88 +2669,10 @@
 &lt;li>上传jar包，及相关依赖包（在lib目录下）到所有服务器新建的my_plugin目录下。&lt;/li>
 &lt;li>重启presto： ${PRESTO_HOME}/bin/launcher restart。&lt;/li>
 &lt;/ol>
-&lt;h2 id="项目结构" class="heading-element">&lt;span>项目结构&lt;/span>
+&lt;h2 class="heading-element" id="项目结构">&lt;span>项目结构&lt;/span>
  &lt;a href="#%e9%a1%b9%e7%9b%ae%e7%bb%93%e6%9e%84" class="heading-mark">
  &lt;svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">&lt;path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z">&lt;/path>&lt;/svg>
  &lt;/a>
-&lt;/h2>&lt;p>&lt;figure>&lt;img loading="lazy" src="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png" alt="结构" srcset="https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=small, https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=medium 1.5x, https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png?size=large 2x" data-title="结构" style="background: url(/images/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;for(const i of ['style', 'data-title','onerror','onload']){this.removeAttribute(i);}"/>&lt;figcaption class="image-caption">结构&lt;/figcaption>
+&lt;/h2>&lt;p>&lt;figure>&lt;img loading="lazy" src='https://m.360buyimg.com/babel/jfs/t1/2081/12/19574/60306/62d7d4afEe88e1e4b/e23c77b2aa3d6304.png' alt="结构">&lt;figcaption class="image-caption">结构&lt;/figcaption>
  &lt;/figure>&lt;/p>
-&lt;p>参考：&lt;a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/p></description></item><item><title>python3 pandas 实现mysql upsert操作（唯一键更新）</title><link>https://hpk.me/posts/python3-pandas-mysql-upsert/</link><pubDate>Tue, 18 Apr 2023 14:15:04 +0800</pubDate><author>hpkaiq@qq.com (hpkaiq)</author><guid>https://hpk.me/posts/python3-pandas-mysql-upsert/</guid><category domain="https://hpk.me/categories/%E7%BC%96%E7%A8%8B/">编程</category><description>&lt;p>python3 pandas 实现mysql upsert操作，基于唯一键有则更新，无则插入。&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;span class="lnt">25
-&lt;/span>&lt;span class="lnt">26
-&lt;/span>&lt;span class="lnt">27
-&lt;/span>&lt;span class="lnt">28
-&lt;/span>&lt;span class="lnt">29
-&lt;/span>&lt;span class="lnt">30
-&lt;/span>&lt;span class="lnt">31
-&lt;/span>&lt;span class="lnt">32
-&lt;/span>&lt;span class="lnt">33
-&lt;/span>&lt;span class="lnt">34
-&lt;/span>&lt;span class="lnt">35
-&lt;/span>&lt;span class="lnt">36
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">urllib&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">parse&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">pandas&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">pd&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">sqlalchemy&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">create_engine&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">db_info&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="s1">&amp;#39;user&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;test&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;password&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">parse&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">quote_plus&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;test&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;host&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;xxxxxx.mysql.rds.aliyuncs.com&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;port&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">3306&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;database&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s1">&amp;#39;test&amp;#39;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">engine&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">create_engine&lt;/span>&lt;span class="p">(&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s1">&amp;#39;mysql+pymysql://&lt;/span>&lt;span class="si">%(user)s&lt;/span>&lt;span class="s1">:&lt;/span>&lt;span class="si">%(password)s&lt;/span>&lt;span class="s1">@&lt;/span>&lt;span class="si">%(host)s&lt;/span>&lt;span class="s1">:&lt;/span>&lt;span class="si">%(port)d&lt;/span>&lt;span class="s1">/&lt;/span>&lt;span class="si">%(database)s&lt;/span>&lt;span class="s1">?charset=utf8&amp;#39;&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">db_info&lt;/span>&lt;span class="p">,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">encoding&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;utf-8&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">mysql_replace_into&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">table&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">conn&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">keys&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">data_iter&lt;/span>&lt;span class="p">):&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kn">from&lt;/span> &lt;span class="nn">sqlalchemy.dialects.mysql&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">insert&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="nb">dict&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">zip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">keys&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">row&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">row&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">data_iter&lt;/span>&lt;span class="p">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">stmt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">insert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">table&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">table&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">values&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">update_stmt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">stmt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">on_duplicate_key_update&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">**&lt;/span>&lt;span class="nb">dict&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">zip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">stmt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">inserted&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">keys&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">stmt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">inserted&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">values&lt;/span>&lt;span class="p">())))&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">conn&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">execute&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">update_stmt&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">write_database&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">df&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">table_name&lt;/span>&lt;span class="p">):&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">df&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">to_sql&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">table_name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">con&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">engine&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">index&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">False&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">if_exists&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;append&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">method&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">mysql_replace_into&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="vm">__name__&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;__main__&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;app_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;app_secret&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;11111122&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;game_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">},&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;app_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;app_secret&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;22222233&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;game_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">22&lt;/span>&lt;span class="p">},&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>&lt;span class="s2">&amp;#34;app_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;app_secret&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;33333344&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;game_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">33&lt;/span>&lt;span class="p">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">detailDF&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pd&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">DataFrame&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">write_database&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">detailDF&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;ad_app_ext&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div></description></item></channel></rss>
+&lt;p>参考：&lt;a href="https://blog.csdn.net/Mrerlou/article/details/119997884" title="【presto】方法二：presto实现自定义UDF函数"target="_blank" rel="external nofollow noopener noreferrer">【presto】方法二：presto实现自定义UDF函数&lt;i class="fa-solid fa-external-link-alt fa-fw fa-xs ms-1 text-secondary" aria-hidden="true">&lt;/i>&lt;/a>&lt;/p></description></item></channel></rss>
