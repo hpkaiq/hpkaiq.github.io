@@ -1,18 +1,20 @@
 # Spark通过Jdbc读取Doris Varchar类型长度异常
 
 
-spark内通过jdbc方式读取doris数据，varchar类型长度不足85时总是自动填充空格至85长度。
+spark内通过jdbc方式读取阿里云selectdb（doris）数据，varchar类型长度不足85时总是自动填充空格至85长度，例如表name varchar(20) 字段，name值为 'xxx'，spark内通过jdbc方式读出来显示'xxx'后补空格至总长度85位，在spark里length(name)也是85。
 
 <!--more-->
 
 ## 1. 自定义 MySQL Dialect 类
+
+版本：
 
 ```xml
   <scala.version>2.12.18</scala.version>
   <spark.version>3.5.3</spark.version>
 ```
 
-
+自定义Dialect类：
 
 ```scala
 import org.apache.spark.sql.execution.datasources.jdbc.{JDBCOptions, JdbcUtils}
@@ -26,7 +28,7 @@ object MyDorisDialect {
     // 将当前的 JdbcDialect 对象unregistered掉
     JdbcDialects.unregisterDialect(JdbcDialects.get(jdbcUrl))
     if (jdbcUrl.contains("jdbc:mysql")) {
-      JdbcDialects.registerDialect(new customMySqlJdbcDialect)
+      JdbcDialects.registerDialect(new CustomMySqlJdbcDialect)
     } else if (jdbcUrl.contains("jdbc:postgresql")) {
     } else if (jdbcUrl.contains("jdbc:sqlserver")) {
     } else if (jdbcUrl.contains("jdbc:oracle")) {
@@ -34,7 +36,7 @@ object MyDorisDialect {
     }
   }
 }
-class customMySqlJdbcDialect extends JdbcDialect {
+class CustomMySqlJdbcDialect extends JdbcDialect {
   override def quoteIdentifier(colName: String): String = {
     s"`$colName`"
   }
@@ -143,5 +145,5 @@ class customMySqlJdbcDialect extends JdbcDialect {
 ---
 
 > 作者: hpkaiq  
-> URL: https://hpk.me/posts/394428b/  
+> URL: https://hpk.me/posts/spark-jdbc-doris-dialect/  
 
